@@ -35,3 +35,25 @@ Platform:
 https://everesteer.ai/
 
 See `docs/`.
+
+## Quick start (local / synthetic)
+
+```text
+python -m venv .venv
+.venv\Scripts\pip install -e ".[dashboard,dev]"
+set QSEH_SYNTHETIC=1
+qseh doctor
+qseh data pull --split train
+qseh race --profile fast
+qseh dashboard start
+```
+
+Dashboard: http://127.0.0.1:8766/
+
+Submission default mode is `DRY_RUN`. Real uploads require an explicit:
+
+```text
+qseh event arm-submissions
+```
+
+Status reports: `docs/IMPLEMENTATION_STATUS.md`, `docs/DASHBOARD_INTEGRATION_REPORT.md`, `docs/REHEARSAL_REPORT.md`.

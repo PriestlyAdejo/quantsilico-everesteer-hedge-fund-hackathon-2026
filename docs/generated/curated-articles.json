@@ -1,0 +1,343 @@
+{
+  "generated_at": "2026-08-12T05:11:44+00:00",
+  "sections": [
+    {
+      "id": "flows",
+      "label": "Flows"
+    },
+    {
+      "id": "runbooks",
+      "label": "Runbooks"
+    }
+  ],
+  "articles": [
+    {
+      "id": "start-here",
+      "title": "Start here",
+      "description": "Orient the Research Console before connecting, researching, or submitting.",
+      "section": "flows",
+      "order": 10,
+      "source": "curated",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "Start on Overview, confirm submission mode is DRY_RUN unless you intentionally arm uploads, then connect the event and audit data before spending compute."
+        },
+        {
+          "kind": "flow",
+          "nodes": [
+            {
+              "id": "overview",
+              "label": "Overview"
+            },
+            {
+              "id": "event",
+              "label": "Connect event"
+            },
+            {
+              "id": "data",
+              "label": "Audit data"
+            },
+            {
+              "id": "research",
+              "label": "Race experiments"
+            },
+            {
+              "id": "ensemble",
+              "label": "Build ensemble"
+            },
+            {
+              "id": "submit",
+              "label": "Validate submission"
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Operating rules"
+        },
+        {
+          "kind": "callout",
+          "tone": "info",
+          "text": "Only integrity failures are universal hard stops. Soft research metrics guide budget; they do not invent official scores."
+        },
+        {
+          "kind": "metric",
+          "name": "Submission mode",
+          "text": "DISABLED blocks uploads, DRY_RUN records evidence without Everesteer upload, ARMED allows real practice/live submits after human intent."
+        },
+        {
+          "kind": "command",
+          "command": "qseh doctor"
+        },
+        {
+          "kind": "related",
+          "href": "/",
+          "label": "Open Overview"
+        },
+        {
+          "kind": "related",
+          "href": "/event",
+          "label": "Open Event Control"
+        }
+      ]
+    },
+    {
+      "id": "live-round",
+      "title": "Live round workflow",
+      "description": "What happens from round open to recorded result.",
+      "section": "flows",
+      "order": 40,
+      "source": "curated",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "Use this flow when Everesteer opens a live round. The objective is to move from a verified live split to a recorded submission without rebuilding the research system."
+        },
+        {
+          "kind": "flow",
+          "nodes": [
+            {
+              "id": "detect",
+              "label": "Detect round"
+            },
+            {
+              "id": "snapshot",
+              "label": "Snapshot event"
+            },
+            {
+              "id": "pull",
+              "label": "Pull live data"
+            },
+            {
+              "id": "verify",
+              "label": "Verify split and IDs"
+            },
+            {
+              "id": "infer",
+              "label": "Run inference"
+            },
+            {
+              "id": "guard",
+              "label": "Submission checks"
+            },
+            {
+              "id": "submit",
+              "label": "Submit"
+            },
+            {
+              "id": "observe",
+              "label": "Record score and standing"
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "What to watch"
+        },
+        {
+          "kind": "metric",
+          "name": "Time remaining",
+          "text": "How long the current round remains open."
+        },
+        {
+          "kind": "metric",
+          "name": "Upload budget",
+          "text": "How many external submissions remain available."
+        },
+        {
+          "kind": "heading",
+          "text": "If something fails"
+        },
+        {
+          "kind": "callout",
+          "tone": "warning",
+          "text": "Do not retrain automatically because a submission failed. First check lane, IDs, event state and the model artefact."
+        },
+        {
+          "kind": "related",
+          "href": "/round",
+          "label": "Open Round Room"
+        }
+      ]
+    },
+    {
+      "id": "submission",
+      "title": "Submission path",
+      "description": "Controlled practice and live upload path with lineage and quota.",
+      "section": "flows",
+      "order": 50,
+      "source": "curated",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "Every candidate must pass integrity, quota, and lane checks before leaving the machine. SubmissionModeBanner on Event, Round, and Submission surfaces shows DISABLED / DRY_RUN / ARMED."
+        },
+        {
+          "kind": "flow",
+          "nodes": [
+            {
+              "id": "select",
+              "label": "Select candidate"
+            },
+            {
+              "id": "validate",
+              "label": "Validate"
+            },
+            {
+              "id": "practice",
+              "label": "Practice dry-run"
+            },
+            {
+              "id": "arm",
+              "label": "Arm (human)"
+            },
+            {
+              "id": "live",
+              "label": "Live submit"
+            },
+            {
+              "id": "ledger",
+              "label": "Idempotency ledger"
+            }
+          ]
+        },
+        {
+          "kind": "callout",
+          "tone": "danger",
+          "text": "Never arm submissions from automation alone. Real-money staking and live uploads require explicit human action."
+        },
+        {
+          "kind": "command",
+          "command": "qseh event submission-mode"
+        },
+        {
+          "kind": "metric",
+          "name": "Idempotency key",
+          "text": "Event + round + split fingerprint + candidate + action. Restarts must not duplicate uploads for the same key."
+        },
+        {
+          "kind": "related",
+          "href": "/submission",
+          "label": "Open Submission"
+        }
+      ]
+    },
+    {
+      "id": "emergency",
+      "title": "Emergency round runbook",
+      "description": "Fast path when a round is open and time is tight.",
+      "section": "runbooks",
+      "order": 10,
+      "source": "curated",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "Use Round Room emergency fields (champion, ensemble, model hash, split verified, submission ready) when the clock is short. Prefer the known champion over a half-finished race."
+        },
+        {
+          "kind": "flow",
+          "nodes": [
+            {
+              "id": "confirm",
+              "label": "Confirm LIVE feed"
+            },
+            {
+              "id": "champion",
+              "label": "Load champion"
+            },
+            {
+              "id": "infer",
+              "label": "Infer live split"
+            },
+            {
+              "id": "guard",
+              "label": "Integrity + quota"
+            },
+            {
+              "id": "submit",
+              "label": "Dry-run then live"
+            }
+          ]
+        },
+        {
+          "kind": "callout",
+          "tone": "warning",
+          "text": "If the feed is DISCONNECTED or RECONNECTING, do not invent standings. Wait for LIVE or fall back to the last verified snapshot."
+        },
+        {
+          "kind": "command",
+          "command": "qseh rehearsal"
+        },
+        {
+          "kind": "related",
+          "href": "/round",
+          "label": "Open Round Room"
+        }
+      ]
+    },
+    {
+      "id": "dashboard",
+      "title": "Dashboard operations",
+      "description": "Start, verify, and recover the local Research Console.",
+      "section": "runbooks",
+      "order": 20,
+      "source": "curated",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "The dashboard is optional. CLI research continues if the UI process dies; jobs and research_state survive on the filesystem."
+        },
+        {
+          "kind": "flow",
+          "nodes": [
+            {
+              "id": "doctor",
+              "label": "qseh doctor"
+            },
+            {
+              "id": "serve",
+              "label": "Start API + UI"
+            },
+            {
+              "id": "health",
+              "label": "GET /api/health"
+            },
+            {
+              "id": "wire",
+              "label": "Confirm LIVE-WIRED pages"
+            },
+            {
+              "id": "docs",
+              "label": "qseh docs build"
+            }
+          ]
+        },
+        {
+          "kind": "callout",
+          "tone": "info",
+          "text": "Production status LIVE-WIRED means ConsoleService + frontend page exist. Demo mode is preview-only and must not replace official event provenance."
+        },
+        {
+          "kind": "command",
+          "command": "qseh docs build"
+        },
+        {
+          "kind": "metric",
+          "name": "schemaVersion",
+          "text": "Envelope schemaVersion is 2 for every /api read route."
+        },
+        {
+          "kind": "related",
+          "href": "/docs",
+          "label": "Open Documentation"
+        },
+        {
+          "kind": "related",
+          "href": "/compute",
+          "label": "Open Compute & Jobs"
+        }
+      ]
+    }
+  ]
+}

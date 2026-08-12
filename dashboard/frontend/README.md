@@ -1,7 +1,13 @@
-# Figma frontend integration target
+# Research Console frontend
 
-Do not build a generic final frontend here.
+Exact Figma Make export of the QuantSilico × Everesteer 2026 Research Console.
 
-Use `docs/CURSOR_EXACT_FIGMA_INTEGRATION.md` after the Figma Make export exists.
+- Visual authority: Figma ZIP (see `plans/figma-import-manifest.md`)
+- Data: `useDataSource()` → `ApiDataSource` (`VITE_DATA_MODE=api`) or `DemoDataSource`
+- Never fall back demo on API failure — show `BACKEND UNAVAILABLE`
+- Production served by FastAPI from `dist/` on `127.0.0.1:8766`
 
-The export is the visual source of truth.
+```bash
+pnpm install --frozen-lockfile
+pnpm run build
+```

@@ -1,0 +1,121 @@
+@import '@fontsource/montserrat/400.css';
+@import '@fontsource/montserrat/500.css';
+@import '@fontsource/montserrat/600.css';
+@import '@fontsource/montserrat/700.css';
+@import '@fontsource/raleway/400.css';
+@import '@fontsource/raleway/500.css';
+@import '@fontsource/raleway/600.css';
+@import '@fontsource/raleway/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+@import '@fontsource/jetbrains-mono/600.css';
+@import 'tailwindcss';
+
+:root {
+  --background: #090D11;
+  --surface: #11161C;
+  --surface-deep: #0C1116;
+  --elevated: #161C24;
+  --border: #1E2630;
+  --accent: #FFB000;
+  --accent-hi: #FFC53D;
+  --accent-dim: #B37A00;
+  --foreground: #EAF0F6;
+  --body-primary: #CDD6DF;
+  --body-secondary: #A3AFBA;
+  --metadata: #8593A1;
+  --faint: #6F7C89;
+  --radius: 2px;
+  --font-size: 15px;
+
+  --chart-amber: #FFB000;
+  --chart-cyan: #38BDF8;
+  --chart-blue: #3B82F6;
+  --chart-green: #22C55E;
+  --chart-red: #EF4444;
+  --chart-violet: #A78BFA;
+  --chart-neutral: #4B5563;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Montserrat', sans-serif;
+  font-size: var(--font-size);
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--faint); }
+
+.qs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+}
+.qs-table th {
+  color: var(--body-secondary);
+  font-weight: 600;
+  text-align: left;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  z-index: 2;
+}
+.qs-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid rgba(30,38,48,0.5);
+  color: var(--body-primary);
+  white-space: nowrap;
+}
+.qs-table th.sortable { cursor: pointer; user-select: none; }
+.qs-table th.sortable:hover { color: var(--foreground); }
+.qs-table td.sticky-col, .qs-table th.sticky-col {
+  position: sticky;
+  left: 0;
+  background: var(--surface);
+  z-index: 3;
+}
+.qs-table tbody tr:hover td { background: var(--elevated); }
+.qs-table tr:hover td { background: var(--elevated); }
+.qs-table tr.selected td { background: rgba(255,176,0,0.07); }
+
+/* Section heading used across panels — readable, selective uppercase */
+.qs-section-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--body-secondary);
+}
+.qs-kv-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--metadata);
+}
+.qs-kv-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  color: var(--body-primary);
+}
