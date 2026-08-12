@@ -1,7 +1,7 @@
 # qseh CLI reference (generated)
 
-Generated at `2026-08-12T13:02:08+00:00`.
-generatedFromSha: `6e8f61695c1d3e55cb5e4ac54133d73b00b858ae`.
+Generated at `2026-08-12T13:06:23+00:00`.
+generatedFromSha: `d60430f3c539f20f7ab755c5dcc75f18992c812e`.
 
 Authoritative source: live Typer command tree (`qseh docs build`).
 

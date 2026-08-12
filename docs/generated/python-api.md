@@ -1,6 +1,6 @@
 # Python API reference (generated)
 
-Generated at `2026-08-12T13:02:09+00:00`.
+Generated at `2026-08-12T13:06:24+00:00`.
 
 Public entry points intended for event-day tooling. Private helpers are omitted.
 
