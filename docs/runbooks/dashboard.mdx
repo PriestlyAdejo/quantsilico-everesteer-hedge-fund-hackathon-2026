@@ -1,0 +1,37 @@
+---
+title: Dashboard operations
+description: Start, verify, and recover the local Research Console.
+section: runbooks
+order: 20
+---
+
+<PageIntro>
+The dashboard is optional. CLI research continues if the UI process dies; jobs
+and research_state survive on the filesystem.
+</PageIntro>
+
+<FlowDiagram
+  nodes={[
+    { id: "doctor", label: "qseh doctor" },
+    { id: "serve", label: "Start API + UI" },
+    { id: "health", label: "GET /api/health" },
+    { id: "wire", label: "Confirm LIVE-WIRED pages" },
+    { id: "docs", label: "qseh docs build" }
+  ]}
+/>
+
+<Callout tone="info">
+Production status LIVE-WIRED means ConsoleService + frontend page exist. Demo
+mode is preview-only and must not replace official event provenance.
+</Callout>
+
+<Command>
+qseh docs build
+</Command>
+
+<MetricDefinition name="schemaVersion">
+Envelope schemaVersion is 2 for every /api read route.
+</MetricDefinition>
+
+<RelatedPage href="/docs">Open Documentation</RelatedPage>
+<RelatedPage href="/compute">Open Compute & Jobs</RelatedPage>

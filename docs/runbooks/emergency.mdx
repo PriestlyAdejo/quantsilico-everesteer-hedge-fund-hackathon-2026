@@ -1,0 +1,33 @@
+---
+title: Emergency round runbook
+description: Fast path when a round is open and time is tight.
+section: runbooks
+order: 10
+---
+
+<PageIntro>
+Use Round Room emergency fields (champion, ensemble, model hash, split verified,
+submission ready) when the clock is short. Prefer the known champion over a
+half-finished race.
+</PageIntro>
+
+<FlowDiagram
+  nodes={[
+    { id: "confirm", label: "Confirm LIVE feed" },
+    { id: "champion", label: "Load champion" },
+    { id: "infer", label: "Infer live split" },
+    { id: "guard", label: "Integrity + quota" },
+    { id: "submit", label: "Dry-run then live" }
+  ]}
+/>
+
+<Callout tone="warning">
+If the feed is DISCONNECTED or RECONNECTING, do not invent standings. Wait for
+LIVE or fall back to the last verified snapshot.
+</Callout>
+
+<Command>
+qseh rehearsal
+</Command>
+
+<RelatedPage href="/round">Open Round Room</RelatedPage>

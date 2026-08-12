@@ -1,0 +1,44 @@
+---
+title: Live round workflow
+description: What happens from round open to recorded result.
+section: flows
+order: 40
+---
+
+<PageIntro>
+Use this flow when Everesteer opens a live round. The objective is to move from
+a verified live split to a recorded submission without rebuilding the research
+system.
+</PageIntro>
+
+<FlowDiagram
+  nodes={[
+    { id: "detect", label: "Detect round" },
+    { id: "snapshot", label: "Snapshot event" },
+    { id: "pull", label: "Pull live data" },
+    { id: "verify", label: "Verify split and IDs" },
+    { id: "infer", label: "Run inference" },
+    { id: "guard", label: "Submission checks" },
+    { id: "submit", label: "Submit" },
+    { id: "observe", label: "Record score and standing" }
+  ]}
+/>
+
+## What to watch
+
+<MetricDefinition name="Time remaining">
+How long the current round remains open.
+</MetricDefinition>
+
+<MetricDefinition name="Upload budget">
+How many external submissions remain available.
+</MetricDefinition>
+
+## If something fails
+
+<Callout tone="warning">
+Do not retrain automatically because a submission failed. First check lane,
+IDs, event state and the model artefact.
+</Callout>
+
+<RelatedPage href="/round">Open Round Room</RelatedPage>

@@ -1,0 +1,41 @@
+---
+title: Start here
+description: Orient the Research Console before connecting, researching, or submitting.
+section: flows
+order: 10
+---
+
+<PageIntro>
+Start on Overview, confirm submission mode is DRY_RUN unless you intentionally
+arm uploads, then connect the event and audit data before spending compute.
+</PageIntro>
+
+<FlowDiagram
+  nodes={[
+    { id: "overview", label: "Overview" },
+    { id: "event", label: "Connect event" },
+    { id: "data", label: "Audit data" },
+    { id: "research", label: "Race experiments" },
+    { id: "ensemble", label: "Build ensemble" },
+    { id: "submit", label: "Validate submission" }
+  ]}
+/>
+
+## Operating rules
+
+<Callout tone="info">
+Only integrity failures are universal hard stops. Soft research metrics guide
+budget; they do not invent official scores.
+</Callout>
+
+<MetricDefinition name="Submission mode">
+DISABLED blocks uploads, DRY_RUN records evidence without Everesteer upload,
+ARMED allows real practice/live submits after human intent.
+</MetricDefinition>
+
+<Command>
+qseh doctor
+</Command>
+
+<RelatedPage href="/">Open Overview</RelatedPage>
+<RelatedPage href="/event">Open Event Control</RelatedPage>

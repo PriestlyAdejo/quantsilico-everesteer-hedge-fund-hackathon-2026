@@ -1,1 +1,3 @@
-"""Package scaffold; implemented by Cursor build prompt."""
+from qs_everesteer.autopilot.orchestrator import AutopilotStage, CompetitionAutopilot
+
+__all__ = ["AutopilotStage", "CompetitionAutopilot"]

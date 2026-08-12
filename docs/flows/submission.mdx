@@ -1,0 +1,39 @@
+---
+title: Submission path
+description: Controlled practice and live upload path with lineage and quota.
+section: flows
+order: 50
+---
+
+<PageIntro>
+Every candidate must pass integrity, quota, and lane checks before leaving the
+machine. SubmissionModeBanner on Event, Round, and Submission surfaces shows
+DISABLED / DRY_RUN / ARMED.
+</PageIntro>
+
+<FlowDiagram
+  nodes={[
+    { id: "select", label: "Select candidate" },
+    { id: "validate", label: "Validate" },
+    { id: "practice", label: "Practice dry-run" },
+    { id: "arm", label: "Arm (human)" },
+    { id: "live", label: "Live submit" },
+    { id: "ledger", label: "Idempotency ledger" }
+  ]}
+/>
+
+<Callout tone="danger">
+Never arm submissions from automation alone. Real-money staking and live
+uploads require explicit human action.
+</Callout>
+
+<Command>
+qseh event submission-mode
+</Command>
+
+<MetricDefinition name="Idempotency key">
+Event + round + split fingerprint + candidate + action. Restarts must not
+duplicate uploads for the same key.
+</MetricDefinition>
+
+<RelatedPage href="/submission">Open Submission</RelatedPage>

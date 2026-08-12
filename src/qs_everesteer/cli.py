@@ -1,21 +1,10 @@
-import typer
+"""CLI entry point. ``qseh = qs_everesteer.cli:app`` in pyproject.toml."""
 
-app = typer.Typer(no_args_is_help=True, help="QuantSilico × Everesteer 2026 CLI")
+from __future__ import annotations
 
+from qs_everesteer.cli_app import app
 
-@app.command()
-def doctor():
-    typer.echo("Scaffold: implement environment/event readiness checks.")
-
-
-@app.command()
-def rehearsal():
-    typer.echo("Scaffold: implement synthetic end-to-end rehearsal.")
-
-
-@app.command()
-def emergency(send: bool = typer.Option(False, "--send")):
-    typer.echo(f"Scaffold emergency path; send={send}")
+__all__ = ["app"]
 
 
 if __name__ == "__main__":
