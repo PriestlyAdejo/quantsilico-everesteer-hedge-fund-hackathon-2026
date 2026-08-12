@@ -57,3 +57,5 @@ qseh event arm-submissions
 ```
 
 Status reports: `docs/IMPLEMENTATION_STATUS.md`, `docs/DASHBOARD_INTEGRATION_REPORT.md`, `docs/REHEARSAL_REPORT.md`.
+
+Dashboard ops (no PowerShell activation required): see `docs/DASHBOARD_OPERATIONS.md`.

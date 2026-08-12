@@ -1,5 +1,10 @@
 @echo off
 setlocal EnableExtensions
-start "" "http://127.0.0.1:8766/"
-endlocal
-exit /b 0
+set "ROOT=%~dp0..\.."
+cd /d "%ROOT%"
+if not exist "%ROOT%\.venv\Scripts\qseh.exe" (
+  echo [qseh] Missing .venv\Scripts\qseh.exe
+  exit /b 1
+)
+"%ROOT%\.venv\Scripts\qseh.exe" dashboard open %*
+exit /b %ERRORLEVEL%

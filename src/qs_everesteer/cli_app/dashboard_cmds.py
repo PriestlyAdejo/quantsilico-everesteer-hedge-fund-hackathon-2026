@@ -1,200 +1,127 @@
-"""Local research dashboard lifecycle (optional FastAPI dependency)."""
+"""Local research dashboard lifecycle — thin Typer surface over DashboardProcessManager."""
 
 from __future__ import annotations
 
-import os
-import signal
-import subprocess
-import sys
-import time
-import urllib.error
-import urllib.request
-import webbrowser
-from pathlib import Path
-
 import typer
 
-from qs_everesteer.cli_app.common import console, print_json, print_kv, repo_root
+from qs_everesteer.cli_app.common import console, print_json, print_kv
+from qs_everesteer.dashboard.process import DashboardProcessManager
 
 dashboard_app = typer.Typer(help="Local dashboard on 127.0.0.1:8766.", no_args_is_help=True)
 
-HOST = "127.0.0.1"
-PORT = 8766
-HEALTH_URL = f"http://{HOST}:{PORT}/api/health"
-PID_NAME = "dashboard.pid"
-
-
-def _pid_path(root: Path) -> Path:
-    return root / "runs" / "state" / PID_NAME
-
-
-def _backend_dir(root: Path) -> Path:
-    return root / "dashboard" / "backend"
-
-
-def _script(root: Path, name: str) -> Path:
-    return root / "scripts" / "dashboard" / name
-
-
-def _health() -> dict | None:
-    try:
-        with urllib.request.urlopen(HEALTH_URL, timeout=2) as resp:
-            import json
-
-            return json.loads(resp.read().decode("utf-8"))
-    except (urllib.error.URLError, TimeoutError, ValueError):
-        return None
-
-
-def _read_pid(root: Path) -> int | None:
-    path = _pid_path(root)
-    if not path.exists():
-        return None
-    try:
-        return int(path.read_text(encoding="utf-8").strip())
-    except ValueError:
-        return None
-
 
 @dashboard_app.command("start")
-def dashboard_start(
-    use_script: bool = typer.Option(
-        False,
-        "--script",
-        help="Prefer scripts/dashboard/start.cmd when present.",
-    ),
-) -> None:
-    """Start FastAPI backend via uvicorn on 127.0.0.1:8766."""
-    root = repo_root()
-    if _health() is not None:
-        console.print(f"[green]dashboard already healthy[/green] {HEALTH_URL}")
-        return
-
-    script = _script(root, "start.cmd")
-    if use_script and script.exists() and sys.platform.startswith("win"):
-        subprocess.Popen(["cmd", "/c", str(script)], cwd=str(root))  # noqa: S603
-        console.print(f"[dim]launched[/dim] {script}")
-        return
-
-    backend = _backend_dir(root)
-    if not (backend / "app" / "main.py").exists():
-        console.print(f"[red]dashboard backend missing:[/red] {backend / 'app' / 'main.py'}")
-        raise typer.Exit(code=1)
-
-    # Optional dependency — fail clearly if uvicorn/fastapi not installed.
-    try:
-        import uvicorn  # noqa: F401
-    except ImportError as exc:
-        console.print(
-            "[red]dashboard extras missing[/red] — pip install '.[dashboard]' "
-            "(fastapi/uvicorn)"
-        )
-        raise typer.Exit(code=1) from exc
-
-    log_dir = root / "runs" / "state"
-    log_dir.mkdir(parents=True, exist_ok=True)
-    log_path = log_dir / "dashboard.log"
-    pid_path = _pid_path(root)
-
-    env = os.environ.copy()
-    creationflags = 0
-    if sys.platform.startswith("win"):
-        creationflags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
-
-    with log_path.open("ab") as log_fh:
-        proc = subprocess.Popen(  # noqa: S603
+def dashboard_start() -> None:
+    """Start FastAPI/Uvicorn; success requires live process + /api/health."""
+    mgr = DashboardProcessManager()
+    result = mgr.start()
+    if result.get("ok"):
+        print_kv(
             [
-                sys.executable,
-                "-m",
-                "uvicorn",
-                "app.main:app",
-                "--host",
-                HOST,
-                "--port",
-                str(PORT),
-                "--app-dir",
-                str(backend),
+                ("state", result.get("state", "RUNNING")),
+                ("url", result.get("url")),
+                ("pid", result.get("pid")),
+                ("health", "PASS" if result.get("health") else "FAIL"),
+                ("frontend", "PASS" if result.get("frontend_present") else "MISSING"),
+                ("repo_sha", result.get("repo_sha")),
+                ("frontend_build_sha", result.get("frontend_build_sha")),
+                ("log", result.get("log_path")),
             ],
-            cwd=str(backend),
-            env=env,
-            stdout=log_fh,
-            stderr=subprocess.STDOUT,
-            creationflags=creationflags,
+            title="Dashboard running",
         )
-    pid_path.write_text(str(proc.pid), encoding="utf-8")
-    # Brief wait for health.
-    healthy = None
-    for _ in range(20):
-        time.sleep(0.25)
-        healthy = _health()
-        if healthy is not None:
-            break
-    print_kv(
-        [
-            ("url", f"http://{HOST}:{PORT}"),
-            ("pid", proc.pid),
-            ("log", str(log_path)),
-            ("healthy", healthy is not None),
-        ],
-        title="dashboard start",
-    )
-    if healthy is None:
-        console.print("[yellow]started but health not yet ready — try qseh dashboard status[/yellow]")
+        return
+
+    console.print(f"[red]{result.get('message', 'Dashboard failed to start')}[/red]")
+    for line in result.get("log_tail") or []:
+        console.print(f"[dim]{line}[/dim]")
+    if result.get("suggested"):
+        console.print(f"[yellow]Suggested next command:[/yellow] {result['suggested']}")
+    raise typer.Exit(code=1)
 
 
 @dashboard_app.command("status")
 def dashboard_status() -> None:
-    """Health / PID status for the local dashboard."""
-    root = repo_root()
-    health = _health()
-    print_json(
-        {
-            "url": f"http://{HOST}:{PORT}",
-            "health": health,
-            "pid": _read_pid(root),
-            "script": str(_script(root, "status.cmd")),
-        }
+    """Authoritative dashboard lifecycle status (single source of truth)."""
+    mgr = DashboardProcessManager()
+    status = mgr.classify()
+    print_kv(
+        [
+            ("state", status["state"]),
+            ("pid", status["pid"]),
+            ("process_alive", status["process_alive"]),
+            ("port_listening", status["port_listening"]),
+            ("health", "PASS" if status["health"] else "unavailable"),
+            ("url", status["url"]),
+            ("log", status["log_path"]),
+            ("last_exit_code", status.get("last_exit_code")),
+            ("last_error", status.get("last_error")),
+        ],
+        title="dashboard status",
     )
-    script = _script(root, "status.cmd")
-    if script.exists() and sys.platform.startswith("win"):
-        subprocess.run(["cmd", "/c", str(script)], cwd=str(root), check=False)  # noqa: S603
-
-
-@dashboard_app.command("open")
-def dashboard_open() -> None:
-    """Open the dashboard URL in the default browser."""
-    root = repo_root()
-    script = _script(root, "open.cmd")
-    if script.exists() and sys.platform.startswith("win"):
-        subprocess.run(["cmd", "/c", str(script)], cwd=str(root), check=False)  # noqa: S603
-    else:
-        webbrowser.open(f"http://{HOST}:{PORT}")
-    console.print(f"opened http://{HOST}:{PORT}")
+    if status["health"] is not None:
+        print_json(status["health"])
 
 
 @dashboard_app.command("stop")
 def dashboard_stop() -> None:
-    """Stop the dashboard process recorded in runs/state/dashboard.pid."""
-    root = repo_root()
-    pid = _read_pid(root)
-    if pid is None:
-        console.print("[dim]no dashboard pid file[/dim]")
-        script = _script(root, "stop.cmd")
-        if script.exists() and sys.platform.startswith("win"):
-            subprocess.run(["cmd", "/c", str(script)], cwd=str(root), check=False)  # noqa: S603
+    """Stop the qseh-owned dashboard process; never kill foreign :8766 owners."""
+    mgr = DashboardProcessManager()
+    result = mgr.stop()
+    if result.get("ok"):
+        console.print(f"[green]{result.get('message')}[/green]")
         return
-    try:
-        if sys.platform.startswith("win"):
-            subprocess.run(  # noqa: S603
-                ["taskkill", "/PID", str(pid), "/F"],
-                check=False,
-                capture_output=True,
-            )
-        else:
-            os.kill(pid, signal.SIGTERM)
-        console.print(f"[yellow]stopped pid[/yellow] {pid}")
-    except OSError as exc:
-        console.print(f"[yellow]stop failed:[/yellow] {exc}")
-    pid_path = _pid_path(root)
-    if pid_path.exists():
-        pid_path.unlink()
+    console.print(f"[red]{result.get('message')}[/red]")
+    raise typer.Exit(code=1)
+
+
+@dashboard_app.command("open")
+def dashboard_open(
+    start: bool = typer.Option(
+        False,
+        "--start",
+        help="Start the dashboard first if it is not healthy.",
+    ),
+) -> None:
+    """Open the dashboard URL only when healthy."""
+    mgr = DashboardProcessManager()
+    result = mgr.open_browser(start_if_needed=start)
+    if result.get("ok"):
+        console.print(f"[green]{result.get('message')}[/green]")
+        return
+    console.print(f"[yellow]{result.get('message')}[/yellow]")
+    raise typer.Exit(code=1)
+
+
+@dashboard_app.command("diagnose")
+def dashboard_diagnose() -> None:
+    """Print venue-ready dashboard diagnostics (no secrets)."""
+    mgr = DashboardProcessManager()
+    print_json(mgr.diagnose())
+
+
+@dashboard_app.command("build")
+def dashboard_build(
+    clean: bool = typer.Option(
+        False,
+        "--clean",
+        help="Force pnpm install --frozen-lockfile before build.",
+    ),
+) -> None:
+    """Build the Figma frontend production bundle."""
+    mgr = DashboardProcessManager()
+    result = mgr.build_frontend(clean=clean)
+    if result.get("ok"):
+        print_kv(
+            [
+                ("message", result.get("message")),
+                ("steps", ", ".join(result.get("steps") or [])),
+                ("dist", result.get("dist")),
+                ("frontend_build_sha", result.get("frontend_build_sha")),
+            ],
+            title="dashboard build",
+        )
+        return
+    console.print(f"[red]{result.get('message')}[/red]")
+    if result.get("stderr"):
+        console.print(result["stderr"])
+    raise typer.Exit(code=1)

@@ -3,6 +3,7 @@ import TopBar from "./TopBar";
 import Sidebar from "./Sidebar";
 import ActivityStrip from "./ActivityStrip";
 import CommandPalette from "./CommandPalette";
+import DocumentTitle from "./DocumentTitle";
 
 export default function Shell() {
   return (
@@ -14,6 +15,7 @@ export default function Shell() {
       background: "var(--background)",
       overflow: "hidden",
     }}>
+      <DocumentTitle />
       <TopBar />
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         <Sidebar />
