@@ -21,6 +21,8 @@ artifacts/submissions/
 artifacts/ui-review/
 artifacts/figma-import/
 artifacts/pytest-out.txt
+artifacts/tsc-out.txt
+artifacts/*
 dashboard/frontend/.env.local
 dashboard/frontend/.figma/
 private/
