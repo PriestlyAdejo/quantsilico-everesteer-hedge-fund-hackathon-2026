@@ -136,3 +136,31 @@ def test_start_child_crash_clears_state(mgr: DashboardProcessManager, tmp_path: 
     loaded = mgr._load_state()
     assert loaded is not None
     assert loaded.pid is None
+
+
+def test_diagnose_app_import_uses_subprocess(mgr: DashboardProcessManager) -> None:
+    ok = MagicMock()
+    ok.returncode = 0
+    ok.stdout = ""
+    ok.stderr = ""
+    with (
+        patch("qs_everesteer.dashboard.process.subprocess.run", return_value=ok) as run,
+        patch.object(
+            mgr,
+            "classify",
+            return_value={
+                "state": DashboardState.STOPPED.value,
+                "pid": None,
+                "process_alive": False,
+                "port_listening": False,
+                "health": None,
+            },
+        ),
+    ):
+        result = mgr.diagnose()
+    assert result["app_import"] is True
+    assert result["app_import_error"] is None
+    assert run.called
+    args = run.call_args.args[0]
+    assert "-c" in args
+    assert any("dashboard.backend.app.main" in str(a) for a in args)

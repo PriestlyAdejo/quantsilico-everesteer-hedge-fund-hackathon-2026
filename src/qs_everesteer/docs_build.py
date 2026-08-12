@@ -1,15 +1,18 @@
-"""Documentation generator: Typer CLI stubs + curated MDX flows/runbooks."""
+"""Documentation generator: live Typer/FastAPI + curated MDX flows/runbooks."""
 
 from __future__ import annotations
 
+import inspect
 import json
 import re
+import subprocess
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 from qs_everesteer.paths import ensure_dir, find_repo_root
 
+GENERATOR_VERSION = "2"
 _FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n(.*)$", re.DOTALL)
 _COMPONENT_RE = re.compile(
     r"<(PageIntro|FlowDiagram|Callout|Command|MetricDefinition|RelatedPage)"
@@ -17,27 +20,128 @@ _COMPONENT_RE = re.compile(
     re.DOTALL,
 )
 _HEADING_RE = re.compile(r"^##\s+(.+)$", re.MULTILINE)
+_MOJIBAKE_RE = re.compile(r"[â�]|â€”|â†’|â€œ|â€\x9d")
 
 
 def _utc_now() -> str:
     return datetime.now(UTC).replace(microsecond=0).isoformat()
 
 
-def _walk_typer(app: Any, prefix: str = "qseh") -> list[dict[str, str]]:
-    """Extract a flat command list from a Typer app (best-effort)."""
-    rows: list[dict[str, str]] = []
+def _git_sha(root: Path) -> str | None:
+    try:
+        out = subprocess.run(  # noqa: S603
+            ["git", "rev-parse", "HEAD"],
+            cwd=str(root),
+            capture_output=True,
+            text=True,
+            timeout=8,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    if out.returncode != 0:
+        return None
+    sha = (out.stdout or "").strip()
+    return sha or None
+
+
+def _command_params(callback: Any) -> list[dict[str, Any]]:
+    """Extract Typer/Click parameters from a command callback."""
+    rows: list[dict[str, Any]] = []
+    try:
+        import typer
+
+        # Prefer Click params attached by Typer.
+        click_cmd = getattr(callback, "__click_params__", None)
+        if click_cmd is None and hasattr(callback, "params"):
+            click_cmd = callback.params
+    except Exception:  # noqa: BLE001
+        click_cmd = None
+
+    # Typer stores ParameterInfo via annotations / function defaults.
+    try:
+        sig = inspect.signature(callback)
+    except (TypeError, ValueError):
+        return rows
+
+    for name, param in sig.parameters.items():
+        if name in {"self", "ctx", "context"}:
+            continue
+        default = param.default
+        option_names: list[str] = []
+        help_text = ""
+        is_option = True
+        default_value: Any = None
+        if default is inspect.Parameter.empty:
+            is_option = False
+            default_value = None
+        else:
+            # typer.Option / Argument infos
+            default_value = getattr(default, "default", default)
+            if default_value is inspect.Parameter.empty or str(type(default_value)).endswith(
+                "OptionInfo'>"
+            ):
+                # typer.models.OptionInfo
+                default_value = getattr(default, "default", None)
+            help_text = str(getattr(default, "help", "") or "")
+            param_decls = getattr(default, "param_decls", None) or ()
+            option_names = [str(d) for d in param_decls if d]
+            # ArgumentInfo has no leading dashes typically
+            cls_name = type(default).__name__
+            if "Argument" in cls_name:
+                is_option = False
+        if not option_names:
+            option_names = [f"--{name.replace('_', '-')}" if is_option else name]
+        # Normalise Ellipsis / missing defaults
+        if default_value is Ellipsis or repr(default_value) == "Ellipsis":
+            default_value = None
+            required = True
+        else:
+            required = default is inspect.Parameter.empty or (
+                getattr(default, "default", None) is Ellipsis
+            )
+        rows.append(
+            {
+                "name": name,
+                "cli": " / ".join(option_names),
+                "help": help_text.strip(),
+                "default": None if default_value is Ellipsis else default_value,
+                "required": bool(required) and default_value is None and not is_option,
+                "kind": "option" if is_option else "argument",
+            }
+        )
+    return rows
+
+
+def _walk_typer(app: Any, prefix: str = "qseh") -> list[dict[str, Any]]:
+    """Extract a flat command list from a Typer app (live tree is authoritative)."""
+    rows: list[dict[str, Any]] = []
 
     def visit(typer_app: Any, path: str) -> None:
         for cmd in getattr(typer_app, "registered_commands", []) or []:
             name = cmd.name or getattr(cmd.callback, "__name__", "command")
             help_text = (cmd.help or getattr(cmd.callback, "__doc__", None) or "").strip()
             help_text = help_text.splitlines()[0] if help_text else ""
-            rows.append({"command": f"{path} {name}".strip(), "help": help_text})
+            callback = cmd.callback
+            params = _command_params(callback) if callback else []
+            rows.append(
+                {
+                    "command": f"{path} {name}".strip(),
+                    "help": help_text,
+                    "params": params,
+                }
+            )
         for group in getattr(typer_app, "registered_groups", []) or []:
             gname = group.name or "group"
             gapp = group.typer_instance
             ghelp = (getattr(gapp, "info", None) and getattr(gapp.info, "help", None)) or ""
-            rows.append({"command": f"{path} {gname}".strip(), "help": str(ghelp).strip() or "(group)"})
+            rows.append(
+                {
+                    "command": f"{path} {gname}".strip(),
+                    "help": str(ghelp).strip() or "(group)",
+                    "params": [],
+                }
+            )
             visit(gapp, f"{path} {gname}".strip())
 
     try:
@@ -46,7 +150,7 @@ def _walk_typer(app: Any, prefix: str = "qseh") -> list[dict[str, str]]:
         return []
 
     seen: set[str] = set()
-    unique: list[dict[str, str]] = []
+    unique: list[dict[str, Any]] = []
     for row in rows:
         key = row["command"]
         if key in seen:
@@ -56,47 +160,154 @@ def _walk_typer(app: Any, prefix: str = "qseh") -> list[dict[str, str]]:
     return unique
 
 
+def research_console_openapi() -> dict[str, Any]:
+    """OpenAPI schema from the real FastAPI Research Console application."""
+    import sys
+
+    root = find_repo_root()
+    root_s = str(root)
+    if root_s not in sys.path:
+        sys.path.insert(0, root_s)
+    from dashboard.backend.app.main import create_app
+
+    application = create_app(root)
+    schema = application.openapi()
+    if not isinstance(schema, dict):
+        raise TypeError("create_app().openapi() did not return a dict")
+    return schema
+
+
 def openapi_stub() -> dict[str, Any]:
-    """Minimal OpenAPI-shaped stub mirroring the local dashboard health surface."""
-    return {
-        "openapi": "3.0.3",
-        "info": {
-            "title": "QuantSilico Everesteer 2026 Research Console",
-            "version": "0.1.0",
-            "description": "Generated stub — not a live platform contract.",
-        },
-        "paths": {
-            "/api/health": {
-                "get": {
-                    "summary": "Health",
-                    "operationId": "health",
-                    "responses": {
-                        "200": {
-                            "description": "OK",
-                            "content": {
-                                "application/json": {
-                                    "schema": {
-                                        "type": "object",
-                                        "properties": {
-                                            "status": {"type": "string"},
-                                            "service": {"type": "string"},
-                                            "schema_version": {"type": "integer"},
-                                        },
-                                    }
-                                }
-                            },
-                        }
-                    },
-                }
-            }
-        },
-    }
+    """Backward-compatible alias — returns the real Research Console OpenAPI."""
+    return research_console_openapi()
+
+
+def _python_api_reference() -> str:
+    """Document intended public project APIs (not every private helper)."""
+    targets: list[tuple[str, str]] = [
+        ("qs_everesteer.hardware.probe", "probe_hardware"),
+        ("qs_everesteer.state.research", "load_research_state"),
+        ("qs_everesteer.state.research", "update_research_state"),
+        ("qs_everesteer.event.adapter", "EveresteerAdapter"),
+        ("qs_everesteer.experiments.runner", "ExperimentRunner"),
+        ("qs_everesteer.experiments.racing", "RacingScheduler"),
+        ("qs_everesteer.docs_build", "build_docs"),
+        ("qs_everesteer.dashboard.process", "DashboardProcessManager"),
+        ("qs_everesteer.ops_status", "write_ops_status"),
+        ("qs_everesteer.gitmeta", "git_head_sha"),
+    ]
+    lines = [
+        "# Python API reference (generated)",
+        "",
+        f"Generated at `{_utc_now()}`.",
+        "",
+        "Public entry points intended for event-day tooling. Private helpers are omitted.",
+        "",
+    ]
+    for module_name, attr in targets:
+        try:
+            mod = __import__(module_name, fromlist=[attr])
+            obj = getattr(mod, attr)
+        except Exception as exc:  # noqa: BLE001
+            lines.append(f"## `{module_name}.{attr}`")
+            lines.append("")
+            lines.append(f"_Unavailable: {type(exc).__name__}: {exc}_")
+            lines.append("")
+            continue
+        doc = inspect.getdoc(obj) or ""
+        first = doc.splitlines()[0] if doc else ""
+        try:
+            if inspect.isclass(obj):
+                sig = f"{attr}(...)"
+                init = getattr(obj, "__init__", None)
+                if init:
+                    sig = f"{attr}{inspect.signature(init)}"
+            elif callable(obj):
+                sig = f"{attr}{inspect.signature(obj)}"
+            else:
+                sig = attr
+        except (TypeError, ValueError):
+            sig = attr
+        lines.append(f"## `{module_name}.{attr}`")
+        lines.append("")
+        lines.append(f"`{sig}`")
+        lines.append("")
+        if first:
+            lines.append(first)
+            lines.append("")
+    return "\n".join(lines) + "\n"
+
+
+def _config_reference() -> str:
+    """Document supported experiment YAML / known config fields."""
+    return "\n".join(
+        [
+            "# Configuration reference (generated)",
+            "",
+            f"Generated at `{_utc_now()}`.",
+            "",
+            "Experiment YAML fields consumed by `ExperimentRunner` / `qseh` research commands:",
+            "",
+            "| Field | Default / notes |",
+            "|---|---|",
+            "| `model` | string model name (e.g. `ridge`, `reference_lgbm`) or `{name, params}` |",
+            "| `params` | model hyperparameters (dict) |",
+            "| `data_path` | path to training parquet |",
+            "| `profile` | temporal profile `R0`–`R3` |",
+            "| `target` | default `target_everest_20` |",
+            "| `exped_col` | default `exped` |",
+            "| `features` | optional list; otherwise `feature_*` columns |",
+            "| `run_id` | optional; auto-generated when omitted |",
+            "| `data_hash` | optional training data fingerprint |",
+            "",
+            "Submission modes: `DISABLED`, `DRY_RUN`, `ARMED` (persisted in research state).",
+            "",
+            "Hardware probe is live host detection — not YAML-configured.",
+            "",
+        ]
+    )
+
+
+def _cli_markdown(commands: list[dict[str, Any]], *, generated_at: str, sha: str | None) -> str:
+    lines = [
+        "# qseh CLI reference (generated)",
+        "",
+        f"Generated at `{generated_at}`.",
+        f"generatedFromSha: `{sha or 'unavailable'}`.",
+        "",
+        "Authoritative source: live Typer command tree (`qseh docs build`).",
+        "",
+        "| Command | Help |",
+        "|---|---|",
+    ]
+    for row in commands:
+        help_text = (row.get("help") or "").replace("|", "\\|")
+        lines.append(f"| `{row['command']}` | {help_text} |")
+    lines.append("")
+    lines.append("## Options and arguments")
+    lines.append("")
+    for row in commands:
+        params = row.get("params") or []
+        if not params:
+            continue
+        lines.append(f"### `{row['command']}`")
+        lines.append("")
+        lines.append("| Name | Kind | Default | Help |")
+        lines.append("|---|---|---|---|")
+        for p in params:
+            default = p.get("default")
+            default_s = "" if default is None else str(default).replace("|", "\\|")
+            help_text = (p.get("help") or "").replace("|", "\\|")
+            lines.append(
+                f"| `{p.get('cli') or p.get('name')}` | {p.get('kind')} | `{default_s}` | {help_text} |"
+            )
+        lines.append("")
+    return "\n".join(lines) + "\n"
 
 
 def _parse_frontmatter(text: str) -> tuple[dict[str, Any], str]:
     match = _FRONTMATTER_RE.match(text.strip() + ("\n" if not text.endswith("\n") else ""))
     if not match:
-        # Allow files that already strip trailing newline inconsistently.
         match = _FRONTMATTER_RE.match(text.strip())
     if not match:
         return {}, text
@@ -136,7 +347,6 @@ def mdx_to_blocks(body: str) -> list[dict[str, Any]]:
             blocks.append({"kind": "heading", "text": heading.group(1).strip()})
         leftover = _HEADING_RE.sub("", prefix).strip()
         if leftover:
-            # Keep plain prose between components as paragraphs when present.
             for para in re.split(r"\n\s*\n", leftover):
                 cleaned = para.strip()
                 if cleaned:
@@ -239,16 +449,24 @@ def curated_sections(articles: list[dict[str, Any]]) -> list[dict[str, str]]:
     return [{"id": section, "label": labels.get(section, section.title())} for section in seen]
 
 
+def _assert_utf8_clean(path: Path) -> None:
+    text = path.read_text(encoding="utf-8")
+    if _MOJIBAKE_RE.search(text):
+        raise ValueError(f"mojibake detected in generated docs: {path}")
+
+
 def build_docs(repo_root: str | Path | None = None, *, app: Any | None = None) -> dict[str, Path]:
     """
     Write docs/generated/ artefacts and dashboard frontend docs-manifest.json.
 
-    Creates directories as needed. Curated MDX under docs/flows and docs/runbooks
-    is parsed into DocumentationData-shaped articles for the console.
+    Derives CLI/API/config reference from live code. Curated MDX under
+    docs/flows and docs/runbooks is preserved and indexed, never overwritten.
     """
     root = Path(repo_root) if repo_root is not None else find_repo_root()
     generated = ensure_dir(root / "docs" / "generated")
     frontend_gen = ensure_dir(root / "dashboard" / "frontend" / "src" / "generated")
+    generated_at = _utc_now()
+    sha = _git_sha(root)
 
     if app is None:
         from qs_everesteer.cli import app as cli_app
@@ -257,84 +475,118 @@ def build_docs(repo_root: str | Path | None = None, *, app: Any | None = None) -
 
     commands = _walk_typer(app)
     if not commands:
-        commands = [
-            {"command": "qseh doctor", "help": "Environment readiness checks"},
-            {"command": "qseh rehearsal", "help": "Synthetic end-to-end rehearsal"},
-            {"command": "qseh sdk info", "help": "SDK version / fingerprint"},
-            {"command": "qseh event inspect", "help": "Event capability inspect"},
-            {"command": "qseh data audit", "help": "Dataset integrity audit"},
-            {"command": "qseh docs build", "help": "Generate docs stubs"},
-        ]
-
-    cli_md_lines = [
-        "# qseh CLI reference (generated)",
-        "",
-        f"Generated at `{_utc_now()}`.",
-        "",
-        "| Command | Help |",
-        "|---|---|",
-    ]
-    for row in commands:
-        help_text = (row.get("help") or "").replace("|", "\\|")
-        cli_md_lines.append(f"| `{row['command']}` | {help_text} |")
-    cli_md_lines.append("")
+        raise RuntimeError("Typer command walk returned empty — refusing to write stale CLI docs")
 
     cli_md = generated / "cli-reference.md"
-    cli_md.write_text("\n".join(cli_md_lines), encoding="utf-8")
+    cli_md.write_text(
+        _cli_markdown(commands, generated_at=generated_at, sha=sha),
+        encoding="utf-8",
+    )
 
-    openapi_path = generated / "openapi-stub.json"
-    openapi_path.write_text(json.dumps(openapi_stub(), indent=2) + "\n", encoding="utf-8")
+    openapi = research_console_openapi()
+    openapi_path = generated / "openapi.json"
+    openapi_path.write_text(json.dumps(openapi, indent=2) + "\n", encoding="utf-8")
+    # Remove legacy stub filename if present so searches do not find stale copy.
+    legacy_stub = generated / "openapi-stub.json"
+    if legacy_stub.is_file():
+        legacy_stub.unlink()
 
     commands_json = generated / "cli-commands.json"
     commands_json.write_text(
-        json.dumps({"generated_at": _utc_now(), "commands": commands}, indent=2) + "\n",
+        json.dumps(
+            {
+                "generated_at": generated_at,
+                "generated_from_sha": sha,
+                "generator_version": GENERATOR_VERSION,
+                "commands": commands,
+            },
+            indent=2,
+            default=str,
+        )
+        + "\n",
         encoding="utf-8",
     )
+
+    python_api_path = generated / "python-api.md"
+    python_api_path.write_text(_python_api_reference(), encoding="utf-8")
+
+    config_path = generated / "configuration.md"
+    config_path.write_text(_config_reference(), encoding="utf-8")
 
     curated = collect_curated_articles(root)
     curated_path = generated / "curated-articles.json"
     curated_payload = {
-        "generated_at": _utc_now(),
+        "generated_at": generated_at,
+        "generated_from_sha": sha,
+        "generator_version": GENERATOR_VERSION,
         "sections": curated_sections(curated),
-        "articles": [
-            {k: v for k, v in article.items() if k != "path"} for article in curated
-        ],
+        "articles": [{k: v for k, v in article.items() if k != "path"} for article in curated],
     }
     curated_path.write_text(json.dumps(curated_payload, indent=2) + "\n", encoding="utf-8")
 
+    def _gen_article(
+        *,
+        article_id: str,
+        title: str,
+        path: str,
+        order: int,
+        description: str,
+        intro: str,
+        tags: list[str],
+    ) -> dict[str, Any]:
+        return {
+            "id": article_id,
+            "title": title,
+            "path": path,
+            "tags": tags,
+            "source": "generated",
+            "section": "generated",
+            "order": order,
+            "description": description,
+            "blocks": [{"kind": "intro", "text": intro}],
+        }
+
+    path_count = len((openapi.get("paths") or {}))
     manifest_articles: list[dict[str, Any]] = [
-        {
-            "id": "cli-reference",
-            "title": "CLI reference",
-            "path": "docs/generated/cli-reference.md",
-            "tags": ["cli", "generated"],
-            "source": "generated",
-            "section": "generated",
-            "order": 1000,
-            "description": "Generated Typer command reference",
-            "blocks": [
-                {
-                    "kind": "intro",
-                    "text": "Generated CLI reference from the Typer command tree.",
-                }
-            ],
-        },
-        {
-            "id": "openapi-stub",
-            "title": "Dashboard OpenAPI stub",
-            "path": "docs/generated/openapi-stub.json",
-            "tags": ["api", "generated"],
-            "source": "generated",
-            "section": "generated",
-            "order": 1010,
-            "description": "Minimal OpenAPI stub for local dashboard health",
-            "blocks": [
-                {
-                    "kind": "intro",
-                    "text": "Generated OpenAPI stub — not a live platform contract.",
-                }
-            ],
-        },
+        _gen_article(
+            article_id="cli-reference",
+            title="CLI Reference",
+            path="docs/generated/cli-reference.md",
+            order=1000,
+            description="Generated Typer command reference from the live CLI",
+            intro="Generated CLI reference from the live Typer command tree.",
+            tags=["cli", "generated"],
+        ),
+        _gen_article(
+            article_id="backend-api",
+            title="Backend API",
+            path="docs/generated/openapi.json",
+            order=1010,
+            description=f"Research Console OpenAPI ({path_count} paths) from create_app().openapi()",
+            intro=(
+                f"Generated from the live FastAPI Research Console application "
+                f"({path_count} paths). Swagger UI is at /api/dev/docs."
+            ),
+            tags=["api", "generated", "openapi"],
+        ),
+        _gen_article(
+            article_id="python-api",
+            title="Python API",
+            path="docs/generated/python-api.md",
+            order=1020,
+            description="Public project Python entry points",
+            intro="Generated public Python API reference (selected entry points).",
+            tags=["python", "generated"],
+        ),
+        _gen_article(
+            article_id="configuration",
+            title="Configuration",
+            path="docs/generated/configuration.md",
+            order=1030,
+            description="Experiment YAML and supported configuration fields",
+            intro="Generated configuration reference derived from runner/config schemas.",
+            tags=["config", "generated"],
+        ),
     ]
     for article in curated:
         manifest_articles.append(
@@ -352,14 +604,12 @@ def build_docs(repo_root: str | Path | None = None, *, app: Any | None = None) -
             }
         )
 
-    sections = curated_sections(curated) + (
-        [{"id": "generated", "label": "Generated reference"}] if curated else []
-    )
-    if not curated:
-        sections = [{"id": "generated", "label": "Generated reference"}]
+    sections = curated_sections(curated) + [{"id": "generated", "label": "Generated reference"}]
 
     manifest = {
-        "generated_at": _utc_now(),
+        "generated_at": generated_at,
+        "generated_from_sha": sha,
+        "generator_version": GENERATOR_VERSION,
         "schema_version": 1,
         "title": "QuantSilico Everesteer Docs Manifest",
         "sections": sections,
@@ -377,9 +627,14 @@ def build_docs(repo_root: str | Path | None = None, *, app: Any | None = None) -
                 "",
                 "Produced by `qseh docs build` / `qs_everesteer.docs_build.build_docs`.",
                 "",
+                f"- generatedFromSha: `{sha or 'unavailable'}`",
+                f"- generatedAt: `{generated_at}`",
+                f"- generatorVersion: `{GENERATOR_VERSION}`",
                 f"- CLI reference: `{cli_md.name}`",
                 f"- Commands JSON: `{commands_json.name}`",
-                f"- OpenAPI stub: `{openapi_path.name}`",
+                f"- Backend OpenAPI: `{openapi_path.name}` ({path_count} paths)",
+                f"- Python API: `{python_api_path.name}`",
+                f"- Configuration: `{config_path.name}`",
                 f"- Curated articles: `{curated_path.name}` ({len(curated)} MDX)",
                 f"- Frontend manifest: `{manifest_path.relative_to(root).as_posix()}`",
                 "",
@@ -388,10 +643,24 @@ def build_docs(repo_root: str | Path | None = None, *, app: Any | None = None) -
         encoding="utf-8",
     )
 
+    for path in (
+        cli_md,
+        commands_json,
+        openapi_path,
+        python_api_path,
+        config_path,
+        curated_path,
+        manifest_path,
+        index_path,
+    ):
+        _assert_utf8_clean(path)
+
     return {
         "cli_reference": cli_md,
         "commands_json": commands_json,
-        "openapi_stub": openapi_path,
+        "openapi": openapi_path,
+        "python_api": python_api_path,
+        "configuration": config_path,
         "curated_articles": curated_path,
         "docs_manifest": manifest_path,
         "index": index_path,

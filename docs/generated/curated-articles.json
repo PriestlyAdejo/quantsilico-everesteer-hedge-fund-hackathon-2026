@@ -1,5 +1,7 @@
 {
-  "generated_at": "2026-08-12T05:11:44+00:00",
+  "generated_at": "2026-08-12T13:02:08+00:00",
+  "generated_from_sha": "6e8f61695c1d3e55cb5e4ac54133d73b00b858ae",
+  "generator_version": "2",
   "sections": [
     {
       "id": "flows",
@@ -279,48 +281,121 @@
     {
       "id": "dashboard",
       "title": "Dashboard operations",
-      "description": "Start, verify, and recover the local Research Console.",
+      "description": "Start, verify, rebuild, and recover the local Research Console on Windows.",
       "section": "runbooks",
       "order": 20,
       "source": "curated",
       "blocks": [
         {
           "kind": "intro",
-          "text": "The dashboard is optional. CLI research continues if the UI process dies; jobs and research_state survive on the filesystem."
+          "text": "Venue commands for the Research Console. Do not run Activate.ps1 \u2014 use .venv\\Scripts\\qseh.exe and .venv\\Scripts\\python.exe directly."
         },
         {
           "kind": "flow",
           "nodes": [
             {
-              "id": "doctor",
-              "label": "qseh doctor"
+              "id": "diagnose",
+              "label": "dashboard diagnose"
             },
             {
-              "id": "serve",
-              "label": "Start API + UI"
+              "id": "start",
+              "label": "dashboard start"
             },
             {
-              "id": "health",
-              "label": "GET /api/health"
+              "id": "status",
+              "label": "dashboard status"
             },
             {
-              "id": "wire",
-              "label": "Confirm LIVE-WIRED pages"
+              "id": "open",
+              "label": "dashboard open"
             },
             {
               "id": "docs",
-              "label": "qseh docs build"
+              "label": "docs build"
             }
           ]
         },
         {
-          "kind": "callout",
-          "tone": "info",
-          "text": "Production status LIVE-WIRED means ConsoleService + frontend page exist. Demo mode is preview-only and must not replace official event provenance."
+          "kind": "heading",
+          "text": "Start"
         },
         {
           "kind": "command",
-          "command": "qseh docs build"
+          "command": ".\\.venv\\Scripts\\qseh.exe dashboard diagnose"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe dashboard start"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe dashboard status"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe dashboard open"
+        },
+        {
+          "kind": "heading",
+          "text": "Health"
+        },
+        {
+          "kind": "command",
+          "command": "Invoke-RestMethod http://127.0.0.1:8766/api/health | ConvertTo-Json -Depth 10"
+        },
+        {
+          "kind": "heading",
+          "text": "Rebuild frontend"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe dashboard build"
+        },
+        {
+          "kind": "heading",
+          "text": "Restart"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe dashboard stop"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe dashboard start"
+        },
+        {
+          "kind": "heading",
+          "text": "Diagnose failure"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe dashboard diagnose"
+        },
+        {
+          "kind": "heading",
+          "text": "Stop"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe dashboard stop"
+        },
+        {
+          "kind": "heading",
+          "text": "Regenerate documentation"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe docs build"
+        },
+        {
+          "kind": "callout",
+          "tone": "warning",
+          "text": "Do not run Activate.ps1. The project is designed to use .venv\\Scripts\\qseh.exe and .venv\\Scripts\\python.exe directly."
+        },
+        {
+          "kind": "callout",
+          "tone": "info",
+          "text": "SPA Documentation lives at /docs. FastAPI Swagger is at /api/dev/docs so it does not collide with the console Documentation page."
         },
         {
           "kind": "metric",

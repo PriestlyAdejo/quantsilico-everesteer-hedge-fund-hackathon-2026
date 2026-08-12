@@ -1,6 +1,9 @@
 # qseh CLI reference (generated)
 
-Generated at `2026-08-12T05:11:44+00:00`.
+Generated at `2026-08-12T13:02:08+00:00`.
+generatedFromSha: `6e8f61695c1d3e55cb5e4ac54133d73b00b858ae`.
+
+Authoritative source: live Typer command tree (`qseh docs build`).
 
 | Command | Help |
 |---|---|
@@ -47,9 +50,158 @@ Generated at `2026-08-12T05:11:44+00:00`.
 | `qseh autopilot run` | Advance the persisted autopilot workflow (never auto-arms submissions). |
 | `qseh autopilot stop` | Deactivate autopilot without erasing history. |
 | `qseh dashboard` | Local dashboard on 127.0.0.1:8766. |
-| `qseh dashboard start` | Start FastAPI backend via uvicorn on 127.0.0.1:8766. |
-| `qseh dashboard status` | Health / PID status for the local dashboard. |
-| `qseh dashboard open` | Open the dashboard URL in the default browser. |
-| `qseh dashboard stop` | Stop the dashboard process recorded in runs/state/dashboard.pid. |
+| `qseh dashboard start` | Start FastAPI/Uvicorn; success requires live process + /api/health. |
+| `qseh dashboard status` | Authoritative dashboard lifecycle status (single source of truth). |
+| `qseh dashboard stop` | Stop the qseh-owned dashboard process; never kill foreign :8766 owners. |
+| `qseh dashboard open` | Open the dashboard URL only when healthy. |
+| `qseh dashboard diagnose` | Print venue-ready dashboard diagnostics (no secrets). |
+| `qseh dashboard build` | Build the Figma frontend production bundle. |
 | `qseh docs` | Generate docs stubs / frontend manifest. |
 | `qseh docs build` | Write docs/generated/ and dashboard frontend docs-manifest.json. |
+
+## Options and arguments
+
+### `qseh emergency`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--send` | option | `False` | Queue a local alert marker (no secrets). |
+
+### `qseh run`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `config` | argument | `` | YAML experiment config path. |
+| `--sync/--async` | option | `True` | Run via in-process job worker (default) or enqueue only. |
+
+### `qseh race`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--profile` | option | `fast` | Race profile: fast \| standard |
+| `--stage` | option | `R0` | Racing stage R0–R3. |
+
+### `qseh frontier`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--score-key` | option | `score` |  |
+| `--runtime-key` | option | `runtime_seconds` |  |
+
+### `qseh champion`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--set` | option | `` | Promote a candidate id to champion (omit to show current). |
+
+### `qseh event watch`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--interval / -i` | option | `5.0` | Seconds between polls. |
+| `--once` | option | `False` | Single poll then exit. |
+| `--tick-round` | option | `False` | Advance one RoundController cycle (detect→pull→guard→submit path). |
+
+### `qseh event arm-submissions`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--snapshot-id` | option | `` | Event snapshot id required to arm (defaults to latest / state). |
+
+### `qseh event submission-mode`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `mode` | argument | `` | Optional mode to set: DISABLED \| DRY_RUN \| ARMED. Omit to print current. |
+| `--snapshot-id` | option | `` | Required when setting ARMED. |
+
+### `qseh data pull`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--split` | option | `` | Dataset split: train \| validation \| live |
+| `--dest` | option | `` | Destination file or directory (default: data/<split>.parquet). |
+
+### `qseh data audit`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `path` | argument | `` | Dataset path (default: synthetic train.parquet). |
+
+### `qseh data fingerprint`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `path` | argument | `` | Dataset path (default: synthetic train.parquet). |
+
+### `qseh baseline scorer-parity`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--expected` | option | `` | Expected prediction column/file. |
+| `--observed` | option | `` | Observed prediction column/file. |
+| `--column` | option | `prediction` |  |
+
+### `qseh baseline reproduce`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--data` | option | `` | Training parquet (default: synthetic train). |
+
+### `qseh ensemble build`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--strategy` | option | `rank_average` | rank_average\|greedy_forward |
+| `--out` | option | `` | Blend manifest path. |
+
+### `qseh submit check`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--predictions` | option | `` |  |
+| `--lane` | option | `practice` |  |
+| `--candidate` | option | `champion` |  |
+| `--round` | option | `` |  |
+
+### `qseh submit practice`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--predictions` | option | `` |  |
+| `--candidate` | option | `champion` |  |
+| `--round` | option | `` |  |
+
+### `qseh submit live`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--predictions` | option | `` |  |
+| `--candidate` | option | `champion` |  |
+| `--round` | option | `` |  |
+
+### `qseh stake recommend`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--profile` | option | `aggressive` |  |
+
+### `qseh autopilot run`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--profile` | option | `competition-aggressive` | Autopilot profile name. |
+| `--max-steps` | option | `` | Optional step cap (default: run until COMPLETE). |
+
+### `qseh dashboard open`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--start` | option | `False` | Start the dashboard first if it is not healthy. |
+
+### `qseh dashboard build`
+
+| Name | Kind | Default | Help |
+|---|---|---|---|
+| `--clean` | option | `False` | Force pnpm install --frozen-lockfile before build. |
+

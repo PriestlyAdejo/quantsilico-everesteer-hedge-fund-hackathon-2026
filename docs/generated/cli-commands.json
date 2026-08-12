@@ -1,201 +1,595 @@
 {
-  "generated_at": "2026-08-12T05:11:44+00:00",
+  "generated_at": "2026-08-12T13:02:08+00:00",
+  "generated_from_sha": "6e8f61695c1d3e55cb5e4ac54133d73b00b858ae",
+  "generator_version": "2",
   "commands": [
     {
       "command": "qseh doctor",
-      "help": "Check Python, everestapi, disk, optional GPU, and repo paths."
+      "help": "Check Python, everestapi, disk, optional GPU, and repo paths.",
+      "params": []
     },
     {
       "command": "qseh rehearsal",
-      "help": "Synthetic end-to-end rehearsal (works without dashboard/LLM)."
+      "help": "Synthetic end-to-end rehearsal (works without dashboard/LLM).",
+      "params": []
     },
     {
       "command": "qseh emergency",
-      "help": "Disarm submissions, stop autopilot, snapshot event."
+      "help": "Disarm submissions, stop autopilot, snapshot event.",
+      "params": [
+        {
+          "name": "send",
+          "cli": "--send",
+          "help": "Queue a local alert marker (no secrets).",
+          "default": false,
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh run",
-      "help": "Run a persisted temporal experiment from a YAML config."
+      "help": "Run a persisted temporal experiment from a YAML config.",
+      "params": [
+        {
+          "name": "config",
+          "cli": "config",
+          "help": "YAML experiment config path.",
+          "default": null,
+          "required": true,
+          "kind": "argument"
+        },
+        {
+          "name": "sync",
+          "cli": "--sync/--async",
+          "help": "Run via in-process job worker (default) or enqueue only.",
+          "default": true,
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh race",
-      "help": "Successive-halving race over known experiment candidates."
+      "help": "Successive-halving race over known experiment candidates.",
+      "params": [
+        {
+          "name": "profile",
+          "cli": "--profile",
+          "help": "Race profile: fast | standard",
+          "default": "fast",
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "stage",
+          "cli": "--stage",
+          "help": "Racing stage R0\u2013R3.",
+          "default": "R0",
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh compare",
-      "help": "Compare experiment run metrics under runs/experiments/."
+      "help": "Compare experiment run metrics under runs/experiments/.",
+      "params": []
     },
     {
       "command": "qseh frontier",
-      "help": "Compute Pareto frontier (max score, min runtime)."
+      "help": "Compute Pareto frontier (max score, min runtime).",
+      "params": [
+        {
+          "name": "score_key",
+          "cli": "--score-key",
+          "help": "",
+          "default": "score",
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "runtime_key",
+          "cli": "--runtime-key",
+          "help": "",
+          "default": "runtime_seconds",
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh champion",
-      "help": "Show or set the research champion candidate."
+      "help": "Show or set the research champion candidate.",
+      "params": [
+        {
+          "name": "candidate",
+          "cli": "--set",
+          "help": "Promote a candidate id to champion (omit to show current).",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh submissions",
-      "help": "List local submission artefacts / idempotency ledger entries."
+      "help": "List local submission artefacts / idempotency ledger entries.",
+      "params": []
     },
     {
       "command": "qseh leaderboard",
-      "help": "Fetch official leaderboard when available (never invent ranks)."
+      "help": "Fetch official leaderboard when available (never invent ranks).",
+      "params": []
     },
     {
       "command": "qseh standings",
-      "help": "Fetch diagnostics standings when available."
+      "help": "Fetch diagnostics standings when available.",
+      "params": []
     },
     {
       "command": "qseh sdk",
-      "help": "everestapi SDK inspection."
+      "help": "everestapi SDK inspection.",
+      "params": []
     },
     {
       "command": "qseh sdk info",
-      "help": "Show installed everestapi version and adapter fingerprint (never the key)."
+      "help": "Show installed everestapi version and adapter fingerprint (never the key).",
+      "params": []
     },
     {
       "command": "qseh sdk check",
-      "help": "Probe SDK client connectivity / capability discovery."
+      "help": "Probe SDK client connectivity / capability discovery.",
+      "params": []
     },
     {
       "command": "qseh event",
-      "help": "Event control and submission arming."
+      "help": "Event control and submission arming.",
+      "params": []
     },
     {
       "command": "qseh event inspect",
-      "help": "Capability-detecting event inspection (never invents quotas/standings)."
+      "help": "Capability-detecting event inspection (never invents quotas/standings).",
+      "params": []
     },
     {
       "command": "qseh event watch",
-      "help": "Poll current round / deadline using server-observed time when available."
+      "help": "Poll current round / deadline using server-observed time when available.",
+      "params": [
+        {
+          "name": "interval",
+          "cli": "--interval / -i",
+          "help": "Seconds between polls.",
+          "default": 5.0,
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "once",
+          "cli": "--once",
+          "help": "Single poll then exit.",
+          "default": false,
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "tick_round",
+          "cli": "--tick-round",
+          "help": "Advance one RoundController cycle (detect\u2192pull\u2192guard\u2192submit path).",
+          "default": false,
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh event snapshot",
-      "help": "Write an event capability snapshot under runs/event/."
+      "help": "Write an event capability snapshot under runs/event/.",
+      "params": []
     },
     {
       "command": "qseh event arm-submissions",
-      "help": "Explicitly arm real uploads (requires a current event snapshot id)."
+      "help": "Explicitly arm real uploads (requires a current event snapshot id).",
+      "params": [
+        {
+          "name": "snapshot_id",
+          "cli": "--snapshot-id",
+          "help": "Event snapshot id required to arm (defaults to latest / state).",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh event disarm-submissions",
-      "help": "Return to DRY_RUN (safe default)."
+      "help": "Return to DRY_RUN (safe default).",
+      "params": []
     },
     {
       "command": "qseh event submission-mode",
-      "help": "Show or set submission operating mode."
+      "help": "Show or set submission operating mode.",
+      "params": [
+        {
+          "name": "mode",
+          "cli": "mode",
+          "help": "Optional mode to set: DISABLED | DRY_RUN | ARMED. Omit to print current.",
+          "default": null,
+          "required": false,
+          "kind": "argument"
+        },
+        {
+          "name": "snapshot_id",
+          "cli": "--snapshot-id",
+          "help": "Required when setting ARMED.",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh data",
-      "help": "Dataset pull, audit, and fingerprinting."
+      "help": "Dataset pull, audit, and fingerprinting.",
+      "params": []
     },
     {
       "command": "qseh data pull",
-      "help": "Pull a split; uses synthetic fixtures when creds missing or QSEH_SYNTHETIC=1."
+      "help": "Pull a split; uses synthetic fixtures when creds missing or QSEH_SYNTHETIC=1.",
+      "params": [
+        {
+          "name": "split",
+          "cli": "--split",
+          "help": "Dataset split: train | validation | live",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "dest",
+          "cli": "--dest",
+          "help": "Destination file or directory (default: data/<split>.parquet).",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh data audit",
-      "help": "Run structural integrity audit on a Parquet/CSV dataset."
+      "help": "Run structural integrity audit on a Parquet/CSV dataset.",
+      "params": [
+        {
+          "name": "path",
+          "cli": "path",
+          "help": "Dataset path (default: synthetic train.parquet).",
+          "default": null,
+          "required": false,
+          "kind": "argument"
+        }
+      ]
     },
     {
       "command": "qseh data fingerprint",
-      "help": "Content + schema fingerprint for a dataset file."
+      "help": "Content + schema fingerprint for a dataset file.",
+      "params": [
+        {
+          "name": "path",
+          "cli": "path",
+          "help": "Dataset path (default: synthetic train.parquet).",
+          "default": null,
+          "required": false,
+          "kind": "argument"
+        }
+      ]
     },
     {
       "command": "qseh baseline",
-      "help": "Baseline / scorer tooling."
+      "help": "Baseline / scorer tooling.",
+      "params": []
     },
     {
       "command": "qseh baseline scorer-parity",
-      "help": "Compare expected vs observed predictions; list official scorer availability."
+      "help": "Compare expected vs observed predictions; list official scorer availability.",
+      "params": [
+        {
+          "name": "expected",
+          "cli": "--expected",
+          "help": "Expected prediction column/file.",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "observed",
+          "cli": "--observed",
+          "help": "Observed prediction column/file.",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "column",
+          "cli": "--column",
+          "help": "",
+          "default": "prediction",
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh baseline reproduce",
-      "help": "Fit the independent reference_lgbm baseline."
+      "help": "Fit the independent reference_lgbm baseline.",
+      "params": [
+        {
+          "name": "data_path",
+          "cli": "--data",
+          "help": "Training parquet (default: synthetic train).",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh ensemble",
-      "help": "Ensemble blending."
+      "help": "Ensemble blending.",
+      "params": []
     },
     {
       "command": "qseh ensemble build",
-      "help": "Build a blend from available experiment OOF predictions."
+      "help": "Build a blend from available experiment OOF predictions.",
+      "params": [
+        {
+          "name": "strategy",
+          "cli": "--strategy",
+          "help": "rank_average|greedy_forward",
+          "default": "rank_average",
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "out",
+          "cli": "--out",
+          "help": "Blend manifest path.",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh ensemble compare",
-      "help": "List persisted blend manifests under artifacts/ensembles/."
+      "help": "List persisted blend manifests under artifacts/ensembles/.",
+      "params": []
     },
     {
       "command": "qseh submit",
-      "help": "Submission guard and upload pipeline."
+      "help": "Submission guard and upload pipeline.",
+      "params": []
     },
     {
       "command": "qseh submit check",
-      "help": "Run SubmissionGuard without uploading."
+      "help": "Run SubmissionGuard without uploading.",
+      "params": [
+        {
+          "name": "predictions",
+          "cli": "--predictions",
+          "help": "",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "lane",
+          "cli": "--lane",
+          "help": "",
+          "default": "practice",
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "candidate",
+          "cli": "--candidate",
+          "help": "",
+          "default": "champion",
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "round_id",
+          "cli": "--round",
+          "help": "",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh submit practice",
-      "help": "Practice/diagnostics submit respecting DISABLED/DRY_RUN/ARMED."
+      "help": "Practice/diagnostics submit respecting DISABLED/DRY_RUN/ARMED.",
+      "params": [
+        {
+          "name": "predictions",
+          "cli": "--predictions",
+          "help": "",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "candidate",
+          "cli": "--candidate",
+          "help": "",
+          "default": "champion",
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "round_id",
+          "cli": "--round",
+          "help": "",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh submit live",
-      "help": "Live event submit respecting DISABLED/DRY_RUN/ARMED (+ guard)."
+      "help": "Live event submit respecting DISABLED/DRY_RUN/ARMED (+ guard).",
+      "params": [
+        {
+          "name": "predictions",
+          "cli": "--predictions",
+          "help": "",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "candidate",
+          "cli": "--candidate",
+          "help": "",
+          "default": "champion",
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "round_id",
+          "cli": "--round",
+          "help": "",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh stake",
-      "help": "Stake classification (no real transfers)."
+      "help": "Stake classification (no real transfers).",
+      "params": []
     },
     {
       "command": "qseh stake status",
-      "help": "Classify current stake mode from event capabilities (never invent balances)."
+      "help": "Classify current stake mode from event capabilities (never invent balances).",
+      "params": []
     },
     {
       "command": "qseh stake recommend",
-      "help": "Recommend allocations. Real-money modes always require human action."
+      "help": "Recommend allocations. Real-money modes always require human action.",
+      "params": [
+        {
+          "name": "risk_profile",
+          "cli": "--profile",
+          "help": "",
+          "default": "aggressive",
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh autopilot",
-      "help": "Deterministic competition autopilot (no LLM)."
+      "help": "Deterministic competition autopilot (no LLM).",
+      "params": []
     },
     {
       "command": "qseh autopilot status",
-      "help": "Show autopilot stage / history from research state."
+      "help": "Show autopilot stage / history from research state.",
+      "params": []
     },
     {
       "command": "qseh autopilot run",
-      "help": "Advance the persisted autopilot workflow (never auto-arms submissions)."
+      "help": "Advance the persisted autopilot workflow (never auto-arms submissions).",
+      "params": [
+        {
+          "name": "profile",
+          "cli": "--profile",
+          "help": "Autopilot profile name.",
+          "default": "competition-aggressive",
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "max_steps",
+          "cli": "--max-steps",
+          "help": "Optional step cap (default: run until COMPLETE).",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh autopilot stop",
-      "help": "Deactivate autopilot without erasing history."
+      "help": "Deactivate autopilot without erasing history.",
+      "params": []
     },
     {
       "command": "qseh dashboard",
-      "help": "Local dashboard on 127.0.0.1:8766."
+      "help": "Local dashboard on 127.0.0.1:8766.",
+      "params": []
     },
     {
       "command": "qseh dashboard start",
-      "help": "Start FastAPI backend via uvicorn on 127.0.0.1:8766."
+      "help": "Start FastAPI/Uvicorn; success requires live process + /api/health.",
+      "params": []
     },
     {
       "command": "qseh dashboard status",
-      "help": "Health / PID status for the local dashboard."
-    },
-    {
-      "command": "qseh dashboard open",
-      "help": "Open the dashboard URL in the default browser."
+      "help": "Authoritative dashboard lifecycle status (single source of truth).",
+      "params": []
     },
     {
       "command": "qseh dashboard stop",
-      "help": "Stop the dashboard process recorded in runs/state/dashboard.pid."
+      "help": "Stop the qseh-owned dashboard process; never kill foreign :8766 owners.",
+      "params": []
+    },
+    {
+      "command": "qseh dashboard open",
+      "help": "Open the dashboard URL only when healthy.",
+      "params": [
+        {
+          "name": "start",
+          "cli": "--start",
+          "help": "Start the dashboard first if it is not healthy.",
+          "default": false,
+          "required": false,
+          "kind": "option"
+        }
+      ]
+    },
+    {
+      "command": "qseh dashboard diagnose",
+      "help": "Print venue-ready dashboard diagnostics (no secrets).",
+      "params": []
+    },
+    {
+      "command": "qseh dashboard build",
+      "help": "Build the Figma frontend production bundle.",
+      "params": [
+        {
+          "name": "clean",
+          "cli": "--clean",
+          "help": "Force pnpm install --frozen-lockfile before build.",
+          "default": false,
+          "required": false,
+          "kind": "option"
+        }
+      ]
     },
     {
       "command": "qseh docs",
-      "help": "Generate docs stubs / frontend manifest."
+      "help": "Generate docs stubs / frontend manifest.",
+      "params": []
     },
     {
       "command": "qseh docs build",
-      "help": "Write docs/generated/ and dashboard frontend docs-manifest.json."
+      "help": "Write docs/generated/ and dashboard frontend docs-manifest.json.",
+      "params": []
     }
   ]
 }

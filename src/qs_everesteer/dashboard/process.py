@@ -73,6 +73,21 @@ def _python_executable(root: Path) -> Path:
     return Path(sys.executable)
 
 
+def _pnpm_executable() -> str:
+    """Resolve pnpm for subprocess (Windows needs pnpm.cmd, not the .ps1 shim)."""
+    import shutil
+
+    if sys.platform.startswith("win"):
+        for name in ("pnpm.cmd", "pnpm.exe"):
+            found = shutil.which(name)
+            if found:
+                return found
+    found = shutil.which("pnpm")
+    if found:
+        return found
+    return "pnpm"
+
+
 def _git_sha(root: Path) -> str | None:
     try:
         out = subprocess.check_output(  # noqa: S603
@@ -535,11 +550,28 @@ class DashboardProcessManager:
             uvicorn_ok = True
         except ImportError as exc:
             app_import_error = str(exc)
-        try:
-            from dashboard.backend.app.main import app as _app  # noqa: F401
 
-            app_import_ok = True
-        except Exception as exc:  # noqa: BLE001 — diagnose must surface any import failure
+        # Import the app the same way uvicorn does: subprocess from repo root.
+        try:
+            probe = subprocess.run(  # noqa: S603
+                [
+                    str(py),
+                    "-c",
+                    "import dashboard.backend.app.main as m; assert m.app is not None",
+                ],
+                cwd=str(self.root),
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+            )
+            if probe.returncode == 0:
+                app_import_ok = True
+                app_import_error = None
+            else:
+                err = (probe.stderr or probe.stdout or "").strip()
+                app_import_error = err[-2000:] if err else f"exit {probe.returncode}"
+        except (OSError, subprocess.TimeoutExpired) as exc:
             app_import_error = f"{type(exc).__name__}: {exc}"
 
         status = self.classify()
@@ -577,6 +609,7 @@ class DashboardProcessManager:
         node_modules = frontend / "node_modules"
         need_install = clean or not node_modules.is_dir()
         steps: list[str] = []
+        pnpm = _pnpm_executable()
 
         def _run(args: list[str]) -> subprocess.CompletedProcess[str]:
             return subprocess.run(  # noqa: S603
@@ -588,8 +621,8 @@ class DashboardProcessManager:
             )
 
         if need_install:
-            steps.append("pnpm install --frozen-lockfile")
-            install = _run(["pnpm", "install", "--frozen-lockfile"])
+            steps.append(f"{pnpm} install --frozen-lockfile")
+            install = _run([pnpm, "install", "--frozen-lockfile"])
             if install.returncode != 0:
                 return {
                     "ok": False,
@@ -600,8 +633,8 @@ class DashboardProcessManager:
                     "exit_code": install.returncode,
                 }
 
-        steps.append("pnpm run build")
-        build = _run(["pnpm", "run", "build"])
+        steps.append(f"{pnpm} run build")
+        build = _run([pnpm, "run", "build"])
         if build.returncode != 0:
             return {
                 "ok": False,

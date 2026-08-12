@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import platform
 from datetime import UTC, datetime
@@ -68,6 +69,7 @@ from qs_everesteer.api_schemas.pages import (
     OverviewAction,
     OverviewRecommendation,
     RepoCheckResult,
+    RepoCommit,
     RoundEmergency,
     RoundEventLogEntry,
     RoundHeatmapCell,
@@ -77,7 +79,15 @@ from qs_everesteer.api_schemas.pages import (
     ValidationRaceDecision,
 )
 from qs_everesteer.docs_build import collect_curated_articles, curated_sections
+from qs_everesteer.gitmeta import (
+    git_branch,
+    git_head_sha,
+    git_is_dirty,
+    git_latest_commits,
+)
+from qs_everesteer.hardware.probe import probe_hardware
 from qs_everesteer.jobs.queue import list_jobs
+from qs_everesteer.ops_status import as_check_result, read_ops_status
 from qs_everesteer.staking.classify import classify_staking
 from qs_everesteer.state.research import load_research_state
 
@@ -845,11 +855,19 @@ class ConsoleService:
         vm = psutil.virtual_memory()
         disk = psutil.disk_usage(str(self.repo_root))
         jobs = self._jobs(self.repo_root)
+        hw = probe_hardware()
+        vram_util = None
+        if (
+            hw.gpu_vram_total_gb is not None
+            and hw.gpu_vram_total_gb > 0
+            and hw.gpu_vram_used_gb is not None
+        ):
+            vram_util = round(100.0 * hw.gpu_vram_used_gb / hw.gpu_vram_total_gb, 1)
         data = ComputeData(
             hardware=ComputeHardware(
-                os=platform.platform(),
+                os=hw.os_label,
                 cpu=ComputeCpu(
-                    model=platform.processor() or None,
+                    model=hw.cpu_model,
                     cores=psutil.cpu_count(),
                     used_pct=psutil.cpu_percent(interval=None),
                 ),
@@ -858,7 +876,10 @@ class ConsoleService:
                     total_gb=round(vm.total / 2**30, 2),
                 ),
                 gpu=ComputeGpu(
-                    name=None, vram_used_gb=None, vram_total_gb=None, cuda=None
+                    name=hw.gpu_name,
+                    vram_used_gb=hw.gpu_vram_used_gb,
+                    vram_total_gb=hw.gpu_vram_total_gb,
+                    cuda=hw.cuda,
                 ),
                 disk=ComputeDisk(
                     used_gb=round(disk.used / 2**30, 2),
@@ -866,8 +887,8 @@ class ConsoleService:
                 ),
             ),
             utilisation=ComputeUtilisation(
-                gpu_util_pct=None,
-                vram_util_pct=None,
+                gpu_util_pct=hw.gpu_util_pct,
+                vram_util_pct=vram_util,
                 ram_pressure_pct=vm.percent,
                 queue_length=sum(job["status"] == "QUEUED" for job in jobs),
                 experiments_per_hour=None,
@@ -884,37 +905,60 @@ class ConsoleService:
             "compute",
             data,
             provenance=Provenance.LOCAL_EXPERIMENT,
-            source="Local host and filesystem job queue",
+            source="Local host hardware probe and filesystem job queue",
         )
 
     def repository(self) -> DataEnvelope[RepoData]:
-        unknown = RepoCheckResult(status="unknown", at=None, detail="No persisted result")
+        branch = git_branch(self.repo_root)
+        sha = git_head_sha(self.repo_root)
+        dirty = git_is_dirty(self.repo_root) if sha else False
+        commits = git_latest_commits(self.repo_root)
+        last_tests = RepoCheckResult(**as_check_result(read_ops_status("last_tests.json", self.repo_root)))
+        last_rehearsal = RepoCheckResult(
+            **as_check_result(read_ops_status("last_rehearsal.json", self.repo_root))
+        )
+        last_scorer = RepoCheckResult(
+            **as_check_result(read_ops_status("last_scorer_parity.json", self.repo_root))
+        )
+        doctor = read_ops_status("last_doctor.json", self.repo_root)
+        if doctor and doctor.get("status") == "passing":
+            env_health: str = "healthy"
+        elif doctor and doctor.get("status") == "failing":
+            env_health = "degraded"
+        else:
+            env_health = "unknown"
+
+        lock_hash = self._lockfile_hash()
         data = RepoData(
-            serving_branch=None,
-            serving_sha=None,
-            dirty=False,
+            serving_branch=branch,
+            serving_sha=sha,
+            dirty=dirty,
             python_version=platform.python_version(),
             everest_api_pin="everestapi==0.3.22",
-            lockfile_hash=None,
-            frontend_build_sha=None,
-            backend_build_sha=None,
-            last_tests=unknown,
-            last_rehearsal=unknown,
-            last_scorer_parity=unknown,
-            env_health="unknown",
-            latest_commits=[],
+            lockfile_hash=lock_hash,
+            frontend_build_sha=self._frontend_build_sha(),
+            backend_build_sha=self._backend_build_sha(),
+            last_tests=last_tests,
+            last_rehearsal=last_rehearsal,
+            last_scorer_parity=last_scorer,
+            env_health=env_health,  # type: ignore[arg-type]
+            latest_commits=[
+                RepoCommit(sha=c["sha"], msg=c["msg"], author=c["author"], ts=c["ts"])
+                for c in commits
+            ],
             updated_at=utc_now(),
         )
         return self.envelope(
             "repository",
             data,
-            provenance=Provenance.MANUALLY_RECORDED,
-            source="Repository metadata unavailable without invoking git",
+            provenance=Provenance.LOCAL_EXPERIMENT,
+            source="Read-only local git metadata and persisted ops status",
         )
 
     def documentation(self) -> DataEnvelope[DocumentationData]:
         articles: list[DocArticle] = []
         generated_at = None
+        generated_from_sha = None
         sections: list[DocSection] = []
 
         curated = collect_curated_articles(self.repo_root)
@@ -940,6 +984,7 @@ class ConsoleService:
                 try:
                     payload = json.loads(path.read_text(encoding="utf-8"))
                     generated_at = payload.get("generated_at") or generated_at
+                    generated_from_sha = payload.get("generated_from_sha") or generated_from_sha
                 except (OSError, ValueError, TypeError):
                     pass
 
@@ -947,6 +992,7 @@ class ConsoleService:
             try:
                 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
                 generated_at = manifest.get("generated_at") or generated_at
+                generated_from_sha = manifest.get("generated_from_sha") or generated_from_sha
                 existing_ids = {article.id for article in articles}
                 for index, item in enumerate(manifest.get("articles", [])):
                     article_id = str(item.get("id"))
@@ -994,7 +1040,7 @@ class ConsoleService:
                 sections.append(DocSection(id="generated", label="Generated reference"))
 
         data = DocumentationData(
-            generated_from_sha=None,
+            generated_from_sha=generated_from_sha,
             generated_at=generated_at,
             sections=sections,
             articles=articles,
@@ -1002,10 +1048,29 @@ class ConsoleService:
         return self.envelope(
             "documentation",
             data,
-            provenance=Provenance.MANUALLY_RECORDED,
+            provenance=Provenance.LOCAL_EXPERIMENT,
             source="Curated MDX flows/runbooks + generated documentation manifest",
             refresh_mode="manual",
         )
+
+    def _frontend_build_sha(self) -> str | None:
+        index = self.repo_root / "dashboard" / "frontend" / "dist" / "index.html"
+        if not index.is_file():
+            return None
+        return hashlib.sha256(index.read_bytes()).hexdigest()[:16]
+
+    def _backend_build_sha(self) -> str | None:
+        main = self.repo_root / "dashboard" / "backend" / "app" / "main.py"
+        if not main.is_file():
+            return None
+        return hashlib.sha256(main.read_bytes()).hexdigest()[:16]
+
+    def _lockfile_hash(self) -> str | None:
+        for name in ("uv.lock", "pnpm-lock.yaml", "package-lock.json"):
+            path = self.repo_root / name
+            if path.is_file():
+                return hashlib.sha256(path.read_bytes()).hexdigest()[:16]
+        return None
 
     @staticmethod
     def _format_countdown(seconds: Any) -> str | None:

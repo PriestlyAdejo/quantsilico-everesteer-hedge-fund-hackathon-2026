@@ -35,6 +35,15 @@ def baseline_scorer_parity(
         payload["parity"] = None
         payload["note"] = "pass --expected and --observed parquet/csv to run numeric parity"
         print_json(payload)
+        from qs_everesteer.ops_status import write_ops_status
+
+        write_ops_status(
+            "last_scorer_parity.json",
+            status="passing",
+            detail="official scorer inventory only (no numeric parity inputs)",
+            repo_root=repo_root(),
+            extra={"official_scorers": available},
+        )
         return
 
     def _load(path: Path):
@@ -56,6 +65,15 @@ def baseline_scorer_parity(
     )
     payload["parity"] = parity
     print_json(payload)
+    from qs_everesteer.ops_status import write_ops_status
+
+    write_ops_status(
+        "last_scorer_parity.json",
+        status="passing" if parity.get("ok") else "failing",
+        detail=str(parity.get("detail") or parity.get("message") or "scorer-parity completed"),
+        repo_root=repo_root(),
+        extra={"parity": parity},
+    )
     if not parity.get("ok"):
         raise typer.Exit(code=1)
 
