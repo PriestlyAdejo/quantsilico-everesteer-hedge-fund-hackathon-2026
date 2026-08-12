@@ -1,0 +1,12 @@
+experiment:
+  name: random_forest
+  family: random_forest
+  stage: auto
+features:
+  selector: all
+validation:
+  profile: fast_then_race
+prediction:
+  postprocess: auto
+model:
+  parameters: {}

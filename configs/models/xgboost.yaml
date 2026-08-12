@@ -1,0 +1,12 @@
+experiment:
+  name: xgboost
+  family: xgboost
+  stage: auto
+features:
+  selector: all
+validation:
+  profile: fast_then_race
+prediction:
+  postprocess: auto
+model:
+  parameters: {}

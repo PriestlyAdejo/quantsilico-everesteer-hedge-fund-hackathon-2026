@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "quantsilico-everesteer-hackathon-2026"
+version = "0.1.0"
+description = "Independent Everesteer London 2026 competition research tooling"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "everestapi[scoring]==0.3.22",
+  "numpy>=2",
+  "pandas>=2.2",
+  "pyarrow>=17",
+  "scipy>=1.13",
+  "scikit-learn>=1.5",
+  "lightgbm>=4.5",
+  "xgboost>=2.1",
+  "pydantic>=2.8",
+  "typer>=0.12",
+  "rich>=13.7",
+  "pyyaml>=6",
+  "psutil>=6",
+  "joblib>=1.4",
+  "duckdb>=1.1",
+]
+
+[project.optional-dependencies]
+dashboard = ["fastapi>=0.115", "uvicorn[standard]>=0.30"]
+dev = ["pytest>=8.3", "ruff>=0.6"]
+
+[project.scripts]
+qseh = "qs_everesteer.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/qs_everesteer"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

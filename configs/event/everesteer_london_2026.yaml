@@ -1,0 +1,34 @@
+event:
+  name: Everesteer Hedge Fund Hackathon London 2026
+  date: 2026-08-13
+  timezone: Europe/London
+  tournament: futures
+  universe: futures
+  target: auto
+
+sdk:
+  pinned_version: "0.3.22"
+  snapshot_runtime_version: true
+  update_only_after_contract_tests: true
+
+capability_discovery:
+  whoami: true
+  get_started: true
+  explain_scoring: true
+  event_staking: true
+  dataset_info: true
+  standings: true
+  server_compute: probe
+
+submission:
+  dry_run_default: true
+  public_model_names: opaque
+  reserve_for_live_fraction: 0.60
+  emergency_reserve_slots: 1
+  account_cap: auto
+
+staking:
+  mode: auto
+  virtual_event_autopilot: true
+  real_money_requires_human: true
+  risk_profile: aggressive
