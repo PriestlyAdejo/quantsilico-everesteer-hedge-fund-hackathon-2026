@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 import psutil
+from everestapi import EverestError
 
 from qs_everesteer.event.adapter import EveresteerAdapter
 from qs_everesteer.fsutil import atomic_write_json, read_json
@@ -114,6 +115,7 @@ class AdaptiveCompetitionController:
             "staking": staking,
             "policy": asdict(self.policy),
             "validation_attempts": previous.get("validation_attempts", {}),
+            "live_rejections": previous.get("live_rejections", {}),
         }
         atomic_write_json(self.state_path, payload)
 
@@ -338,6 +340,7 @@ class AdaptiveCompetitionController:
             str(row.get("model_id")) for row in snapshot["submissions"]
             if str(row.get("round")) == snapshot["round"] and row.get("accepted")
         }
+        rejected = set((snapshot.get("live_rejections") or {}).get(snapshot["round"], {}))
         slots_left = max(0, self.policy.max_live_models_per_round - len(submitted))
         if slots_left == 0:
             return []
@@ -348,19 +351,42 @@ class AdaptiveCompetitionController:
         for row in snapshot["frontier"]:
             if len(actions) >= slots_left:
                 break
-            if row.get("official_round_score") is None or row["public_alias"] in submitted:
+            if (
+                row.get("official_round_score") is None
+                or row["public_alias"] in submitted
+                or row["public_alias"] in rejected
+            ):
                 continue
             remote_id = self._ensure_remote(row)
             out = self.root / "artifacts" / "predictions" / f"{row['id']}-{snapshot['round']}.parquet"
             inferred = infer_candidate(
                 self.root, candidate_id=row["id"], data_path=live_path, output_path=out
             )
-            response = self.client.submit_event_predictions(
-                remote_id, str(out), tournament="futures", target="target_everest_20",
-                model_pkl=str(self._model_pkl(row["id"])),
-                model_pkl_python_version=f"{sys.version_info.major}.{sys.version_info.minor}",
-                client_label=row["public_alias"], wait=False,
-            )
+            try:
+                response = self.client.submit_event_predictions(
+                    remote_id, str(out), tournament="futures", target="target_everest_20",
+                    model_pkl=str(self._model_pkl(row["id"])),
+                    model_pkl_python_version=f"{sys.version_info.major}.{sys.version_info.minor}",
+                    client_label=row["public_alias"], wait=False,
+                )
+            except EverestError as exc:
+                if exc.status_code != 409 or "already filed" not in str(exc.detail):
+                    raise
+                state = read_json(self.state_path)
+                round_rejections = state.setdefault("live_rejections", {}).setdefault(
+                    snapshot["round"], {}
+                )
+                round_rejections[row["public_alias"]] = {
+                    "candidate_id": row["id"], "reason": "duplicate_predictions",
+                    "detail": str(exc.detail), "recorded_at": datetime.now(UTC).isoformat(),
+                }
+                atomic_write_json(self.state_path, state)
+                rejected.add(row["public_alias"])
+                actions.append({
+                    "type": "LIVE_REJECTED_DUPLICATE", "round": snapshot["round"],
+                    "candidate": row["id"], "detail": str(exc.detail),
+                })
+                continue
             actions.append({"type": "LIVE_SUBMIT", "round": snapshot["round"],
                             "candidate": row["id"], "inference": inferred,
                             "response": response})
