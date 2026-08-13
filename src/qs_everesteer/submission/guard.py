@@ -7,6 +7,7 @@ from enum import StrEnum
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import pandas as pd
 
 from qs_everesteer.data.fingerprint import file_sha256
@@ -55,7 +56,9 @@ class SubmissionContext:
     candidate_id: str | None = None
     predictions_path: str | Path | None = None
     expected_ids: list[str] | set[str] | None = None
-    prediction_bounds: tuple[float, float] = (0.0, 1.0)
+    # Compatibility-only input. Range preferences are model-quality policy,
+    # not universal submission-integrity requirements.
+    prediction_bounds: tuple[float, float] | None = None
     artefact_path: str | Path | None = None
     quota_remaining: int | None = None
     quota_known: bool = False
@@ -176,7 +179,7 @@ class SubmissionGuard:
             else:
                 add("model_artefact", True, art.name)
 
-        # ID coverage + duplicates + bounds
+        # ID coverage + duplicates + finite numeric predictions
         if df is not None:
             id_col = "id" if "id" in df.columns else None
             pred_col = "prediction" if "prediction" in df.columns else None
@@ -210,18 +213,19 @@ class SubmissionGuard:
                 else:
                     add("id_coverage", True, f"ids={len(ids)} (no expected set provided)")
 
-                lo, hi = ctx.prediction_bounds
                 series = pd.to_numeric(df[pred_col], errors="coerce")
-                if series.isna().any():
-                    add("bounds", False, "non-numeric or null predictions present")
-                elif bool((series < lo).any() or (series > hi).any()):
+                if series.isna().any() or not bool(np.isfinite(series.to_numpy()).all()):
                     add(
-                        "bounds",
+                        "predictions_finite",
                         False,
-                        f"predictions outside bounds [{lo}, {hi}]",
+                        "non-numeric, null, or non-finite predictions present",
                     )
                 else:
-                    add("bounds", True, f"within [{lo}, {hi}]")
+                    add(
+                        "predictions_finite",
+                        True,
+                        "all predictions are finite numeric values",
+                    )
 
         # Quota — UNKNOWN is not zero; block ARMED when unknown; allow DRY_RUN optionally
         if not ctx.quota_known or ctx.quota_remaining is None:

@@ -46,6 +46,7 @@ class EventCapabilities:
     live_available: bool | None = None
     standings_available: bool | None = None
     staking_available: bool | None = None
+    final_selection_available: bool | None = None
     server_compute_available: bool | None = None
     submission_cap: int | None = None
     current_round: str | None = None

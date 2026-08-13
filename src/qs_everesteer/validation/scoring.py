@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib
+import inspect
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
@@ -39,13 +40,53 @@ def official_scorers() -> dict[str, Callable[..., Any]]:
     return found
 
 
-def score_with_official_engine(metric: str, *args, **kwargs) -> ScoreResult:
-    """Call the installed organiser scorer; never substitute silently."""
+def score_with_official_engine(
+    metric: str,
+    *,
+    predictions: Any,
+    target: Any,
+    features: Any | None = None,
+    expeds: Any | None = None,
+) -> ScoreResult:
+    """Call an organiser scorer using explicit, name-matched semantics.
+
+    Signatures differ between SDK releases. We map only recognised parameter
+    names and refuse an ambiguous scorer instead of guessing positional order.
+    """
     name = metric.upper()
     scorer = official_scorers().get(name)
     if scorer is None:
         raise RuntimeError(f"official {name} scorer unavailable")
-    raw = scorer(*args, **kwargs)
+    values = {
+        "predictions": predictions,
+        "prediction": predictions,
+        "y_pred": predictions,
+        "preds": predictions,
+        "target": target,
+        "targets": target,
+        "y_true": target,
+        "features": features,
+        "neutralizers": features,
+        "expeds": expeds,
+        "exped": expeds,
+        "groups": expeds,
+    }
+    signature = inspect.signature(scorer)
+    kwargs = {
+        name: values[name]
+        for name, parameter in signature.parameters.items()
+        if name in values
+        and values[name] is not None
+        and parameter.kind
+        in {inspect.Parameter.POSITIONAL_OR_KEYWORD, inspect.Parameter.KEYWORD_ONLY}
+    }
+    prediction_names = {"predictions", "prediction", "y_pred", "preds"}
+    target_names = {"target", "targets", "y_true"}
+    if not prediction_names.intersection(kwargs) or not target_names.intersection(kwargs):
+        raise RuntimeError(
+            f"official {name} scorer has unsupported/ambiguous signature {signature}"
+        )
+    raw = scorer(**kwargs)
     value = raw.get("score", raw.get(name)) if isinstance(raw, dict) else raw
     return ScoreResult(float(value), name, "everestapi.scoring", True)
 
@@ -73,10 +114,26 @@ def local_grouped_corr(
     )
 
 
-def score(metric: str, y_true, y_pred, expeds=None, **kwargs) -> ScoreResult:
+def score(
+    metric: str,
+    *,
+    predictions: Any,
+    target: Any,
+    features: Any | None = None,
+    expeds: Any | None = None,
+) -> ScoreResult:
+    """Score explicit prediction/target inputs without positional ambiguity."""
     if metric.upper() in official_scorers():
-        return score_with_official_engine(metric, y_true, y_pred, **kwargs)
-    return local_grouped_corr(y_true, y_pred, expeds, metric=f"LOCAL_{metric.upper()}")
+        return score_with_official_engine(
+            metric,
+            predictions=predictions,
+            target=target,
+            features=features,
+            expeds=expeds,
+        )
+    return local_grouped_corr(
+        target, predictions, expeds, metric=f"LOCAL_{metric.upper()}"
+    )
 
 
 def scorer_parity(

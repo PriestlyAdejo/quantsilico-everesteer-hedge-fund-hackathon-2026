@@ -1,6 +1,7 @@
 """Exped-aware temporal splits and out-of-fold evaluation."""
 from __future__ import annotations
 
+import re
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 from typing import Any
@@ -27,6 +28,33 @@ FOLD_PROFILES = {
     "R2": FoldProfile("R2", 3, 4, 2, embargo=1),
     "R3": FoldProfile("R3", 4, 5, 2, embargo=1),
 }
+
+
+def target_horizon(target: str) -> int:
+    """Extract the forward horizon encoded by targets such as ``*_20``."""
+    match = re.search(r"(?:^|_)(\d+)$", str(target))
+    return int(match.group(1)) if match else 0
+
+
+def profile_for_target(profile: str | FoldProfile, target: str) -> FoldProfile:
+    """Apply the target horizon as the minimum temporal embargo.
+
+    ``TemporalSplitter`` naturally emits fewer folds when the dataset cannot
+    support the requested fold count; it never weakens this embargo to make a
+    profile fit.
+    """
+    base = FOLD_PROFILES[profile.upper()] if isinstance(profile, str) else profile
+    horizon = target_horizon(target)
+    if horizon <= base.embargo:
+        return base
+    return FoldProfile(
+        name=base.name,
+        n_splits=base.n_splits,
+        min_train_expeds=base.min_train_expeds,
+        test_expeds=base.test_expeds,
+        embargo=horizon,
+        rolling_window=base.rolling_window,
+    )
 
 
 class TemporalSplitter:
@@ -65,8 +93,16 @@ def temporal_cv(
     exped_col: str = "exped",
     profile: str | FoldProfile = "R1",
     sample_weight_fn: Callable[[Any], Any] | None = None,
+    enforce_target_horizon: bool = True,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
-    splitter = TemporalSplitter(profile)
+    effective_profile = (
+        profile_for_target(profile, target)
+        if enforce_target_horizon
+        else FOLD_PROFILES[profile.upper()]
+        if isinstance(profile, str)
+        else profile
+    )
+    splitter = TemporalSplitter(effective_profile)
     oof_parts, fold_metrics = [], []
     for fold, (train_idx, valid_idx) in enumerate(splitter.split(frame[exped_col])):
         train, valid = frame.iloc[train_idx], frame.iloc[valid_idx]
@@ -95,5 +131,10 @@ def temporal_cv(
     )
     return oof, {
         "score": overall, "folds": fold_metrics, "per_exped": per_exped,
+        "requested_folds": effective_profile.n_splits,
+        "effective_folds": len(fold_metrics),
+        "embargo": effective_profile.embargo,
+        "target_horizon": target_horizon(target),
+        "target_horizon_enforced": enforce_target_horizon,
         "provenance": "LOCAL_EXPERIMENT / not official",
     }

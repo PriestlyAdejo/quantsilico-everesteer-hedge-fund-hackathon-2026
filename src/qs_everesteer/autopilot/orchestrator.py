@@ -50,13 +50,27 @@ class CompetitionAutopilot:
         # Autopilot may use an already-ARMED mode, but never changes mode to ARMED.
         mode_before = state.get("submission_mode", SubmissionMode.DRY_RUN.value)
         handler = self.handlers.get(stage.value) or self.handlers.get(str(stage))
-        result = handler(state) if handler else {"status": "SKIPPED", "reason": "no handler"}
+        result = (
+            handler(state)
+            if handler
+            else {"status": "BLOCKED", "reason": f"mandatory handler missing: {stage.value}"}
+        )
+        if not isinstance(result, dict):
+            result = {"status": "COMPLETED", "value": result}
+        result_status = str(result.get("status", "COMPLETED")).upper()
         current_index = STAGE_ORDER.index(stage)
-        next_stage = STAGE_ORDER[min(current_index + 1, len(STAGE_ORDER) - 1)]
+        can_advance = result_status not in {"BLOCKED", "FAILED", "NOT_IMPLEMENTED"}
+        next_stage = (
+            STAGE_ORDER[min(current_index + 1, len(STAGE_ORDER) - 1)]
+            if can_advance
+            else stage
+        )
 
         def mutate(current: dict[str, Any]) -> None:
             current["autopilot_active"] = next_stage is not AutopilotStage.COMPLETE
             current["autopilot_stage"] = next_stage.value
+            current["autopilot_blocked"] = not can_advance
+            current["autopilot_block_reason"] = None if can_advance else result.get("reason")
             current["submission_mode"] = mode_before
             history = current.setdefault("autopilot_history", [])
             history.append({
@@ -77,4 +91,6 @@ class CompetitionAutopilot:
                 break
             state = self.step(profile)
             steps += 1
+            if state.get("autopilot_blocked"):
+                break
         return state

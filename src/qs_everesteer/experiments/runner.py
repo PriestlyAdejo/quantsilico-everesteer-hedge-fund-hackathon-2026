@@ -1,6 +1,7 @@
 """Persisted, failure-retaining temporal experiment runner."""
 from __future__ import annotations
 
+import json
 import time
 import uuid
 from datetime import UTC, datetime
@@ -41,7 +42,17 @@ class ExperimentRunner:
         metrics: dict[str, Any] = {}
         decision = RaceDecision.PENDING
         try:
-            data = pd.read_parquet(config["data_path"])
+            data_path = Path(config["data_path"])
+            data = pd.read_parquet(data_path)
+            synthetic = bool(config.get("synthetic", False))
+            manifest_path = data_path.parent / "manifest.json"
+            if manifest_path.exists():
+                try:
+                    synthetic = synthetic or bool(
+                        json.loads(manifest_path.read_text(encoding="utf-8")).get("synthetic")
+                    )
+                except (OSError, ValueError, TypeError):
+                    pass
             target = config.get("target", "target_everest_20")
             exped = config.get("exped_col", "exped")
             features = config.get("features") or [
@@ -57,7 +68,13 @@ class ExperimentRunner:
             oof, metrics = temporal_cv(
                 data, factory, features=features, target=target, exped_col=exped,
                 profile=config.get("profile", "R1"),
+                enforce_target_horizon=not synthetic,
             )
+            if oof.empty:
+                raise ValueError(
+                    "no leakage-safe temporal folds available; add history or reduce fold count, "
+                    "never weaken the target-horizon embargo"
+                )
             oof.to_parquet(run_dir / "oof.parquet", index=False)
             final_model = factory().fit(data[features], data[target])
             model_meta = ModelRegistry(self.repo_root).save(
@@ -92,6 +109,31 @@ class ExperimentRunner:
         manifest["runtime_seconds"] = elapsed
         atomic_write_json(run_dir / "run.json", manifest)
         return manifest
+
+    def run_promoted_child(self, parent_run_id: str, next_stage: str) -> dict[str, Any]:
+        """Retrain a promoted parent at the next evidence stage with lineage."""
+        stage = next_stage.upper()
+        if stage not in {"R0", "R1", "R2", "R3"}:
+            raise ValueError(f"unknown promotion stage: {next_stage}")
+        parent_path = self.repo_root / "runs" / "experiments" / parent_run_id / "run.json"
+        if not parent_path.exists():
+            raise FileNotFoundError(f"parent run manifest missing: {parent_path}")
+        parent = json.loads(parent_path.read_text(encoding="utf-8"))
+        config = dict(parent.get("config") or {})
+        if not config:
+            raise ValueError(f"parent run has no resolved config: {parent_run_id}")
+        child_id = f"{parent_run_id}--{stage.lower()}"
+        child_path = self.repo_root / "runs" / "experiments" / child_id / "run.json"
+        if child_path.exists():
+            return json.loads(child_path.read_text(encoding="utf-8"))
+        config.update(
+            run_id=child_id,
+            profile=stage,
+            race_stage=stage,
+            parent_run_id=parent_run_id,
+            lineage={"parent_run_id": parent_run_id, "promotion_stage": stage},
+        )
+        return self.run(config)
 
     @staticmethod
     def _config(source: str | Path | dict[str, Any]) -> dict[str, Any]:

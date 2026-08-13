@@ -84,8 +84,8 @@ def test_guard_blocks_fingerprint_mismatch(tmp_path):
     assert any("fingerprint" in r.lower() for r in result.blocking_reasons)
 
 
-def test_guard_blocks_id_coverage_and_bounds(tmp_path):
-    pred = _write_preds(tmp_path / "p.parquet", ["a", "b"], [0.1, 1.5])
+def test_guard_blocks_id_coverage_and_nonfinite_values(tmp_path):
+    pred = _write_preds(tmp_path / "p.parquet", ["a", "b"], [0.1, float("inf")])
     result = SubmissionGuard().validate(
         SubmissionContext(
             event_id="e",
@@ -103,7 +103,7 @@ def test_guard_blocks_id_coverage_and_bounds(tmp_path):
     assert not result.ok
     joined = " ".join(result.blocking_reasons).lower()
     assert "coverage" in joined
-    assert "bounds" in joined
+    assert "non-finite" in joined
 
 
 def test_guard_unknown_quota_blocks_armed_allows_dry_run(tmp_path):
