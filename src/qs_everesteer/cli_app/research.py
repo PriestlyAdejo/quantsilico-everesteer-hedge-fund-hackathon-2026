@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import typer
 import yaml
@@ -15,7 +15,7 @@ from qs_everesteer.cli_app.common import (
     repo_root,
 )
 from qs_everesteer.data.synthetic import generate_synthetic_event_data
-from qs_everesteer.experiments.racing import RacingScheduler
+from qs_everesteer.experiments.racing import STAGES, RacingScheduler
 from qs_everesteer.experiments.runner import ExperimentRunner
 from qs_everesteer.fsutil import read_json
 from qs_everesteer.jobs.model import JobKind
@@ -42,7 +42,7 @@ def _load_experiment_records(root: Path) -> list[dict[str, Any]]:
         try:
             run = read_json(run_path)
             metrics = read_json(metrics_path) if metrics_path.exists() else {}
-        except Exception:  # noqa: BLE001
+        except Exception:  # noqa: BLE001, S112 -- corrupt runs are excluded as evidence
             continue
         if not isinstance(run, dict):
             continue
@@ -75,7 +75,9 @@ def register_research_commands(app: typer.Typer) -> None:
 
     @app.command("run")
     def run_experiment(
-        config: Path = typer.Argument(..., help="YAML experiment config path."),
+        config: Path = typer.Argument(  # noqa: B008
+            ..., help="YAML experiment config path."
+        ),
         sync: bool = typer.Option(
             True,
             "--sync/--async",
@@ -131,6 +133,9 @@ def register_research_commands(app: typer.Typer) -> None:
             help="Race profile: fast | standard",
         ),
         stage: str = typer.Option("R0", "--stage", help="Racing stage R0–R3."),
+        through: str | None = typer.Option(
+            None, "--through", help="Retrain promoted children successively through R1-R3."
+        ),
     ) -> None:
         """Successive-halving race over known experiment candidates."""
         profile_norm = profile.strip().lower()
@@ -158,11 +163,35 @@ def register_research_commands(app: typer.Typer) -> None:
         if not records:
             records = list(state.get("candidates") or [])
         keep = 0.4 if profile_norm == "fast" else 0.5
-        outcomes = RacingScheduler(keep_fraction=keep).evaluate(records, stage_norm)
+        scheduler = RacingScheduler(keep_fraction=keep)
+        outcomes = scheduler.evaluate(records, stage_norm)
         payload = [o.to_dict() for o in outcomes]
 
+        final_stage = stage_norm
+        if through is not None:
+            through_norm = through.strip().upper()
+            if through_norm not in STAGES or STAGES.index(through_norm) < STAGES.index(stage_norm):
+                console.print("[red]--through must be the current or a later R0-R3 stage[/red]")
+                raise typer.Exit(code=1)
+            current_stage = stage_norm
+            while current_stage != through_norm:
+                next_stage = STAGES[STAGES.index(current_stage) + 1]
+                child_configs = scheduler.child_configs(
+                    outcomes, repo_root=root, target_stage=next_stage
+                )
+                child_manifests = [ExperimentRunner(root).run(config) for config in child_configs]
+                child_ids = {str(item.get("run_id")) for item in child_manifests}
+                child_records = [
+                    row for row in _load_experiment_records(root)
+                    if row.get("run_id") in child_ids
+                ]
+                outcomes = scheduler.evaluate(child_records, next_stage)
+                payload.extend(o.to_dict() for o in outcomes)
+                current_stage = next_stage
+            final_stage = through_norm
+
         def _mutate(current: dict) -> None:
-            current["race_stage"] = stage_norm
+            current["race_stage"] = final_stage
             current["candidates"] = records
             current["race_outcomes"] = payload
             current["meta"]["source"] = "race"
@@ -179,6 +208,7 @@ def register_research_commands(app: typer.Typer) -> None:
             {
                 "profile": profile_norm,
                 "stage": stage_norm,
+                "through": final_stage,
                 "fold_profile": fold.name,
                 "outcomes": payload,
             }
@@ -219,7 +249,7 @@ def register_research_commands(app: typer.Typer) -> None:
 
     @app.command("champion")
     def champion(
-        candidate: Optional[str] = typer.Option(
+        candidate: str | None = typer.Option(
             None,
             "--set",
             help="Promote a candidate id to champion (omit to show current).",

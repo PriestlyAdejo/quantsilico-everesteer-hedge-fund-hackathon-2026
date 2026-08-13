@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 from qs_everesteer.api_schemas.pages import RaceDecision
+from qs_everesteer.fsutil import read_json
 
 STAGES = ("R0", "R1", "R2", "R3")
 
@@ -82,3 +84,29 @@ class RacingScheduler:
         stage = str(research_state.get("race_stage", "R0")).upper()
         records = list(research_state.get("candidates") or [])
         return [outcome.to_dict() for outcome in self.evaluate(records, stage)]
+
+    @staticmethod
+    def child_configs(
+        outcomes: list[RaceOutcome], *, repo_root: str | Path, target_stage: str,
+    ) -> list[dict[str, Any]]:
+        """Build real retraining configs for promoted parents, preserving lineage."""
+        root = Path(repo_root)
+        configs = []
+        for outcome in outcomes:
+            if outcome.next_stage != target_stage:
+                continue
+            run_path = root / "runs" / "experiments" / outcome.candidate_id / "run.json"
+            if not run_path.exists():
+                continue
+            parent = read_json(run_path)
+            config = dict(parent.get("config") or {})
+            if not config:
+                continue
+            config.update(
+                run_id=f"{outcome.candidate_id}-{target_stage.lower()}",
+                parent_run_id=outcome.candidate_id,
+                profile=target_stage,
+                promotion_decision=outcome.decision.value,
+            )
+            configs.append(config)
+        return configs
