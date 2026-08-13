@@ -403,9 +403,12 @@ class AdaptiveCompetitionController:
         if not staking.get("stake_window_open"):
             return []
         current_window = str(staking.get("draft_window") or snapshot["round"])
+        current_allocations: list[dict[str, Any]] = []
         for window in staking.get("windows", []):
-            if window.get("window") == current_window and window.get("allocations"):
-                return []
+            if window.get("window") == current_window:
+                current_allocations = list(window.get("allocations") or [])
+                if any(row.get("locked") for row in current_allocations):
+                    return []
         previous = self._previous_round(snapshot["round"])
         if previous is None:
             return []
@@ -439,16 +442,37 @@ class AdaptiveCompetitionController:
             return []
         amounts = [round(total * weight / weight_sum, 2) for weight in weights]
         amounts[-1] = round(total - sum(amounts[:-1]), 2)
-        actions = []
+        desired = {
+            str(row["model_name"]): amount
+            for row, amount in zip(own, amounts, strict=True)
+            if amount >= 1
+        }
+        existing = {
+            str(row.get("model_name")): int(row.get("amount_micro") or 0)
+            for row in current_allocations
+        }
+        actions: list[dict[str, Any]] = []
+        for model_name in sorted(set(existing) - set(desired)):
+            response = self.client.withdraw_stake_allocation(
+                model_name, window=current_window
+            )
+            actions.append({
+                "type": "STAKE_WITHDRAW", "round": current_window,
+                "model": model_name, "response": response,
+            })
         for row, amount in zip(own, amounts, strict=True):
             if amount < 1:
                 continue
+            model_name = str(row["model_name"])
+            desired_micro = round(amount * 1_000_000)
+            if existing.get(model_name) == desired_micro:
+                continue
             response = self.client.set_stake_allocation(
-                str(row["model_name"]), amount_usdc=str(amount), window=current_window
+                model_name, amount_micro=desired_micro, window=current_window
             )
             actions.append({
                 "type": "STAKE_ALLOCATION", "evidence_round": previous,
-                "round": current_window, "model": row["model_name"],
+                "round": current_window, "model": model_name,
                 "amount_usdc": amount, "evidence_score": row["round_score"],
                 "response": response,
             })
