@@ -57,6 +57,7 @@ from qs_everesteer.api_schemas.pages import (
     DocParagraphBlock,
     DocRelatedBlock,
     DocSection,
+    DocTableBlock,
     EnsembleMetrics,
     EventControlConnection,
     EventControlEventState,
@@ -294,6 +295,14 @@ class ConsoleService:
                             label=str(item.get("label") or item.get("href") or "/"),
                         )
                     )
+                elif kind == "table":
+                    headers = [str(h) for h in (item.get("headers") or [])]
+                    rows = [
+                        [str(cell) for cell in row]
+                        for row in (item.get("rows") or [])
+                        if isinstance(row, list)
+                    ]
+                    blocks.append(DocTableBlock(kind="table", headers=headers, rows=rows))
             except (TypeError, ValueError):
                 continue
         return blocks
@@ -1035,9 +1044,10 @@ class ConsoleService:
             except (OSError, ValueError, TypeError):
                 pass
 
-        if articles and not any(section.id == "generated" for section in sections):
-            if any(article.source == "generated" for article in articles):
-                sections.append(DocSection(id="generated", label="Generated reference"))
+        if articles and not any(section.id == "generated" for section in sections) and any(
+            article.source == "generated" for article in articles
+        ):
+            sections.append(DocSection(id="generated", label="Generated reference"))
 
         data = DocumentationData(
             generated_from_sha=generated_from_sha,

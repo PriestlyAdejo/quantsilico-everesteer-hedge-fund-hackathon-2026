@@ -1,0 +1,59 @@
+---
+title: Data validation
+description: Audit, fingerprint and split identity before any modelling or submit.
+section: flows
+order: 30
+---
+
+<PageIntro>
+A dataset is not trusted because it arrived. It is trusted after structural
+audit and a content fingerprint that later inference and submission can match.
+</PageIntro>
+
+<FlowDiagram
+  nodes={[
+    { id: "pull", label: "Pull split" },
+    { id: "audit", label: "Audit" },
+    { id: "fingerprint", label: "Fingerprint" },
+    { id: "compare", label: "Compare schema" },
+    { id: "model", label: "Only then model" }
+  ]}
+/>
+
+## What audit checks
+
+`qseh data audit` runs `audit_dataset` on a Parquet or CSV file. It records row
+and column counts, ID and exped columns, target availability, duplicate IDs,
+missingness and a schema SHA-256.
+
+Integrity is `pass`, `warn` or `fail`. A hard failure is an integrity stop, not
+a weak research score.
+
+<Command>
+.\.venv\Scripts\qseh.exe data audit
+</Command>
+
+## Fingerprint
+
+`qseh data fingerprint` records the file content hash and schema fingerprint.
+Live-round inference should reuse a prediction artefact only when the live split
+fingerprint is unchanged.
+
+<Command>
+.\.venv\Scripts\qseh.exe data fingerprint
+</Command>
+
+## Split identity
+
+Train, validation/practice and live splits are different files. Submission
+guard checks the split fingerprint against the event snapshot so a train file
+cannot be uploaded as live.
+
+Synthetic fixtures generated with `QSEH_SYNTHETIC=1` remain labelled
+`SYNTHETIC_FIXTURE` and must not be treated as official event data.
+
+<Callout tone="warning">
+Do not spend compute on a split whose audit integrity is fail.
+</Callout>
+
+<RelatedPage href="/data">Open Data Lab</RelatedPage>

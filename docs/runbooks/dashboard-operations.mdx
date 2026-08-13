@@ -1,0 +1,90 @@
+---
+title: Dashboard operations
+description: Start, verify, diagnose and recover the local Research Console.
+section: runbooks
+order: 20
+---
+
+<PageIntro>
+The dashboard is an operational cockpit, not the authority for research state.
+The filesystem-backed engine and CLI remain usable if the browser or dashboard
+server fails.
+</PageIntro>
+
+## Diagnose
+
+<Command>
+.\.venv\Scripts\qseh.exe dashboard diagnose
+</Command>
+
+This checks the Python environment, application import, frontend build, runtime
+state, process state, port and health endpoint.
+
+## Start
+
+<Command>
+.\.venv\Scripts\qseh.exe dashboard start
+</Command>
+
+Successful startup requires:
+
+- the server process to remain alive;
+- port 8766 to listen;
+- `/api/health` to return the expected response.
+
+A returned PID by itself is not considered success.
+
+## Status
+
+<Command>
+.\.venv\Scripts\qseh.exe dashboard status
+</Command>
+
+## Open
+
+<Command>
+.\.venv\Scripts\qseh.exe dashboard open
+</Command>
+
+The browser should not be opened by this command when the backend is unhealthy.
+
+## Backend health
+
+<Command>
+Invoke-RestMethod http://127.0.0.1:8766/api/health | ConvertTo-Json -Depth 10
+</Command>
+
+## Rebuild frontend
+
+<Command>
+.\.venv\Scripts\qseh.exe dashboard build
+</Command>
+
+Use this after deliberate frontend changes. Do not reinstall packages casually
+during a live round.
+
+## Stop
+
+<Command>
+.\.venv\Scripts\qseh.exe dashboard stop
+</Command>
+
+The process manager only terminates the dashboard process it owns.
+
+## If the dashboard fails during a round
+
+Continue operating through the CLI.
+
+<Command>
+.\.venv\Scripts\qseh.exe autopilot status
+</Command>
+
+<Command>
+.\.venv\Scripts\qseh.exe event inspect
+</Command>
+
+<Command>
+.\.venv\Scripts\qseh.exe submit check
+</Command>
+
+Restart the UI only when doing so will not distract from the competition path.

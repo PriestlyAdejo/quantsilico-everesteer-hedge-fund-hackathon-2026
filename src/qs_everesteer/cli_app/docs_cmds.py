@@ -7,7 +7,7 @@ import typer
 from qs_everesteer.cli_app.common import print_json, repo_root
 from qs_everesteer.docs_build import build_docs
 
-docs_app = typer.Typer(help="Generate docs stubs / frontend manifest.", no_args_is_help=True)
+docs_app = typer.Typer(help="Generate documentation from live code.", no_args_is_help=True)
 
 
 @docs_app.command("build")

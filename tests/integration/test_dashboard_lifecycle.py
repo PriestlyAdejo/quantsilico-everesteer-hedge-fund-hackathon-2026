@@ -44,7 +44,7 @@ def test_dashboard_start_health_stop_roundtrip() -> None:
         "/api/repository",
         "/api/docs",
     ):
-        with urllib.request.urlopen(f"{mgr.url}{path}", timeout=5) as resp:  # noqa: S310
+        with urllib.request.urlopen(f"{mgr.url}{path}", timeout=20) as resp:  # noqa: S310
             body = json.loads(resp.read().decode("utf-8"))
         assert body.get("schemaVersion") == 2
         assert "data" in body

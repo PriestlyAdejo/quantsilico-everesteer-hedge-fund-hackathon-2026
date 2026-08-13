@@ -1,0 +1,89 @@
+---
+title: Research loop
+description: How an idea becomes evidence, a frontier candidate, a champion or a retired branch.
+section: flows
+order: 20
+---
+
+<PageIntro>
+Research is not a sequence of models to try once. It is a measured loop that
+spends small amounts of compute first, retains useful evidence and increases
+budget only when a candidate still has something to teach us.
+</PageIntro>
+
+<FlowDiagram
+  nodes={[
+    { id: "hypothesis", label: "Hypothesis" },
+    { id: "r0", label: "R0 smoke" },
+    { id: "r1", label: "R1 fast race" },
+    { id: "r2", label: "R2 standard evidence" },
+    { id: "r3", label: "R3 promotion" },
+    { id: "frontier", label: "Frontier" },
+    { id: "ensemble", label: "Ensemble candidate" }
+  ]}
+/>
+
+## What the race is trying to answer
+
+R0 asks whether the candidate works at all.
+
+R1 asks whether there is enough signal to spend more compute.
+
+R2 asks whether the evidence remains useful under more complete validation.
+
+R3 is for candidates that may become an operational champion or a serious
+ensemble member.
+
+A weak score is not automatically an integrity failure.
+
+## Hard failures
+
+A candidate must stop when the evidence is invalid rather than merely weak.
+
+Examples include:
+
+- target leakage;
+- wrong split or submission lane;
+- ID misalignment;
+- scorer parity failure;
+- malformed model artefact.
+
+## Soft evidence
+
+Valid candidates can be compared using whatever evidence is actually available,
+including:
+
+- event score components;
+- recent performance;
+- worst fold;
+- IC or correlation stability;
+- ICIR;
+- positive-exped rate;
+- feature exposure;
+- runtime;
+- prediction diversity;
+- external practice/live evidence.
+
+No single soft metric is a universal veto.
+
+## Champion, frontier and ensemble are different
+
+<MetricDefinition name="Champion">
+The operational default candidate if a prediction had to be produced now.
+</MetricDefinition>
+
+<MetricDefinition name="Frontier">
+The set of candidates that remain interesting because no other candidate is
+clearly better on every relevant trade-off.
+</MetricDefinition>
+
+<MetricDefinition name="Ensemble">
+A constructed candidate combining multiple prediction streams.
+</MetricDefinition>
+
+A model can therefore remain valuable even when it does not beat the champion
+alone.
+
+<RelatedPage href="/experiments">Open Experiments</RelatedPage>
+<RelatedPage href="/validation">Open Validation</RelatedPage>
+<RelatedPage href="/ensembles">Open Ensembles</RelatedPage>

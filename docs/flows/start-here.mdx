@@ -1,41 +1,102 @@
 ---
 title: Start here
-description: Orient the Research Console before connecting, researching, or submitting.
+description: Understand what the console controls and the order in which to use it.
 section: flows
 order: 10
 ---
 
 <PageIntro>
-Start on Overview, confirm submission mode is DRY_RUN unless you intentionally
-arm uploads, then connect the event and audit data before spending compute.
+The Research Console is the operating view over the QuantSilico Everesteer
+engine. The command-line engine remains the critical path; the dashboard reads
+the same filesystem evidence and backend state so that you can see what is
+happening without reconstructing it from logs.
 </PageIntro>
 
 <FlowDiagram
   nodes={[
-    { id: "overview", label: "Overview" },
-    { id: "event", label: "Connect event" },
-    { id: "data", label: "Audit data" },
-    { id: "research", label: "Race experiments" },
+    { id: "connect", label: "Connect event" },
+    { id: "data", label: "Verify data" },
+    { id: "baseline", label: "Prove baseline" },
+    { id: "research", label: "Run research" },
+    { id: "validate", label: "Validate candidates" },
     { id: "ensemble", label: "Build ensemble" },
-    { id: "submit", label: "Validate submission" }
+    { id: "submit", label: "Submit" },
+    { id: "observe", label: "Observe" },
+    { id: "adapt", label: "Adapt" }
   ]}
 />
 
-## Operating rules
+## Before the event exists
 
-<Callout tone="info">
-Only integrity failures are universal hard stops. Soft research metrics guide
-budget; they do not invent official scores.
-</Callout>
+It is normal for Event Control to show **NOT CONNECTED**, for leaderboard values
+to be blank and for event capabilities to be unknown.
 
-<MetricDefinition name="Submission mode">
-DISABLED blocks uploads, DRY_RUN records evidence without Everesteer upload,
-ARMED allows real practice/live submits after human intent.
-</MetricDefinition>
+Do not populate those fields manually.
+
+Use synthetic rehearsal to prove that the local machinery works without
+pretending that a live event exists.
 
 <Command>
-qseh doctor
+.\.venv\Scripts\qseh.exe doctor
 </Command>
 
-<RelatedPage href="/">Open Overview</RelatedPage>
+<Command>
+.\.venv\Scripts\qseh.exe rehearsal
+</Command>
+
+## Once Everesteer access is available
+
+Start by inspecting the platform rather than training immediately.
+
+<Command>
+.\.venv\Scripts\qseh.exe event inspect
+</Command>
+
+Then capture the event state that subsequent actions will be tied to.
+
+<Command>
+.\.venv\Scripts\qseh.exe event snapshot
+</Command>
+
+The event/API and organiser instructions are authoritative for event mechanics.
+Do not make an old README override the live event.
+
+## Submission mode
+
+The project has three submission states.
+
+<MetricDefinition name="DISABLED">
+External uploads cannot be performed.
+</MetricDefinition>
+
+<MetricDefinition name="DRY_RUN">
+The submission pipeline can validate, package and record evidence without
+uploading predictions to Everesteer. This is the safe default.
+</MetricDefinition>
+
+<MetricDefinition name="ARMED">
+Real Everesteer uploads are permitted after explicit human action and still
+remain subject to event, lane, quota, ID and artefact checks.
+</MetricDefinition>
+
+<Callout tone="warning">
+Autopilot must never arm submissions by itself.
+</Callout>
+
+## Where to look
+
+Use **Overview** to understand the current operating stage.
+
+Use **Event Control** to verify platform state.
+
+Use **Data Lab** before trusting a newly downloaded split.
+
+Use **Experiments**, **Validation** and **Ensembles** while researching.
+
+Use **Round Room**, **Submission** and **Leaderboard** during live rounds.
+
+Use **Compute & Jobs** when you need to know whether an experiment will finish
+in useful time.
+
 <RelatedPage href="/event">Open Event Control</RelatedPage>
+<RelatedPage href="/data">Open Data Lab</RelatedPage>

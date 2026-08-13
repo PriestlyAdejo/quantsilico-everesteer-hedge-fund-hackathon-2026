@@ -1,44 +1,77 @@
 ---
 title: Live round workflow
-description: What happens from round open to recorded result.
+description: What happens from a newly opened round to a recorded result.
 section: flows
 order: 40
 ---
 
 <PageIntro>
-Use this flow when Everesteer opens a live round. The objective is to move from
-a verified live split to a recorded submission without rebuilding the research
-system.
+Use this flow once Everesteer exposes a live round. The objective is to move
+from a verified live split to a recorded submission without rebuilding the
+research system while the clock is running.
 </PageIntro>
 
 <FlowDiagram
   nodes={[
     { id: "detect", label: "Detect round" },
     { id: "snapshot", label: "Snapshot event" },
-    { id: "pull", label: "Pull live data" },
-    { id: "verify", label: "Verify split and IDs" },
+    { id: "pull", label: "Pull live split" },
+    { id: "verify", label: "Verify IDs and schema" },
     { id: "infer", label: "Run inference" },
     { id: "guard", label: "Submission checks" },
     { id: "submit", label: "Submit" },
-    { id: "observe", label: "Record score and standing" }
+    { id: "observe", label: "Observe result" },
+    { id: "update", label: "Update evidence" }
   ]}
 />
 
 ## What to watch
 
 <MetricDefinition name="Time remaining">
-How long the current round remains open.
+The authoritative estimate of how long the current round remains open.
+</MetricDefinition>
+
+<MetricDefinition name="Split fingerprint">
+The content identity of the live dataset currently being used for inference.
+</MetricDefinition>
+
+<MetricDefinition name="Inference ETA">
+Whether the selected candidate will finish early enough to be useful.
 </MetricDefinition>
 
 <MetricDefinition name="Upload budget">
 How many external submissions remain available.
 </MetricDefinition>
 
-## If something fails
+## Normal path
+
+The live-round controller should detect the event state and avoid repeated work
+when the dataset fingerprint is unchanged.
+
+The same round must not accidentally produce duplicate external uploads after a
+restart.
+
+## When a live result is poor
+
+Do not immediately rewrite the model stack.
+
+First determine whether:
+
+- the correct split was submitted;
+- IDs aligned;
+- the correct lane was used;
+- event scoring changed;
+- data drifted;
+- all models failed together;
+- one model failed while others remained stable.
+
+One noisy external round is evidence, not a command to discard all prior local
+validation.
 
 <Callout tone="warning">
-Do not retrain automatically because a submission failed. First check lane,
-IDs, event state and the model artefact.
+Do not start an architectural refactor while a live round is closing.
 </Callout>
 
 <RelatedPage href="/round">Open Round Room</RelatedPage>
+<RelatedPage href="/submission">Open Submission</RelatedPage>
+<RelatedPage href="/leaderboard">Open Leaderboard</RelatedPage>

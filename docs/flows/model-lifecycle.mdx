@@ -1,0 +1,51 @@
+---
+title: Model lifecycle
+description: How a candidate is fit, stored, loaded for inference and retired.
+section: flows
+order: 35
+---
+
+<PageIntro>
+Models enter the system through the shared research interface. Submission
+consumes a normal candidate; there is no model-specific upload path.
+</PageIntro>
+
+<FlowDiagram
+  nodes={[
+    { id: "config", label: "Resolved config" },
+    { id: "fit", label: "Fit" },
+    { id: "oof", label: "OOF + metrics" },
+    { id: "artefact", label: "Persist artefact" },
+    { id: "infer", label: "Load and infer" },
+    { id: "submit", label: "Submit as candidate" }
+  ]}
+/>
+
+## Fit
+
+`ExperimentRunner` reads YAML, fits through `create_model`, writes OOF
+predictions, fold metrics, resource measurements and an immutable run manifest
+under `runs/experiments/<run_id>/`. Failed runs keep their evidence.
+
+Factories currently registered include ridge, random_forest, extra_trees,
+xgboost, lgbm, reference_lgbm and shallow_mlp.
+
+## Artefact
+
+`ModelRegistry` stores the fitted object and training data hash when provided.
+A later live infer must load that artefact rather than refitting from memory.
+
+## Lineage
+
+Record parent candidate and config delta when an operator changes
+regularisation, features, recency, seed or ensemble membership. Experiments
+that cannot explain what changed are not useful under a live clock.
+
+## Inference and submit
+
+Round-room inference uses the champion or an approved ensemble. Submission
+guard then checks event, lane, IDs, artefacts and quota. Do not add
+model-specific submission code.
+
+<RelatedPage href="/models">Open Models</RelatedPage>
+<RelatedPage href="/experiments">Open Experiments</RelatedPage>

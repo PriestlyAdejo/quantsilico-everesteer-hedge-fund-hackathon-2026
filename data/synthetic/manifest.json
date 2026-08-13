@@ -1,0 +1,9 @@
+{
+  "synthetic": true,
+  "seed": 7,
+  "n_features": 32,
+  "practice_ids": 120,
+  "live_ids": 40,
+  "target_column": "target_everest_20",
+  "note": "SYNTHETIC_FIXTURE \u2014 not official Everesteer data"
+}

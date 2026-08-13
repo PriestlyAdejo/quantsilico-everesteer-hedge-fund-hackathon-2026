@@ -1,0 +1,63 @@
+---
+title: Glossary
+description: Terms used by the Research Console, CLI and generated reference.
+section: runbooks
+order: 40
+---
+
+<PageIntro>
+Short definitions for words that appear in the operator guides and generated
+reference. These are operating terms, not invented scoring formulas.
+</PageIntro>
+
+<MetricDefinition name="ICIR">
+Information coefficient information ratio: a soft research metric used when
+comparing valid candidates. It is not a universal veto.
+</MetricDefinition>
+
+<MetricDefinition name="CORR20">
+An official-style score component name probed from everestapi.scoring when the
+SDK exposes it. Local fallbacks are labelled non-official.
+</MetricDefinition>
+
+<MetricDefinition name="exped">
+The time-group column used by temporal splits. Fold profiles R0–R3 allocate
+train/test expeds with optional embargo.
+</MetricDefinition>
+
+<MetricDefinition name="DRY_RUN">
+Submission pipeline may validate, package and record evidence without uploading
+to Everesteer. Safe default.
+</MetricDefinition>
+
+<MetricDefinition name="ARMED">
+Real Everesteer uploads are permitted after explicit `qseh event arm-submissions`
+and still pass guard checks.
+</MetricDefinition>
+
+<MetricDefinition name="DISABLED">
+External uploads cannot be performed.
+</MetricDefinition>
+
+<MetricDefinition name="Champion">
+The operational default candidate if a prediction had to be produced now.
+</MetricDefinition>
+
+<MetricDefinition name="Frontier">
+Candidates that remain interesting because no other candidate is clearly better
+on every relevant trade-off.
+</MetricDefinition>
+
+<MetricDefinition name="Ensemble">
+A constructed candidate combining multiple prediction streams.
+</MetricDefinition>
+
+<MetricDefinition name="QSEH_SYNTHETIC">
+Environment flag that forces synthetic fixtures instead of live dataset pulls.
+</MetricDefinition>
+
+<MetricDefinition name="8766">
+Local Research Console port: http://127.0.0.1:8766/
+</MetricDefinition>
+
+<RelatedPage href="/docs">Open Documentation</RelatedPage>

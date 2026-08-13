@@ -1,0 +1,250 @@
+---
+title: Event-day operator guide
+description: Beginning-to-end operating guide for the Everesteer competition.
+section: runbooks
+order: 5
+---
+
+<PageIntro>
+This is the document to use when operating the system under time pressure.
+Commands are shown with the repository virtual-environment executable directly;
+PowerShell activation is not required.
+</PageIntro>
+
+## How to run commands
+
+From the repository root:
+
+<Command>
+.\.venv\Scripts\qseh.exe doctor
+</Command>
+
+Do not run `Activate.ps1`.
+
+The repository is designed to use:
+
+`.\.venv\Scripts\qseh.exe`
+
+and:
+
+`.\.venv\Scripts\python.exe`
+
+directly.
+
+## Before leaving
+
+Run the safe preflight:
+
+<Command>
+scripts\preflight.cmd
+</Command>
+
+A successful preflight proves the local machinery works. It does not prove that
+live Everesteer credentials or event datasets already exist.
+
+## At the venue
+
+Start the console:
+
+<Command>
+.\.venv\Scripts\qseh.exe dashboard start
+</Command>
+
+Check local health:
+
+<Command>
+.\.venv\Scripts\qseh.exe doctor
+</Command>
+
+Then inspect the real event:
+
+<Command>
+.\.venv\Scripts\qseh.exe event inspect
+</Command>
+
+Do not begin by editing configuration based on assumptions. Read the event first.
+
+## When event access appears
+
+Capture an event snapshot:
+
+<Command>
+.\.venv\Scripts\qseh.exe event snapshot
+</Command>
+
+This becomes the evidence anchor for later data and submission operations.
+
+## When training data appears
+
+Pull it:
+
+<Command>
+.\.venv\Scripts\qseh.exe data pull --split train
+</Command>
+
+Pull validation/practice data if the event exposes it:
+
+<Command>
+.\.venv\Scripts\qseh.exe data pull --split validation
+</Command>
+
+Then verify data before modelling.
+
+<Command>
+.\.venv\Scripts\qseh.exe data audit
+</Command>
+
+<Command>
+.\.venv\Scripts\qseh.exe data fingerprint
+</Command>
+
+Use Data Lab to inspect row counts, schema, missingness, IDs and target
+availability.
+
+## Prove scoring before optimisation
+
+<Command>
+.\.venv\Scripts\qseh.exe baseline scorer-parity
+</Command>
+
+Do not spend the competition optimising against a scorer you do not trust.
+
+## Establish a reference candidate
+
+<Command>
+.\.venv\Scripts\qseh.exe baseline reproduce
+</Command>
+
+This tests the normal path from real data through training, validation, model
+artefact and prediction generation.
+
+## Begin research
+
+Once the basic path is healthy:
+
+<Command>
+.\.venv\Scripts\qseh.exe autopilot run --profile competition-aggressive
+</Command>
+
+Use Experiments and Validation to watch evidence.
+
+Early research should spend small budgets broadly before spending large budgets
+on one family.
+
+## Practice submissions
+
+A practice submission is not just an attempt to score points. It purchases
+external evidence.
+
+Useful candidates tend to be:
+
+- current champion;
+- strong independent challenger;
+- meaningfully different model family;
+- current ensemble.
+
+Do not waste limited uploads on nearly identical random seeds.
+
+Before a real external action:
+
+<Command>
+.\.venv\Scripts\qseh.exe submit check
+</Command>
+
+Confirm submission mode:
+
+<Command>
+.\.venv\Scripts\qseh.exe event submission-mode
+</Command>
+
+Only after verifying the actual event should you explicitly arm external
+uploads.
+
+## During a live round
+
+Use Round Room.
+
+The normal sequence is:
+
+1. detect round;
+2. snapshot event;
+3. pull live data;
+4. fingerprint and audit;
+5. infer known-good candidates;
+6. run submission guard;
+7. submit according to the active policy;
+8. observe leaderboard/standings;
+9. update evidence.
+
+Useful commands when investigating:
+
+<Command>
+.\.venv\Scripts\qseh.exe event inspect
+</Command>
+
+<Command>
+.\.venv\Scripts\qseh.exe autopilot status
+</Command>
+
+<Command>
+.\.venv\Scripts\qseh.exe submit check
+</Command>
+
+<Command>
+.\.venv\Scripts\qseh.exe leaderboard
+</Command>
+
+<Command>
+.\.venv\Scripts\qseh.exe standings
+</Command>
+
+## Final part of the event
+
+Reduce exploration as useful time disappears.
+
+Prefer:
+
+- known-good champion;
+- known-good ensemble;
+- external evidence;
+- upload reserve;
+- jobs that will actually finish before the event ends.
+
+Do not begin:
+
+- dependency upgrades;
+- new framework migrations;
+- broad dashboard redesign;
+- large model architecture experiments;
+- validation rewrites.
+
+## End of event
+
+Capture evidence before shutting things down.
+
+<Command>
+.\.venv\Scripts\qseh.exe standings
+</Command>
+
+<Command>
+.\.venv\Scripts\qseh.exe submissions
+</Command>
+
+<Command>
+.\.venv\Scripts\qseh.exe event snapshot
+</Command>
+
+Stop autonomous scheduling:
+
+<Command>
+.\.venv\Scripts\qseh.exe autopilot stop
+</Command>
+
+Disarm external uploads:
+
+<Command>
+.\.venv\Scripts\qseh.exe event disarm-submissions
+</Command>
+
+Do not immediately `git add -A`; event datasets, predictions and local research
+evidence may intentionally remain private.

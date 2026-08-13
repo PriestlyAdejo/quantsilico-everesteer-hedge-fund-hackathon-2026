@@ -1,0 +1,80 @@
+---
+title: Submission path
+description: How a research candidate becomes a validated practice or live upload.
+section: flows
+order: 50
+---
+
+<PageIntro>
+Submission is an external side effect. Every upload must remain attributable to
+a candidate, event snapshot, dataset fingerprint, prediction artefact and model
+artefact.
+</PageIntro>
+
+<FlowDiagram
+  nodes={[
+    { id: "select", label: "Select" },
+    { id: "infer", label: "Infer" },
+    { id: "validate", label: "Validate" },
+    { id: "package", label: "Package" },
+    { id: "dryrun", label: "Dry run" },
+    { id: "submit", label: "Submit" },
+    { id: "record", label: "Record" }
+  ]}
+/>
+
+## Before anything leaves the machine
+
+The submission guard checks, where applicable:
+
+- event identity;
+- round;
+- lane;
+- split fingerprint;
+- prediction ID coverage;
+- duplicate IDs;
+- prediction format;
+- prediction artefact;
+- model artefact;
+- model loadability;
+- event capability;
+- remaining quota.
+
+A red integrity failure blocks the external action.
+
+## DRY_RUN
+
+Use DRY_RUN while validating the system.
+
+<Command>
+.\.venv\Scripts\qseh.exe event submission-mode
+</Command>
+
+<Command>
+.\.venv\Scripts\qseh.exe submit check
+</Command>
+
+## ARMED
+
+Real uploads require explicit human intent.
+
+<Command>
+.\.venv\Scripts\qseh.exe event arm-submissions
+</Command>
+
+Do not arm until account, event and snapshot identity have been verified.
+
+<Callout tone="danger">
+Neither rehearsal nor autopilot may automatically transition the system to
+ARMED.
+</Callout>
+
+## Idempotency
+
+A restart must not submit the same action twice.
+
+Submission history therefore records enough context to identify an equivalent
+event/round/split/candidate/action combination.
+
+<RelatedPage href="/submission">Open Submission</RelatedPage>
+<RelatedPage href="/event">Open Event Control</RelatedPage>

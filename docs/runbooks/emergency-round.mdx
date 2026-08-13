@@ -1,0 +1,60 @@
+---
+title: Emergency round runbook
+description: Minimal path when the live-round clock is running out.
+section: runbooks
+order: 10
+---
+
+<PageIntro>
+Use this path when there is not enough time for further research. The objective
+is to produce a valid prediction from known-good evidence, not to discover a new
+model.
+</PageIntro>
+
+## First determine whether the event is real and current
+
+<Command>
+.\.venv\Scripts\qseh.exe event inspect
+</Command>
+
+## Inspect autopilot
+
+<Command>
+.\.venv\Scripts\qseh.exe autopilot status
+</Command>
+
+## Validate the current submission candidate
+
+<Command>
+.\.venv\Scripts\qseh.exe submit check
+</Command>
+
+## Emergency helper
+
+<Command>
+.\.venv\Scripts\qseh.exe emergency
+</Command>
+
+Emergency mode should favour a known-good champion or approved ensemble and must
+not begin a new research race.
+
+## If the dashboard is the only broken component
+
+<Command>
+.\.venv\Scripts\qseh.exe dashboard diagnose
+</Command>
+
+Continue through the CLI.
+
+## Never solve a short-clock problem by
+
+- upgrading dependencies;
+- restarting from a random experiment;
+- changing the scorer;
+- rewriting the validation system;
+- disabling integrity checks.
+
+<Callout tone="danger">
+A weak known-good candidate is preferable to an invalid prediction that cannot
+be scored.
+</Callout>
