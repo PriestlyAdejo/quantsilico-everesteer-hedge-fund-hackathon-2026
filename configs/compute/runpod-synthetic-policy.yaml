@@ -1,0 +1,11 @@
+# A provider adapter may consume this only after BudgetPolicy and egress checks pass.
+data_classification: SYNTHETIC
+third_party_data_egress_allowed: true
+authority: PUBLIC_SYNTHETIC_FIXTURE
+maximum_wall_time_seconds: 3600
+maximum_concurrent_workers: 1
+idle_shutdown_seconds: 300
+checkpoint_reserve_seconds: 120
+teardown_required: true
+external_verification_required: true
+auto_top_up: false

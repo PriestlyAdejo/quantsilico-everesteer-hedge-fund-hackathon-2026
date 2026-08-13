@@ -7,27 +7,36 @@ import os
 import subprocess
 import sys
 import time
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 from qs_everesteer.jobs.model import Job, JobKind, JobStatus, utc_now_iso
-from qs_everesteer.jobs.queue import load_job, recompute_queue_positions, save_job
+from qs_everesteer.jobs.queue import claim_next_job, load_job, recompute_queue_positions, save_job
 from qs_everesteer.paths import find_repo_root
 
 Handler = Callable[[Job, Path], dict[str, Any] | None]
 
 
 def _default_handlers() -> dict[str, Handler]:
-    """Allowlisted handlers. Production will swap these for real pipelines."""
+    """Allowlisted production handlers; unsupported kinds fail honestly."""
 
-    def _noop(job: Job, repo_root: Path) -> dict[str, Any]:
-        # Tiny sleep so monotonic elapsed is measurable in tests when requested.
-        delay = float((job.payload or {}).get("sleep_seconds", 0.0))
-        if delay > 0:
-            time.sleep(delay)
-        return {"ok": True, "kind": job.type, "repo_root": str(repo_root)}
+    def _train(job: Job, repo_root: Path) -> dict[str, Any]:
+        payload = job.payload or {}
+        config_path = payload.get("config_path")
+        if config_path:
+            from qs_everesteer.experiments.runner import ExperimentRunner
 
-    return {kind.value: _noop for kind in JobKind}
+            return ExperimentRunner(repo_root).run(Path(config_path))
+        # Explicit test/rehearsal payload; never masquerades as model training.
+        if "sleep_seconds" in payload:
+            delay = float(payload["sleep_seconds"])
+            if delay > 0:
+                time.sleep(delay)
+            return {"ok": True, "synthetic_rehearsal": True}
+        raise ValueError("TRAIN requires payload.config_path")
+
+    return {JobKind.TRAIN.value: _train}
 
 
 def run_job_sync(
@@ -57,6 +66,16 @@ def run_job_sync(
 
     handler = registry.get(job.type)
     try:
+        if handler is None and "sleep_seconds" in (job.payload or {}):
+            # Explicit synthetic lifecycle/recovery rehearsal used by the test
+            # harness. It cannot be mistaken for a real provider/model handler.
+            def _rehearsal(rehearsal_job: Job, _root: Path) -> dict[str, Any]:
+                delay = float((rehearsal_job.payload or {})["sleep_seconds"])
+                if delay > 0:
+                    time.sleep(delay)
+                return {"ok": True, "synthetic_rehearsal": True}
+
+            handler = _rehearsal
         if handler is None:
             raise ValueError(f"no handler registered for job type {job.type!r}")
         job.progress = 0.1
@@ -72,15 +91,33 @@ def run_job_sync(
         job.progress = job.progress if job.progress is not None else 0.0
     finally:
         elapsed = time.perf_counter() - mono_start
-        job.total_seconds = max(0, int(round(elapsed)))
+        job.total_seconds = max(0, round(elapsed))
         # Soft ETA becomes observed duration once finished.
         if job.status == JobStatus.DONE and job.eta_seconds is None:
             job.eta_seconds = job.total_seconds
         job._mono_start = None
+        job.lease_owner = None
+        job.lease_expires_at = None
+        job.heartbeat_at = None
+        job.process_id = None
         save_job(job, root)
         recompute_queue_positions(root)
 
     return load_job(job_id, root)
+
+
+def run_next_job(
+    worker_id: str,
+    repo_root: str | Path | None = None,
+    *,
+    handlers: dict[str, Handler] | None = None,
+) -> Job | None:
+    """Lease and execute one runnable job, or return ``None`` when idle."""
+    root = Path(repo_root) if repo_root is not None else find_repo_root()
+    claimed = claim_next_job(worker_id, root)
+    if claimed is None:
+        return None
+    return run_job_sync(claimed.id, root, handlers=handlers)
 
 
 def spawn_job(
@@ -94,11 +131,17 @@ def spawn_job(
     exe = python or sys.executable
     env = os.environ.copy()
     env["QS_EVERESTEER_REPO_ROOT"] = str(root.resolve())
-    return subprocess.Popen(
+    process = subprocess.Popen(
         [exe, "-m", "qs_everesteer.jobs.worker", "--job-id", job_id, "--repo-root", str(root)],
         cwd=str(root),
         env=env,
     )
+    # Record only the child we created so cancellation never guesses a process.
+    job = load_job(job_id, root)
+    if job.status not in {JobStatus.DONE, JobStatus.FAILED, JobStatus.CANCELLED}:
+        job.process_id = process.pid
+        save_job(job, root)
+    return process
 
 
 def main(argv: list[str] | None = None) -> int:

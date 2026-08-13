@@ -1,0 +1,18 @@
+# Intentionally public-safe: no indexes, credentials, datasets, or provider configuration.
+# CUDA-enabled JAX must be installed only after matching the actual driver/runtime probe.
+numpy==2.1.3
+pandas==2.2.3
+pyarrow==17.0.0
+scipy==1.14.1
+scikit-learn==1.5.2
+lightgbm==4.5.0
+xgboost==2.1.2
+joblib==1.4.2
+psutil==6.1.0
+filelock==3.16.1
+pydantic==2.9.2
+everestapi[scoring]==0.3.24
+typer==0.12.5
+rich==13.9.4
+PyYAML==6.0.2
+duckdb==1.1.3

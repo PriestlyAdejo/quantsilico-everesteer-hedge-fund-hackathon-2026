@@ -21,6 +21,8 @@ class JobStatus(StrEnum):
     PENDING = "PENDING"
     DONE = "DONE"
     FAILED = "FAILED"
+    CANCELLED = "CANCELLED"
+    BLOCKED = "BLOCKED"
 
 
 class Job(ApiModel):

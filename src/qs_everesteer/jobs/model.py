@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
-from enum import StrEnum
+from datetime import UTC, datetime
+from enum import IntEnum, StrEnum
 from typing import Any
 from uuid import uuid4
 
@@ -15,6 +15,19 @@ class JobStatus(StrEnum):
     RUNNING = "RUNNING"
     DONE = "DONE"
     FAILED = "FAILED"
+    CANCELLED = "CANCELLED"
+    BLOCKED = "BLOCKED"
+
+
+class JobPriority(IntEnum):
+    """Lower values run first; names reflect the event operating lanes."""
+
+    LIVE_INTEGRITY = 0
+    ROUND_RECOVERY = 1
+    CHAMPION_PROMOTION = 2
+    PRACTICE = 3
+    AUTOML = 4
+    RESEARCH = 5
 
 
 class JobKind(StrEnum):
@@ -29,7 +42,7 @@ class JobKind(StrEnum):
 
 
 def utc_now_iso() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 @dataclass
@@ -47,6 +60,16 @@ class Job:
     queue_position: int | None = None
     payload: dict[str, Any] = field(default_factory=dict)
     error: str | None = None
+    priority: int = int(JobPriority.AUTOML)
+    deadline: str | None = None
+    created_at: str = field(default_factory=utc_now_iso)
+    dependencies: list[str] = field(default_factory=list)
+    attempt: int = 0
+    maximum_attempts: int = 2
+    lease_owner: str | None = None
+    lease_expires_at: str | None = None
+    heartbeat_at: str | None = None
+    process_id: int | None = None
     # Monotonic clock snapshot (perf_counter) when RUNNING began; not serialized to UI.
     _mono_start: float | None = field(default=None, repr=False, compare=False)
 
@@ -62,6 +85,10 @@ class Job:
         eta_seconds: int | None = None,
         queue_position: int | None = None,
         job_id: str | None = None,
+        priority: int | JobPriority = JobPriority.AUTOML,
+        deadline: str | None = None,
+        dependencies: list[str] | None = None,
+        maximum_attempts: int = 2,
     ) -> Job:
         kind_s = kind.value if isinstance(kind, JobKind) else str(kind)
         return cls(
@@ -78,6 +105,10 @@ class Job:
             queue_position=queue_position,
             payload=dict(payload or {}),
             error=None,
+            priority=int(priority),
+            deadline=deadline,
+            dependencies=list(dependencies or []),
+            maximum_attempts=max(1, int(maximum_attempts)),
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -105,5 +136,15 @@ class Job:
             queue_position=data.get("queue_position"),
             payload=payload,
             error=data.get("error"),
+            priority=int(data.get("priority", JobPriority.AUTOML)),
+            deadline=data.get("deadline"),
+            created_at=str(data.get("created_at") or utc_now_iso()),
+            dependencies=list(data.get("dependencies") or []),
+            attempt=int(data.get("attempt", 0)),
+            maximum_attempts=max(1, int(data.get("maximum_attempts", 2))),
+            lease_owner=data.get("lease_owner"),
+            lease_expires_at=data.get("lease_expires_at"),
+            heartbeat_at=data.get("heartbeat_at"),
+            process_id=data.get("process_id"),
             _mono_start=data.get("_mono_start"),
         )
