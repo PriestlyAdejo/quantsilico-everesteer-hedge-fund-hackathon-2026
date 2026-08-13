@@ -74,9 +74,12 @@ def test_auto_stake_weights_three_submitted_models_by_paid_score(tmp_path: Path)
         def __init__(self):
             self.allocations = []
 
-        def set_stake_allocation(self, model_name, *, amount_usdc, window):
-            self.allocations.append((model_name, amount_usdc, window))
+        def set_stake_allocation(self, model_name, *, amount_micro, window):
+            self.allocations.append((model_name, amount_micro, window))
             return {"ok": True}
+
+        def withdraw_stake_allocation(self, model_name, *, window):
+            return {"deleted": True, "model_name": model_name, "window": window}
 
     client = StakingClient()
     client.get_diagnostics_leaderboard = lambda **kwargs: {
@@ -101,8 +104,55 @@ def test_auto_stake_weights_three_submitted_models_by_paid_score(tmp_path: Path)
     }
     actions = controller._maybe_stake(snapshot)
     assert [row[0] for row in client.allocations] == ["model-a", "model-b", "model-c"]
-    assert sum(float(row[1]) for row in client.allocations) == 25.0
+    assert sum(row[1] for row in client.allocations) == 25_000_000
     assert len(actions) == 3
+
+
+def test_auto_stake_rebalances_unlocked_carried_drafts(tmp_path: Path):
+    class RebalanceClient(FakeClient):
+        def __init__(self):
+            self.set_calls = []
+            self.withdrawals = []
+
+        def get_diagnostics_leaderboard(self, **kwargs):
+            return {"entries": [
+                {"is_self": True, "model_name": "leader", "round_score": 0.8},
+                {"is_self": True, "model_name": "runner", "round_score": 0.2},
+            ]}
+
+        def set_stake_allocation(self, model_name, *, amount_micro, window):
+            self.set_calls.append((model_name, amount_micro, window))
+            return {"ok": True}
+
+        def withdraw_stake_allocation(self, model_name, *, window):
+            self.withdrawals.append((model_name, window))
+            return {"deleted": True}
+
+    client = RebalanceClient()
+    controller = AdaptiveCompetitionController(
+        tmp_path, client=client,
+        policy=AdaptivePolicy(
+            allow_auto_stake=True, stake_bankroll_fraction=0.65, stake_slots=2,
+        ),
+    )
+    snapshot = {
+        "round": "round_3",
+        "staking": {"stake_window_open": True, "draft_window": "round_3",
+                    "max_stakeable_micro": 50_000_000, "windows": [{
+                        "window": "round_3", "allocations": [
+                            {"model_name": "weak", "amount_micro": 10_000_000,
+                             "locked": False},
+                        ],
+                    }]},
+        "submissions": [
+            {"model_id": name, "round": "round_3", "accepted": True}
+            for name in ("leader", "runner")
+        ],
+    }
+    actions = controller._maybe_stake(snapshot)
+    assert client.withdrawals == [("weak", "round_3")]
+    assert sum(row[1] for row in client.set_calls) == 32_500_000
+    assert {row["type"] for row in actions} == {"STAKE_WITHDRAW", "STAKE_ALLOCATION"}
 
 
 def test_validation_attempt_ledger_survives_reconcile(tmp_path: Path):
