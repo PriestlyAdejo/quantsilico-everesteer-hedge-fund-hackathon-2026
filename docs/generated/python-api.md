@@ -2,13 +2,13 @@
 title: Python API
 description: Generated from public project signatures and docstrings.
 source: generated
-generatedFromSha: 0b0fe69f467df29751a6e316ad852083503d48b6
-generatedAt: 2026-08-13T11:38:42+00:00
+generatedFromSha: 65828f1669f73fa7428a854ca927ef05e038cb3e
+generatedAt: 2026-08-13T14:19:03+00:00
 ---
 
 # Python API
 
-Generated from commit `0b0fe69f467df29751a6e316ad852083503d48b6`.
+Generated from commit `65828f1669f73fa7428a854ca927ef05e038cb3e`.
 
 Intended public interfaces only. Private helpers (`_name`) are omitted.
 
@@ -161,7 +161,7 @@ Returns: `dict[str, Callable[..., Any]]`
 
 ## `qs_everesteer.validation.temporal.temporal_cv`
 
-`temporal_cv(frame: 'pd.DataFrame', model_factory: 'Callable[[], Any]', *, features: 'list[str]', target: 'str', exped_col: 'str' = 'exped', profile: 'str | FoldProfile' = 'R1', sample_weight_fn: 'Callable[[Any], Any] | None' = None) -> 'tuple[pd.DataFrame, dict[str, Any]]'`
+`temporal_cv(frame: 'pd.DataFrame', model_factory: 'Callable[[], Any]', *, features: 'list[str]', target: 'str', exped_col: 'str' = 'exped', profile: 'str | FoldProfile' = 'R1', sample_weight_fn: 'Callable[[Any], Any] | None' = None, enforce_target_horizon: 'bool' = True) -> 'tuple[pd.DataFrame, dict[str, Any]]'`
 
 MISSING DOCSTRING
 
@@ -176,6 +176,7 @@ MISSING DOCSTRING
 | exped_col | no | 'exped' | str |
 | profile | no | 'R1' | str \| FoldProfile |
 | sample_weight_fn | no | None | Callable[[Any], Any] \| None |
+| enforce_target_horizon | no | True | bool |
 
 Returns: `tuple[pd.DataFrame, dict[str, Any]]`
 
@@ -251,6 +252,21 @@ MISSING DOCSTRING
 
 Returns: `dict[str, Any]`
 
+## `qs_everesteer.experiments.runner.ExperimentRunner.run_promoted_child`
+
+`run_promoted_child(self, parent_run_id: 'str', next_stage: 'str') -> 'dict[str, Any]'`
+
+Retrain a promoted parent at the next evidence stage with lineage.
+
+### Parameters
+
+| Name | Required | Default | Type |
+| --- | --- | --- | --- |
+| parent_run_id | yes |  | str |
+| next_stage | yes |  | str |
+
+Returns: `dict[str, Any]`
+
 ## `qs_everesteer.experiments.racing.RacingScheduler`
 
 `RacingScheduler(self, *, keep_fraction: 'float' = 0.5, min_survivors: 'int' = 1) -> 'None'`
@@ -265,6 +281,22 @@ MISSING DOCSTRING
 | min_survivors | no | 1 | int |
 
 Returns: `None`
+
+## `qs_everesteer.experiments.racing.RacingScheduler.child_configs`
+
+`child_configs(outcomes: 'list[RaceOutcome]', *, repo_root: 'str | Path', target_stage: 'str') -> 'list[dict[str, Any]]'`
+
+Build real retraining configs for promoted parents, preserving lineage.
+
+### Parameters
+
+| Name | Required | Default | Type |
+| --- | --- | --- | --- |
+| outcomes | yes |  | list[RaceOutcome] |
+| repo_root | yes |  | str \| Path |
+| target_stage | yes |  | str |
+
+Returns: `list[dict[str, Any]]`
 
 ## `qs_everesteer.experiments.racing.RacingScheduler.evaluate`
 
@@ -482,7 +514,7 @@ Returns: `RoundTickResult`
 
 ## `qs_everesteer.jobs.queue.enqueue`
 
-`enqueue(kind: 'str | JobKind', payload: 'dict[str, Any] | None' = None, *, repo_root: 'str | Path | None' = None, name: 'str | None' = None, candidate: 'str | None' = None, device: 'str' = 'CPU', job_id: 'str | None' = None) -> 'str'`
+`enqueue(kind: 'str | JobKind', payload: 'dict[str, Any] | None' = None, *, repo_root: 'str | Path | None' = None, name: 'str | None' = None, candidate: 'str | None' = None, device: 'str' = 'CPU', job_id: 'str | None' = None, priority: 'int | JobPriority' = <JobPriority.AUTOML: 4>, deadline: 'str | None' = None, dependencies: 'list[str] | None' = None, maximum_attempts: 'int' = 2) -> 'str'`
 
 Write a QUEUED job JSON under ``runs/jobs/`` and return its id.
 
@@ -497,6 +529,10 @@ Write a QUEUED job JSON under ``runs/jobs/`` and return its id.
 | candidate | no | None | str \| None |
 | device | no | 'CPU' | str |
 | job_id | no | None | str \| None |
+| priority | no | <JobPriority.AUTOML: 4> | int \| JobPriority |
+| deadline | no | None | str \| None |
+| dependencies | no | None | list[str] \| None |
+| maximum_attempts | no | 2 | int |
 
 Returns: `str`
 

@@ -872,6 +872,21 @@ class ConsoleService:
             and hw.gpu_vram_used_gb is not None
         ):
             vram_util = round(100.0 * hw.gpu_vram_used_gb / hw.gpu_vram_total_gb, 1)
+        local_jobs = [
+            job for job in jobs if job.get("device") not in {"EVERESTEER_BUILTIN", "EVERESTEER_CUSTOM_GPU", "RUNPOD_GPU"}
+        ]
+        server_jobs = [
+            job for job in jobs if job.get("device") in {"EVERESTEER_BUILTIN", "EVERESTEER_CUSTOM_GPU", "RUNPOD_GPU"}
+        ]
+        completed = [job for job in jobs if job.get("status") == "DONE" and job.get("total_seconds") is not None]
+        runtime_history = [
+            {
+                "ts": job.get("started_at") or utc_now(),
+                "duration_min": round(float(job["total_seconds"]) / 60.0, 3),
+                "type": str(job.get("type") or "UNKNOWN"),
+            }
+            for job in completed[-24:]
+        ]
         data = ComputeData(
             hardware=ComputeHardware(
                 os=hw.os_label,
@@ -902,12 +917,12 @@ class ConsoleService:
                 queue_length=sum(job["status"] == "QUEUED" for job in jobs),
                 experiments_per_hour=None,
             ),
-            local_queue=jobs,
-            server_queue=[],
+            local_queue=local_jobs,
+            server_queue=server_jobs,
             event_watcher=ComputeEventWatcher(
                 active=False, last_ping=utc_now(), interval="not running"
             ),
-            runtime_history=[],
+            runtime_history=runtime_history,
             updated_at=utc_now(),
         )
         return self.envelope(

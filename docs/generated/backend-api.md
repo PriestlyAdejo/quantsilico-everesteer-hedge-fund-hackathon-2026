@@ -2,13 +2,13 @@
 title: Backend API
 description: Generated from create_app().openapi() for the Research Console.
 source: generated
-generatedFromSha: 0b0fe69f467df29751a6e316ad852083503d48b6
-generatedAt: 2026-08-13T11:38:41+00:00
+generatedFromSha: 65828f1669f73fa7428a854ca927ef05e038cb3e
+generatedAt: 2026-08-13T14:19:01+00:00
 ---
 
 # Backend API
 
-Generated from commit `0b0fe69f467df29751a6e316ad852083503d48b6`.
+Generated from commit `65828f1669f73fa7428a854ca927ef05e038cb3e`.
 
 OpenAPI `3.1.0` — 33 paths from the live FastAPI application.
 

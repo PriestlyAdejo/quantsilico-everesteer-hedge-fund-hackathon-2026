@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-13T11:38:41+00:00",
-  "generated_from_sha": "0b0fe69f467df29751a6e316ad852083503d48b6",
+  "generated_at": "2026-08-13T14:19:01+00:00",
+  "generated_from_sha": "65828f1669f73fa7428a854ca927ef05e038cb3e",
   "generator_version": "3",
   "commands": [
     {
@@ -69,13 +69,21 @@
     },
     {
       "command": "qseh baseline reproduce",
-      "help": "Fit the independent reference_lgbm baseline.",
+      "help": "Fit the organiser or independent reference LightGBM baseline.",
       "params": [
         {
           "name": "data_path",
           "cli": "--data",
-          "help": "Training parquet (default: synthetic train).",
+          "help": "Training parquet (required unless synthetic mode is explicit).",
           "default": null,
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "official",
+          "cli": "--official",
+          "help": "Use the attributable organiser recipe or legacy reference recipe.",
+          "default": false,
           "required": false,
           "kind": "option"
         }
@@ -91,7 +99,7 @@
         {
           "name": "expected",
           "cli": "--expected",
-          "help": "Expected prediction column/file.",
+          "help": "Expected prediction file.",
           "default": null,
           "required": false,
           "kind": "option"
@@ -99,7 +107,7 @@
         {
           "name": "observed",
           "cli": "--observed",
-          "help": "Observed prediction column/file.",
+          "help": "Observed prediction file.",
           "default": null,
           "required": false,
           "kind": "option"
@@ -114,6 +122,75 @@
         }
       ],
       "usage": "Usage: qseh baseline scorer-parity [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
+      "command": "qseh candidate",
+      "help": "Local candidate inference and packaging.",
+      "params": [],
+      "usage": "Usage: qseh candidate [OPTIONS]",
+      "is_group": true,
+      "subcommands": [
+        "infer",
+        "package"
+      ]
+    },
+    {
+      "command": "qseh candidate infer",
+      "help": "Generate local predictions; never uploads them.",
+      "params": [
+        {
+          "name": "candidate",
+          "cli": "--candidate",
+          "help": "",
+          "default": "champion",
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "data",
+          "cli": "--data",
+          "help": "",
+          "default": null,
+          "required": true,
+          "kind": "option"
+        },
+        {
+          "name": "out",
+          "cli": "--out",
+          "help": "",
+          "default": null,
+          "required": false,
+          "kind": "option"
+        }
+      ],
+      "usage": "Usage: qseh candidate infer [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
+      "command": "qseh candidate package",
+      "help": "Create a lineage manifest without external upload.",
+      "params": [
+        {
+          "name": "candidate",
+          "cli": "--candidate",
+          "help": "",
+          "default": "champion",
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "predictions",
+          "cli": "--predictions",
+          "help": "",
+          "default": null,
+          "required": true,
+          "kind": "option"
+        }
+      ],
+      "usage": "Usage: qseh candidate package [OPTIONS]",
       "is_group": false,
       "subcommands": []
     },
@@ -135,10 +212,91 @@
       "subcommands": []
     },
     {
+      "command": "qseh champion-select",
+      "help": "Select the best integrity-valid promotion-grade R3 candidate.",
+      "params": [],
+      "usage": "Usage: qseh champion-select [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
       "command": "qseh compare",
       "help": "Compare experiment run metrics under runs/experiments/.",
       "params": [],
       "usage": "Usage: qseh compare [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
+      "command": "qseh compute",
+      "help": "Probe compute without provisioning resources.",
+      "params": [],
+      "usage": "Usage: qseh compute [OPTIONS]",
+      "is_group": true,
+      "subcommands": [
+        "autotune",
+        "benchmark",
+        "jobs",
+        "policy",
+        "probe"
+      ]
+    },
+    {
+      "command": "qseh compute autotune",
+      "help": "Select the fastest passing lane from matched evidence.",
+      "params": [],
+      "usage": "Usage: qseh compute autotune [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
+      "command": "qseh compute benchmark",
+      "help": "Run a matched public-synthetic CPU/native-GPU canary.",
+      "params": [
+        {
+          "name": "profile",
+          "cli": "--profile",
+          "help": "",
+          "default": "matched",
+          "required": false,
+          "kind": "option"
+        }
+      ],
+      "usage": "Usage: qseh compute benchmark [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
+      "command": "qseh compute jobs",
+      "help": "List local job records (legacy-compatible read surface).",
+      "params": [],
+      "usage": "Usage: qseh compute jobs [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
+      "command": "qseh compute policy",
+      "help": "Inspect fail-closed compute policies.",
+      "params": [],
+      "usage": "Usage: qseh compute policy [OPTIONS]",
+      "is_group": true,
+      "subcommands": [
+        "show"
+      ]
+    },
+    {
+      "command": "qseh compute policy show",
+      "help": "Show default funding and data-egress policy.",
+      "params": [],
+      "usage": "Usage: qseh compute policy show [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
+      "command": "qseh compute probe",
+      "help": "Capability-detect local lanes; remote lanes remain unavailable until verified.",
+      "params": [],
+      "usage": "Usage: qseh compute probe [OPTIONS]",
       "is_group": false,
       "subcommands": []
     },
@@ -271,7 +429,7 @@
     },
     {
       "command": "qseh data pull",
-      "help": "Pull a split; uses synthetic fixtures when creds missing or QSEH_SYNTHETIC=1.",
+      "help": "Pull a real split, or an explicit fixture when ``QSEH_SYNTHETIC=1``.",
       "params": [
         {
           "name": "split",
@@ -357,6 +515,14 @@
           "cli": "--strategy",
           "help": "rank_average|greedy_forward",
           "default": "rank_average",
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "method",
+          "cli": "--method",
+          "help": "Alias for --strategy.",
+          "default": null,
           "required": false,
           "kind": "option"
         },
@@ -496,6 +662,24 @@
       "subcommands": []
     },
     {
+      "command": "qseh evidence",
+      "help": "Verify persisted research evidence.",
+      "params": [],
+      "usage": "Usage: qseh evidence [OPTIONS]",
+      "is_group": true,
+      "subcommands": [
+        "verify"
+      ]
+    },
+    {
+      "command": "qseh evidence verify",
+      "help": "Verify run completeness and model hashes without loading pickle/joblib.",
+      "params": [],
+      "usage": "Usage: qseh evidence verify [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
       "command": "qseh frontier",
       "help": "Compute Pareto frontier (max score, min runtime).",
       "params": [
@@ -517,6 +701,60 @@
         }
       ],
       "usage": "Usage: qseh frontier [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
+      "command": "qseh jobs",
+      "help": "Inspect and control persisted jobs.",
+      "params": [],
+      "usage": "Usage: qseh jobs [OPTIONS]",
+      "is_group": true,
+      "subcommands": [
+        "cancel",
+        "list",
+        "retry"
+      ]
+    },
+    {
+      "command": "qseh jobs cancel",
+      "help": "",
+      "params": [
+        {
+          "name": "job_id",
+          "cli": "job_id",
+          "help": "",
+          "default": null,
+          "required": true,
+          "kind": "option"
+        }
+      ],
+      "usage": "Usage: qseh jobs cancel [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
+      "command": "qseh jobs list",
+      "help": "",
+      "params": [],
+      "usage": "Usage: qseh jobs list [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
+      "command": "qseh jobs retry",
+      "help": "",
+      "params": [
+        {
+          "name": "job_id",
+          "cli": "job_id",
+          "help": "",
+          "default": null,
+          "required": true,
+          "kind": "option"
+        }
+      ],
+      "usage": "Usage: qseh jobs retry [OPTIONS]",
       "is_group": false,
       "subcommands": []
     },
@@ -545,6 +783,14 @@
           "cli": "--stage",
           "help": "Racing stage R0\u2013R3.",
           "default": "R0",
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "through",
+          "cli": "--through",
+          "help": "Retrain promoted children successively through R1-R3.",
+          "default": null,
           "required": false,
           "kind": "option"
         }
@@ -610,6 +856,133 @@
       "help": "Show installed everestapi version and adapter fingerprint (never the key).",
       "params": [],
       "usage": "Usage: qseh sdk info [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
+      "command": "qseh search",
+      "help": "Bounded AutoML search.",
+      "params": [],
+      "usage": "Usage: qseh search [OPTIONS]",
+      "is_group": true,
+      "subcommands": [
+        "advanced",
+        "family",
+        "tune"
+      ]
+    },
+    {
+      "command": "qseh search advanced",
+      "help": "Run diversity challengers at bounded budgets.",
+      "params": [
+        {
+          "name": "data",
+          "cli": "--data",
+          "help": "",
+          "default": null,
+          "required": true,
+          "kind": "option"
+        },
+        {
+          "name": "profile",
+          "cli": "--profile",
+          "help": "",
+          "default": "R1",
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "max_trials",
+          "cli": "--max-trials",
+          "help": "",
+          "default": 3,
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "bounded",
+          "cli": "--bounded",
+          "help": "",
+          "default": true,
+          "required": false,
+          "kind": "option"
+        }
+      ],
+      "usage": "Usage: qseh search advanced [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
+      "command": "qseh search family",
+      "help": "Run the broad, cheap family tournament.",
+      "params": [
+        {
+          "name": "data",
+          "cli": "--data",
+          "help": "",
+          "default": null,
+          "required": true,
+          "kind": "option"
+        },
+        {
+          "name": "profile",
+          "cli": "--profile",
+          "help": "",
+          "default": "R0",
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "max_trials",
+          "cli": "--max-trials",
+          "help": "",
+          "default": 7,
+          "required": false,
+          "kind": "option"
+        }
+      ],
+      "usage": "Usage: qseh search family [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
+      "command": "qseh search tune",
+      "help": "Tune only candidates promoted by the latest race.",
+      "params": [
+        {
+          "name": "data",
+          "cli": "--data",
+          "help": "",
+          "default": null,
+          "required": true,
+          "kind": "option"
+        },
+        {
+          "name": "profile",
+          "cli": "--profile",
+          "help": "",
+          "default": "R2",
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "max_trials",
+          "cli": "--max-trials",
+          "help": "",
+          "default": 8,
+          "required": false,
+          "kind": "option"
+        },
+        {
+          "name": "survivors",
+          "cli": "--survivors",
+          "help": "",
+          "default": true,
+          "required": false,
+          "kind": "option"
+        }
+      ],
+      "usage": "Usage: qseh search tune [OPTIONS]",
       "is_group": false,
       "subcommands": []
     },
@@ -781,6 +1154,42 @@
         }
       ],
       "usage": "Usage: qseh submit practice [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
+      "command": "qseh worker",
+      "help": "Run the local durable worker.",
+      "params": [],
+      "usage": "Usage: qseh worker [OPTIONS]",
+      "is_group": true,
+      "subcommands": [
+        "start",
+        "status"
+      ]
+    },
+    {
+      "command": "qseh worker start",
+      "help": "Recover expired leases, then execute queued jobs in scheduler order.",
+      "params": [
+        {
+          "name": "once",
+          "cli": "--once",
+          "help": "Run once or continue until idle.",
+          "default": true,
+          "required": false,
+          "kind": "option"
+        }
+      ],
+      "usage": "Usage: qseh worker start [OPTIONS]",
+      "is_group": false,
+      "subcommands": []
+    },
+    {
+      "command": "qseh worker status",
+      "help": "Show queued/running jobs without starting work.",
+      "params": [],
+      "usage": "Usage: qseh worker status [OPTIONS]",
       "is_group": false,
       "subcommands": []
     }

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
 import typer
 
@@ -45,13 +44,13 @@ def data_pull(
         "--split",
         help="Dataset split: train | validation | live",
     ),
-    dest: Optional[Path] = typer.Option(
+    dest: Path | None = typer.Option(  # noqa: B008
         None,
         "--dest",
         help="Destination file or directory (default: data/<split>.parquet).",
     ),
 ) -> None:
-    """Pull a split; uses synthetic fixtures when creds missing or QSEH_SYNTHETIC=1."""
+    """Pull a real split, or an explicit fixture when ``QSEH_SYNTHETIC=1``."""
     split_norm = split.strip().lower()
     if split_norm not in {"train", "validation", "live", "val", "valid"}:
         console.print("[red]split must be train|validation|live[/red]")
@@ -68,13 +67,10 @@ def data_pull(
     try:
         path = adapter.pull_split(split_norm, out, repo_root=root)
     except RuntimeError as exc:
+        console.print(f"[red]data pull failed:[/red] {exc}")
         if not synthetic:
-            console.print(f"[yellow]{exc}[/yellow]")
-            console.print("[dim]falling back to synthetic fixtures[/dim]")
-            adapter = EveresteerAdapter(synthetic=True)
-            path = adapter.pull_split(split_norm, out, repo_root=root)
-        else:
-            raise
+            console.print("[dim]Set QSEH_SYNTHETIC=1 only for an explicit fixture run.[/dim]")
+        raise typer.Exit(code=1) from exc
     fp = fingerprint_dataset(path)
     job_id = enqueue(
         JobKind.DATA_PULL,
@@ -102,7 +98,7 @@ def data_pull(
 
 @data_app.command("audit")
 def data_audit(
-    path: Optional[Path] = typer.Argument(
+    path: Path | None = typer.Argument(  # noqa: B008
         None,
         help="Dataset path (default: synthetic train.parquet).",
     ),
@@ -123,7 +119,7 @@ def data_audit(
 
 @data_app.command("fingerprint")
 def data_fingerprint(
-    path: Optional[Path] = typer.Argument(
+    path: Path | None = typer.Argument(  # noqa: B008
         None,
         help="Dataset path (default: synthetic train.parquet).",
     ),

@@ -2,13 +2,13 @@
 title: CLI Reference
 description: Generated from the current qseh Typer command tree.
 source: generated
-generatedFromSha: 0b0fe69f467df29751a6e316ad852083503d48b6
-generatedAt: 2026-08-13T11:38:41+00:00
+generatedFromSha: 65828f1669f73fa7428a854ca927ef05e038cb3e
+generatedAt: 2026-08-13T14:19:01+00:00
 ---
 
 # CLI Reference
 
-Generated from commit `0b0fe69f467df29751a6e316ad852083503d48b6`.
+Generated from commit `65828f1669f73fa7428a854ca927ef05e038cb3e`.
 
 Authoritative source: the live Typer command tree (`qseh docs build`).
 
@@ -67,7 +67,7 @@ Subcommands: `reproduce`, `scorer-parity`.
 
 ## `qseh baseline reproduce`
 
-Fit the independent reference_lgbm baseline.
+Fit the organiser or independent reference LightGBM baseline.
 
 ```text
 Usage: qseh baseline reproduce [OPTIONS]
@@ -77,7 +77,8 @@ Usage: qseh baseline reproduce [OPTIONS]
 
 | Option | Required | Default | Meaning |
 | --- | --- | --- | --- |
-| --data | no |  | Training parquet (default: synthetic train). |
+| --data | no |  | Training parquet (required unless synthetic mode is explicit). |
+| --official | no | False | Use the attributable organiser recipe or legacy reference recipe. |
 
 ## `qseh baseline scorer-parity`
 
@@ -91,9 +92,50 @@ Usage: qseh baseline scorer-parity [OPTIONS]
 
 | Option | Required | Default | Meaning |
 | --- | --- | --- | --- |
-| --expected | no |  | Expected prediction column/file. |
-| --observed | no |  | Observed prediction column/file. |
+| --expected | no |  | Expected prediction file. |
+| --observed | no |  | Observed prediction file. |
 | --column | no | prediction |  |
+
+## `qseh candidate`
+
+Local candidate inference and packaging.
+
+```text
+Usage: qseh candidate [OPTIONS]
+```
+
+Subcommands: `infer`, `package`.
+
+## `qseh candidate infer`
+
+Generate local predictions; never uploads them.
+
+```text
+Usage: qseh candidate infer [OPTIONS]
+```
+
+### Options
+
+| Option | Required | Default | Meaning |
+| --- | --- | --- | --- |
+| --candidate | no | champion |  |
+| --data | yes |  |  |
+| --out | no |  |  |
+
+## `qseh candidate package`
+
+Create a lineage manifest without external upload.
+
+```text
+Usage: qseh candidate package [OPTIONS]
+```
+
+### Options
+
+| Option | Required | Default | Meaning |
+| --- | --- | --- | --- |
+| --candidate | no | champion |  |
+| --predictions | yes |  |  |
 
 ## `qseh champion`
 
@@ -109,12 +151,86 @@ Usage: qseh champion [OPTIONS]
 | --- | --- | --- | --- |
 | --set | no |  | Promote a candidate id to champion (omit to show current). |
 
+## `qseh champion-select`
+
+Select the best integrity-valid promotion-grade R3 candidate.
+
+```text
+Usage: qseh champion-select [OPTIONS]
+```
+
 ## `qseh compare`
 
 Compare experiment run metrics under runs/experiments/.
 
 ```text
 Usage: qseh compare [OPTIONS]
+```
+
+## `qseh compute`
+
+Probe compute without provisioning resources.
+
+```text
+Usage: qseh compute [OPTIONS]
+```
+
+Subcommands: `autotune`, `benchmark`, `jobs`, `policy`, `probe`.
+
+## `qseh compute autotune`
+
+Select the fastest passing lane from matched evidence.
+
+```text
+Usage: qseh compute autotune [OPTIONS]
+```
+
+## `qseh compute benchmark`
+
+Run a matched public-synthetic CPU/native-GPU canary.
+
+```text
+Usage: qseh compute benchmark [OPTIONS]
+```
+
+### Options
+
+| Option | Required | Default | Meaning |
+| --- | --- | --- | --- |
+| --profile | no | matched |  |
+
+## `qseh compute jobs`
+
+List local job records (legacy-compatible read surface).
+
+```text
+Usage: qseh compute jobs [OPTIONS]
+```
+
+## `qseh compute policy`
+
+Inspect fail-closed compute policies.
+
+```text
+Usage: qseh compute policy [OPTIONS]
+```
+
+Subcommands: `show`.
+
+## `qseh compute policy show`
+
+Show default funding and data-egress policy.
+
+```text
+Usage: qseh compute policy show [OPTIONS]
+```
+
+## `qseh compute probe`
+
+Capability-detect local lanes; remote lanes remain unavailable until verified.
+
+```text
+Usage: qseh compute probe [OPTIONS]
 ```
 
 ## `qseh dashboard`
@@ -227,7 +343,7 @@ Usage: qseh data fingerprint [OPTIONS]
 
 ## `qseh data pull`
 
-Pull a split; uses synthetic fixtures when creds missing or QSEH_SYNTHETIC=1.
+Pull a real split, or an explicit fixture when ``QSEH_SYNTHETIC=1``.
 
 ```text
 Usage: qseh data pull [OPTIONS]
@@ -303,6 +419,7 @@ Usage: qseh ensemble build [OPTIONS]
 | Option | Required | Default | Meaning |
 | --- | --- | --- | --- |
 | --strategy | no | rank_average | rank_average\|greedy_forward |
+| --method | no |  | Alias for --strategy. |
 | --out | no |  | Blend manifest path. |
 
 ## `qseh ensemble compare`
@@ -392,6 +509,24 @@ Usage: qseh event watch [OPTIONS]
 | --once | no | False | Single poll then exit. |
 | --tick-round | no | False | Advance one RoundController cycle (detect→pull→guard→submit path). |
 
+## `qseh evidence`
+
+Verify persisted research evidence.
+
+```text
+Usage: qseh evidence [OPTIONS]
+```
+
+Subcommands: `verify`.
+
+## `qseh evidence verify`
+
+Verify run completeness and model hashes without loading pickle/joblib.
+
+```text
+Usage: qseh evidence verify [OPTIONS]
+```
+
 ## `qseh frontier`
 
 Compute Pareto frontier (max score, min runtime).
@@ -406,6 +541,46 @@ Usage: qseh frontier [OPTIONS]
 | --- | --- | --- | --- |
 | --score-key | no | score |  |
 | --runtime-key | no | runtime_seconds |  |
+
+## `qseh jobs`
+
+Inspect and control persisted jobs.
+
+```text
+Usage: qseh jobs [OPTIONS]
+```
+
+Subcommands: `cancel`, `list`, `retry`.
+
+## `qseh jobs cancel`
+
+```text
+Usage: qseh jobs cancel [OPTIONS]
+```
+
+### Options
+
+| Option | Required | Default | Meaning |
+| --- | --- | --- | --- |
+| job_id | yes |  |  |
+
+## `qseh jobs list`
+
+```text
+Usage: qseh jobs list [OPTIONS]
+```
+
+## `qseh jobs retry`
+
+```text
+Usage: qseh jobs retry [OPTIONS]
+```
+
+### Options
+
+| Option | Required | Default | Meaning |
+| --- | --- | --- | --- |
+| job_id | yes |  |  |
 
 ## `qseh leaderboard`
 
@@ -429,6 +604,7 @@ Usage: qseh race [OPTIONS]
 | --- | --- | --- | --- |
 | --profile | no | fast | Race profile: fast \| standard |
 | --stage | no | R0 | Racing stage R0–R3. |
+| --through | no |  | Retrain promoted children successively through R1-R3. |
 
 ## `qseh rehearsal`
 
@@ -478,6 +654,66 @@ Show installed everestapi version and adapter fingerprint (never the key).
 ```text
 Usage: qseh sdk info [OPTIONS]
 ```
+
+## `qseh search`
+
+Bounded AutoML search.
+
+```text
+Usage: qseh search [OPTIONS]
+```
+
+Subcommands: `advanced`, `family`, `tune`.
+
+## `qseh search advanced`
+
+Run diversity challengers at bounded budgets.
+
+```text
+Usage: qseh search advanced [OPTIONS]
+```
+
+### Options
+
+| Option | Required | Default | Meaning |
+| --- | --- | --- | --- |
+| --data | yes |  |  |
+| --profile | no | R1 |  |
+| --max-trials | no | 3 |  |
+| --bounded | no | True |  |
+
+## `qseh search family`
+
+Run the broad, cheap family tournament.
+
+```text
+Usage: qseh search family [OPTIONS]
+```
+
+### Options
+
+| Option | Required | Default | Meaning |
+| --- | --- | --- | --- |
+| --data | yes |  |  |
+| --profile | no | R0 |  |
+| --max-trials | no | 7 |  |
+
+## `qseh search tune`
+
+Tune only candidates promoted by the latest race.
+
+```text
+Usage: qseh search tune [OPTIONS]
+```
+
+### Options
+
+| Option | Required | Default | Meaning |
+| --- | --- | --- | --- |
+| --data | yes |  |  |
+| --profile | no | R2 |  |
+| --max-trials | no | 8 |  |
+| --survivors | no | True |  |
 
 ## `qseh stake`
 
@@ -585,4 +821,36 @@ Usage: qseh submit practice [OPTIONS]
 | --predictions | no |  |  |
 | --candidate | no | champion |  |
 | --round | no |  |  |
+
+## `qseh worker`
+
+Run the local durable worker.
+
+```text
+Usage: qseh worker [OPTIONS]
+```
+
+Subcommands: `start`, `status`.
+
+## `qseh worker start`
+
+Recover expired leases, then execute queued jobs in scheduler order.
+
+```text
+Usage: qseh worker start [OPTIONS]
+```
+
+### Options
+
+| Option | Required | Default | Meaning |
+| --- | --- | --- | --- |
+| --once | no | True | Run once or continue until idle. |
+
+## `qseh worker status`
+
+Show queued/running jobs without starting work.
+
+```text
+Usage: qseh worker status [OPTIONS]
+```
 

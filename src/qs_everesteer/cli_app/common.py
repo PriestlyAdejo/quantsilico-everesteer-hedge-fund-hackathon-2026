@@ -24,13 +24,9 @@ def repo_root() -> Path:
 
 
 def wants_synthetic() -> bool:
+    """Return whether the operator explicitly enabled synthetic fixtures."""
     raw = os.environ.get("QSEH_SYNTHETIC", "").strip().lower()
-    if raw in {"1", "true", "yes", "on"}:
-        return True
-    # No Everesteer creds → prefer synthetic fixtures.
-    if not (os.getenv("EIQ_API_KEY") or os.getenv("EVEREST_API_KEY")):
-        return True
-    return False
+    return raw in {"1", "true", "yes", "on"}
 
 
 def print_json(payload: Any) -> None:

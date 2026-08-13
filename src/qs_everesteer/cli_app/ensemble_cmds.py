@@ -3,14 +3,18 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 import pandas as pd
 import typer
 
 from qs_everesteer.cli_app.common import console, print_json, print_mutation_context, repo_root
-from qs_everesteer.ensemble.blend import greedy_forward, persist_blend, rank_average
+from qs_everesteer.ensemble.blend import (
+    greedy_forward,
+    persist_blend,
+    rank_average,
+    ridge_oof_stack,
+)
 from qs_everesteer.fsutil import read_json
 from qs_everesteer.paths import ensure_dir
 from qs_everesteer.state.research import update_research_state
@@ -19,20 +23,27 @@ from qs_everesteer.validation.scoring import local_grouped_corr
 ensemble_app = typer.Typer(help="Ensemble blending.", no_args_is_help=True)
 
 
-def _collect_oof(root: Path) -> tuple[pd.DataFrame | None, np.ndarray | None]:
-    """Stack OOF prediction columns from experiment runs when available."""
+def _collect_oof(
+    root: Path,
+) -> tuple[pd.DataFrame | None, np.ndarray | None, np.ndarray | None]:
+    """Key-align promotion-grade OOF columns; never blend by row position."""
     exp_root = root / "runs" / "experiments"
-    cols: dict[str, np.ndarray] = {}
-    y_true: np.ndarray | None = None
+    aligned: pd.DataFrame | None = None
     if not exp_root.is_dir():
-        return None, None
+        return None, None, None
     for run_dir in sorted(exp_root.iterdir()):
         oof_path = run_dir / "oof.parquet"
         if not oof_path.exists():
             continue
+        run_path = run_dir / "run.json"
+        if not run_path.exists():
+            continue
         try:
+            run = read_json(run_path)
             df = pd.read_parquet(oof_path)
-        except Exception:  # noqa: BLE001
+        except Exception:  # noqa: BLE001, S112 -- corrupt runs are excluded as evidence
+            continue
+        if str((run.get("config") or {}).get("profile", "")).upper() not in {"R2", "R3"}:
             continue
         pred_col = None
         for name in ("prediction", "pred", "oof", "y_pred"):
@@ -44,32 +55,55 @@ def _collect_oof(root: Path) -> tuple[pd.DataFrame | None, np.ndarray | None]:
             pred_col = numeric[-1] if numeric else None
         if pred_col is None:
             continue
-        cols[run_dir.name] = df[pred_col].to_numpy(dtype=float)
-        if y_true is None:
-            for tname in ("target", "target_everest_20", "y", "y_true"):
-                if tname in df.columns:
-                    y_true = df[tname].to_numpy(dtype=float)
-                    break
-    if not cols:
-        return None, None
-    return pd.DataFrame(cols), y_true
+        keys = [name for name in ("id", "exped") if name in df.columns]
+        if "exped" not in keys:
+            continue
+        if "id" not in keys and "row_index" in df.columns:
+            keys.insert(0, "row_index")
+        if df.duplicated(keys).any():
+            continue
+        target_col = next((name for name in ("target", "target_everest_20", "y", "y_true") if name in df), None)
+        if target_col is None:
+            continue
+        part = df[keys + [target_col, pred_col]].rename(
+            columns={target_col: "target", pred_col: run_dir.name}
+        )
+        if aligned is None:
+            aligned = part
+        else:
+            candidate = aligned.merge(part, on=keys, how="inner", suffixes=("", "_candidate"))
+            if "target_candidate" in candidate:
+                if not np.allclose(candidate["target"], candidate["target_candidate"], equal_nan=False):
+                    continue
+                candidate = candidate.drop(columns="target_candidate")
+            aligned = candidate
+    if aligned is None or len(aligned.columns) <= 3:
+        return None, None, None
+    model_cols = [c for c in aligned if c not in {*[c for c in ("id", "row_index", "exped") if c in aligned], "target"}]
+    return aligned[model_cols], aligned["target"].to_numpy(float), aligned["exped"].to_numpy()
 
 
 @ensemble_app.command("build")
 def ensemble_build(
     strategy: str = typer.Option("rank_average", "--strategy", help="rank_average|greedy_forward"),
-    out: Optional[Path] = typer.Option(None, "--out", help="Blend manifest path."),
+    method: str | None = typer.Option(None, "--method", help="Alias for --strategy."),
+    out: Path | None = typer.Option(  # noqa: B008
+        None, "--out", help="Blend manifest path."
+    ),
 ) -> None:
     """Build a blend from available experiment OOF predictions."""
     root = repo_root()
     print_mutation_context(lane="practice", candidate="ensemble")
-    preds, y_true = _collect_oof(root)
+    preds, y_true, groups = _collect_oof(root)
     if preds is None or preds.empty:
         console.print("[yellow]no OOF predictions found under runs/experiments/[/yellow]")
         print_json({"ok": False, "reason": "no_oof", "members": []})
         raise typer.Exit(code=1)
 
-    strategy_norm = strategy.strip().lower()
+    strategy_norm = (method or strategy).strip().lower()
+    strategy_norm = {"greedy": "greedy_forward", "ridge-oof": "ridge_oof"}.get(
+        strategy_norm, strategy_norm
+    )
     if strategy_norm == "rank_average":
         blended = rank_average(preds)
         result = {
@@ -88,6 +122,14 @@ def ensemble_build(
 
         result = greedy_forward(preds, y_true, _scorer)
         result["strategy"] = "greedy_forward"
+    elif strategy_norm in {"ridge_oof", "non_negative_oof"}:
+        if y_true is None or groups is None:
+            console.print("[red]OOF stack requires aligned target and exped columns[/red]")
+            raise typer.Exit(code=1)
+        result = ridge_oof_stack(
+            preds, y_true, groups, non_negative=strategy_norm == "non_negative_oof"
+        )
+        result["strategy"] = strategy_norm
     else:
         console.print("[red]unknown strategy[/red]")
         raise typer.Exit(code=1)
@@ -125,7 +167,7 @@ def ensemble_compare() -> None:
         for path in sorted(ens_dir.glob("*.json")):
             try:
                 data = read_json(path)
-            except Exception:  # noqa: BLE001
+            except Exception:  # noqa: BLE001, S112 -- corrupt manifests are excluded
                 continue
             if isinstance(data, dict):
                 blends.append(

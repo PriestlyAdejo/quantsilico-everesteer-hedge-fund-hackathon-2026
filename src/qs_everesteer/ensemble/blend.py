@@ -7,6 +7,7 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
+from sklearn.linear_model import LinearRegression, Ridge
 
 from qs_everesteer.fsutil import atomic_write_json
 
@@ -90,6 +91,46 @@ def diversity_aware(
         history.append({"member_id": names[winner], "score": score_value, "correlation": corr, "utility": utility})
     weights = [1 / len(selected) if i in selected else 0.0 for i in range(matrix.shape[1])]
     return {"prediction": weighted(matrix, weights), "member_ids": [names[i] for i in selected], "weights": weights, "history": history}
+
+
+def ridge_oof_stack(
+    predictions, y_true, groups, *, alpha: float = 1.0, non_negative: bool = False,
+) -> dict[str, Any]:
+    """Fit a temporal cross-fitted stacker using only base-model OOF predictions."""
+    matrix, names = _matrix(predictions)
+    target = np.asarray(y_true, dtype=float)
+    exped = np.asarray(groups)
+    if len(matrix) != len(target) or len(target) != len(exped):
+        raise ValueError("predictions, target, and groups must have equal row counts")
+    if matrix.shape[1] < 2:
+        raise ValueError("stacking requires at least two OOF candidates")
+    if not np.isfinite(matrix).all() or not np.isfinite(target).all():
+        raise ValueError("stacking inputs must be finite")
+    unique = np.sort(pd.unique(exped))
+    if len(unique) < 3:
+        raise ValueError("temporal stacking requires at least three exped groups")
+    meta_oof = np.full(len(target), np.nan)
+    # Expanding splits: every meta prediction is from strictly earlier expeds.
+    for split in range(2, len(unique)):
+        train = np.isin(exped, unique[:split])
+        valid = exped == unique[split]
+        estimator = LinearRegression(positive=True) if non_negative else Ridge(alpha=alpha)
+        estimator.fit(matrix[train], target[train])
+        meta_oof[valid] = estimator.predict(matrix[valid])
+    scored = np.isfinite(meta_oof)
+    if not scored.any():
+        raise ValueError("temporal stacker produced no cross-fitted rows")
+    final = LinearRegression(positive=True) if non_negative else Ridge(alpha=alpha)
+    final.fit(matrix, target)
+    return {
+        "prediction": meta_oof,
+        "member_ids": names,
+        "weights": np.asarray(final.coef_, dtype=float).tolist(),
+        "intercept": float(final.intercept_),
+        "scored_rows": int(scored.sum()),
+        "total_rows": len(target),
+        "method": "non_negative_oof" if non_negative else "ridge_oof",
+    }
 
 
 def greedy_diverse_blend(oof_predictions, scorer, y_true=None):

@@ -32,6 +32,8 @@ _CAPABILITY_PROBES: tuple[tuple[str, str], ...] = (
     ("get_diagnostics_leaderboard", "diagnostics_leaderboard"),
     ("get_diagnostics_standings", "standings"),
     ("get_event_staking", "staking"),
+    ("get_final_selection", "final_selection"),
+    ("set_final_selection", "set_final_selection"),
     ("get_stake_balance", "stake_balance"),
     ("get_compute_credits", "server_compute"),
     ("list_compute_jobs", "server_compute_jobs"),
@@ -256,6 +258,7 @@ class EveresteerAdapter:
         live_available: bool | None = None
         standings_available: bool | None = None
         staking_available: bool | None = None
+        final_selection_available: bool | None = None
         server_compute_available: bool | None = None
         submission_cap: int | None = None
         current_round: str | None = None
@@ -276,6 +279,7 @@ class EveresteerAdapter:
                 live_available=True,
                 standings_available=None,
                 staking_available=None,
+                final_selection_available=None,
                 server_compute_available=None,
                 submission_cap=None,
                 current_round=current_round,
@@ -356,6 +360,7 @@ class EveresteerAdapter:
             ("get_current_round", "current_round"),
             ("get_diagnostics_standings", "standings"),
             ("get_event_staking", "staking"),
+            ("get_final_selection", "final_selection"),
             ("get_compute_credits", "server_compute"),
             ("explain_scoring", "scoring"),
             ("get_dataset_info", "dataset_info"),
@@ -387,6 +392,8 @@ class EveresteerAdapter:
                 standings_available = True
             elif label == "staking":
                 staking_available = True
+            elif label == "final_selection":
+                final_selection_available = True
             elif label == "server_compute":
                 server_compute_available = True
 
@@ -399,6 +406,10 @@ class EveresteerAdapter:
             standings_available = None  # present but not confirmed
         if staking_available is None and methods_present.get("get_event_staking"):
             staking_available = None
+        if final_selection_available is None:
+            final_selection_available = (
+                None if methods_present.get("get_final_selection") else False
+            )
         if server_compute_available is None and methods_present.get("get_compute_credits"):
             server_compute_available = None
 
@@ -413,6 +424,7 @@ class EveresteerAdapter:
             live_available=live_available,
             standings_available=standings_available,
             staking_available=staking_available,
+            final_selection_available=final_selection_available,
             server_compute_available=server_compute_available,
             submission_cap=submission_cap,
             current_round=current_round,
@@ -464,6 +476,7 @@ class EveresteerAdapter:
                     "live_available",
                     "standings_available",
                     "staking_available",
+                    "final_selection_available",
                     "server_compute_available",
                 )
             },

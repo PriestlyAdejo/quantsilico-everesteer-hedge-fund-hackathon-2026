@@ -50,7 +50,11 @@ qseh dashboard start
 
 Do not run `Activate.ps1`. Use `.\.venv\Scripts\qseh.exe` and `.\.venv\Scripts\python.exe` from the repo root.
 
-Operator guide (also in the Research Console Documentation page): `docs/runbooks/event-day.mdx`
+Operator guides:
+
+- `docs/OPERATIONS_GUIDE.md` for the complete compute, AutoML, recovery and submission flow;
+- `docs/runbooks/event-day.mdx` for the concise venue checklist;
+- `docs/research/GENERALS_TRANSFER_LEARNINGS.md` for the public-safe performance audit.
 
 Safe local check before the venue:
 

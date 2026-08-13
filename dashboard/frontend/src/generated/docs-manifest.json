@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-13T11:38:41+00:00",
-  "generated_from_sha": "0b0fe69f467df29751a6e316ad852083503d48b6",
+  "generated_at": "2026-08-13T14:19:01+00:00",
+  "generated_from_sha": "65828f1669f73fa7428a854ca927ef05e038cb3e",
   "generator_version": "3",
   "schema_version": 1,
   "title": "QuantSilico Everesteer Docs Manifest",
@@ -34,7 +34,7 @@
       "blocks": [
         {
           "kind": "intro",
-          "text": "Generated from commit `0b0fe69f467df29751a6e316ad852083503d48b6`."
+          "text": "Generated from commit `65828f1669f73fa7428a854ca927ef05e038cb3e`."
         },
         {
           "kind": "paragraph",
@@ -145,7 +145,7 @@
         },
         {
           "kind": "paragraph",
-          "text": "Fit the independent reference_lgbm baseline."
+          "text": "Fit the organiser or independent reference LightGBM baseline."
         },
         {
           "kind": "command",
@@ -168,7 +168,13 @@
               "--data",
               "no",
               "",
-              "Training parquet (default: synthetic train)."
+              "Training parquet (required unless synthetic mode is explicit)."
+            ],
+            [
+              "--official",
+              "no",
+              "False",
+              "Use the attributable organiser recipe or legacy reference recipe."
             ]
           ]
         },
@@ -201,18 +207,118 @@
               "--expected",
               "no",
               "",
-              "Expected prediction column/file."
+              "Expected prediction file."
             ],
             [
               "--observed",
               "no",
               "",
-              "Observed prediction column/file."
+              "Observed prediction file."
             ],
             [
               "--column",
               "no",
               "prediction",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh candidate"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Local candidate inference and packaging."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh candidate [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `infer`, `package`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh candidate infer"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Generate local predictions; never uploads them."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh candidate infer [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--candidate",
+              "no",
+              "champion",
+              ""
+            ],
+            [
+              "--data",
+              "yes",
+              "",
+              ""
+            ],
+            [
+              "--out",
+              "no",
+              "",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh candidate package"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Create a lineage manifest without external upload."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh candidate package [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--candidate",
+              "no",
+              "champion",
+              ""
+            ],
+            [
+              "--predictions",
+              "yes",
+              "",
               ""
             ]
           ]
@@ -252,6 +358,18 @@
         },
         {
           "kind": "heading",
+          "text": "qseh champion-select"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Select the best integrity-valid promotion-grade R3 candidate."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh champion-select [OPTIONS]"
+        },
+        {
+          "kind": "heading",
           "text": "qseh compare"
         },
         {
@@ -261,6 +379,119 @@
         {
           "kind": "command",
           "command": "Usage: qseh compare [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh compute"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Probe compute without provisioning resources."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh compute [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `autotune`, `benchmark`, `jobs`, `policy`, `probe`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh compute autotune"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Select the fastest passing lane from matched evidence."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh compute autotune [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh compute benchmark"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Run a matched public-synthetic CPU/native-GPU canary."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh compute benchmark [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--profile",
+              "no",
+              "matched",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh compute jobs"
+        },
+        {
+          "kind": "paragraph",
+          "text": "List local job records (legacy-compatible read surface)."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh compute jobs [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh compute policy"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Inspect fail-closed compute policies."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh compute policy [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `show`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh compute policy show"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Show default funding and data-egress policy."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh compute policy show [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh compute probe"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Capability-detect local lanes; remote lanes remain unavailable until verified."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh compute probe [OPTIONS]"
         },
         {
           "kind": "heading",
@@ -480,7 +711,7 @@
         },
         {
           "kind": "paragraph",
-          "text": "Pull a split; uses synthetic fixtures when creds missing or QSEH_SYNTHETIC=1."
+          "text": "Pull a real split, or an explicit fixture when ``QSEH_SYNTHETIC=1``."
         },
         {
           "kind": "command",
@@ -635,6 +866,12 @@
               "rank_average",
               "rank_average\\",
               "greedy_forward"
+            ],
+            [
+              "--method",
+              "no",
+              "",
+              "Alias for --strategy."
             ],
             [
               "--out",
@@ -829,6 +1066,34 @@
         },
         {
           "kind": "heading",
+          "text": "qseh evidence"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Verify persisted research evidence."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh evidence [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `verify`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh evidence verify"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Verify run completeness and model hashes without loading pickle/joblib."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh evidence verify [OPTIONS]"
+        },
+        {
+          "kind": "heading",
           "text": "qseh frontier"
         },
         {
@@ -862,6 +1127,88 @@
               "--runtime-key",
               "no",
               "runtime_seconds",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh jobs"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Inspect and control persisted jobs."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh jobs [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `cancel`, `list`, `retry`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh jobs cancel"
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh jobs cancel [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "job_id",
+              "yes",
+              "",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh jobs list"
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh jobs list [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh jobs retry"
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh jobs retry [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "job_id",
+              "yes",
+              "",
               ""
             ]
           ]
@@ -915,6 +1262,12 @@
               "no",
               "R0",
               "Racing stage R0\u2013R3."
+            ],
+            [
+              "--through",
+              "no",
+              "",
+              "Retrain promoted children successively through R1-R3."
             ]
           ]
         },
@@ -1008,6 +1361,169 @@
         {
           "kind": "command",
           "command": "Usage: qseh sdk info [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh search"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Bounded AutoML search."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh search [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `advanced`, `family`, `tune`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh search advanced"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Run diversity challengers at bounded budgets."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh search advanced [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--data",
+              "yes",
+              "",
+              ""
+            ],
+            [
+              "--profile",
+              "no",
+              "R1",
+              ""
+            ],
+            [
+              "--max-trials",
+              "no",
+              "3",
+              ""
+            ],
+            [
+              "--bounded",
+              "no",
+              "True",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh search family"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Run the broad, cheap family tournament."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh search family [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--data",
+              "yes",
+              "",
+              ""
+            ],
+            [
+              "--profile",
+              "no",
+              "R0",
+              ""
+            ],
+            [
+              "--max-trials",
+              "no",
+              "7",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh search tune"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Tune only candidates promoted by the latest race."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh search tune [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--data",
+              "yes",
+              "",
+              ""
+            ],
+            [
+              "--profile",
+              "no",
+              "R2",
+              ""
+            ],
+            [
+              "--max-trials",
+              "no",
+              "8",
+              ""
+            ],
+            [
+              "--survivors",
+              "no",
+              "True",
+              ""
+            ]
+          ]
         },
         {
           "kind": "heading",
@@ -1250,6 +1766,67 @@
               ""
             ]
           ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh worker"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Run the local durable worker."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh worker [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `start`, `status`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh worker start"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Recover expired leases, then execute queued jobs in scheduler order."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh worker start [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--once",
+              "no",
+              "True",
+              "Run once or continue until idle."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh worker status"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Show queued/running jobs without starting work."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh worker status [OPTIONS]"
         }
       ]
     },
@@ -1269,7 +1846,7 @@
       "blocks": [
         {
           "kind": "intro",
-          "text": "Generated from commit `0b0fe69f467df29751a6e316ad852083503d48b6`."
+          "text": "Generated from commit `65828f1669f73fa7428a854ca927ef05e038cb3e`."
         },
         {
           "kind": "paragraph",
@@ -2383,7 +2960,7 @@
       "blocks": [
         {
           "kind": "intro",
-          "text": "Generated from commit `0b0fe69f467df29751a6e316ad852083503d48b6`."
+          "text": "Generated from commit `65828f1669f73fa7428a854ca927ef05e038cb3e`."
         },
         {
           "kind": "paragraph",
@@ -2800,7 +3377,7 @@
         },
         {
           "kind": "paragraph",
-          "text": "`temporal_cv(frame: 'pd.DataFrame', model_factory: 'Callable[[], Any]', *, features: 'list[str]', target: 'str', exped_col: 'str' = 'exped', profile: 'str | FoldProfile' = 'R1', sample_weight_fn: 'Callable[[Any], Any] | None' = None) -> 'tuple[pd.DataFrame, dict[str, Any]]'`"
+          "text": "`temporal_cv(frame: 'pd.DataFrame', model_factory: 'Callable[[], Any]', *, features: 'list[str]', target: 'str', exped_col: 'str' = 'exped', profile: 'str | FoldProfile' = 'R1', sample_weight_fn: 'Callable[[Any], Any] | None' = None, enforce_target_horizon: 'bool' = True) -> 'tuple[pd.DataFrame, dict[str, Any]]'`"
         },
         {
           "kind": "paragraph",
@@ -2862,6 +3439,12 @@
               "None",
               "Callable[[Any], Any] \\",
               "None"
+            ],
+            [
+              "enforce_target_horizon",
+              "no",
+              "True",
+              "bool"
             ]
           ]
         },
@@ -3073,6 +3656,49 @@
         },
         {
           "kind": "heading",
+          "text": "qs_everesteer.experiments.runner.ExperimentRunner.run_promoted_child"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`run_promoted_child(self, parent_run_id: 'str', next_stage: 'str') -> 'dict[str, Any]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Retrain a promoted parent at the next evidence stage with lineage."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "parent_run_id",
+              "yes",
+              "",
+              "str"
+            ],
+            [
+              "next_stage",
+              "yes",
+              "",
+              "str"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Any]`"
+        },
+        {
+          "kind": "heading",
           "text": "qs_everesteer.experiments.racing.RacingScheduler"
         },
         {
@@ -3113,6 +3739,56 @@
         {
           "kind": "paragraph",
           "text": "Returns: `None`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.experiments.racing.RacingScheduler.child_configs"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`child_configs(outcomes: 'list[RaceOutcome]', *, repo_root: 'str | Path', target_stage: 'str') -> 'list[dict[str, Any]]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Build real retraining configs for promoted parents, preserving lineage."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "outcomes",
+              "yes",
+              "",
+              "list[RaceOutcome]"
+            ],
+            [
+              "repo_root",
+              "yes",
+              "",
+              "str \\",
+              "Path"
+            ],
+            [
+              "target_stage",
+              "yes",
+              "",
+              "str"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `list[dict[str, Any]]`"
         },
         {
           "kind": "heading",
@@ -3767,7 +4443,7 @@
         },
         {
           "kind": "paragraph",
-          "text": "`enqueue(kind: 'str | JobKind', payload: 'dict[str, Any] | None' = None, *, repo_root: 'str | Path | None' = None, name: 'str | None' = None, candidate: 'str | None' = None, device: 'str' = 'CPU', job_id: 'str | None' = None) -> 'str'`"
+          "text": "`enqueue(kind: 'str | JobKind', payload: 'dict[str, Any] | None' = None, *, repo_root: 'str | Path | None' = None, name: 'str | None' = None, candidate: 'str | None' = None, device: 'str' = 'CPU', job_id: 'str | None' = None, priority: 'int | JobPriority' = <JobPriority.AUTOML: 4>, deadline: 'str | None' = None, dependencies: 'list[str] | None' = None, maximum_attempts: 'int' = 2) -> 'str'`"
         },
         {
           "kind": "paragraph",
@@ -3834,6 +4510,33 @@
               "None",
               "str \\",
               "None"
+            ],
+            [
+              "priority",
+              "no",
+              "<JobPriority.AUTOML: 4>",
+              "int \\",
+              "JobPriority"
+            ],
+            [
+              "deadline",
+              "no",
+              "None",
+              "str \\",
+              "None"
+            ],
+            [
+              "dependencies",
+              "no",
+              "None",
+              "list[str] \\",
+              "None"
+            ],
+            [
+              "maximum_attempts",
+              "no",
+              "2",
+              "int"
             ]
           ]
         },
@@ -4235,7 +4938,7 @@
       "blocks": [
         {
           "kind": "intro",
-          "text": "Generated from commit `0b0fe69f467df29751a6e316ad852083503d48b6`."
+          "text": "Generated from commit `65828f1669f73fa7428a854ca927ef05e038cb3e`."
         },
         {
           "kind": "paragraph",
@@ -4399,16 +5102,32 @@
           ],
           "rows": [
             [
+              "catboost",
+              "qs_everesteer.models.catboost_model.catboost_model"
+            ],
+            [
               "extra_trees",
               "qs_everesteer.models.forest.extra_trees"
+            ],
+            [
+              "feature_bin",
+              "qs_everesteer.models.advanced.feature_bin_model"
             ],
             [
               "lgbm",
               "qs_everesteer.models.lgbm.lgbm_model"
             ],
             [
+              "organiser_lgbm",
+              "qs_everesteer.models.baseline.organiser_lgbm"
+            ],
+            [
               "random_forest",
               "qs_everesteer.models.forest.random_forest"
+            ],
+            [
+              "realmlp_style",
+              "qs_everesteer.models.advanced.realmlp_style"
             ],
             [
               "reference_lgbm",
@@ -4421,6 +5140,10 @@
             [
               "shallow_mlp",
               "qs_everesteer.models.p1.shallow_mlp"
+            ],
+            [
+              "tabular_hist",
+              "qs_everesteer.models.advanced.tabular_hist_challenger"
             ],
             [
               "xgboost",
@@ -6698,8 +7421,19 @@
     "qseh baseline",
     "qseh baseline reproduce",
     "qseh baseline scorer-parity",
+    "qseh candidate",
+    "qseh candidate infer",
+    "qseh candidate package",
     "qseh champion",
+    "qseh champion-select",
     "qseh compare",
+    "qseh compute",
+    "qseh compute autotune",
+    "qseh compute benchmark",
+    "qseh compute jobs",
+    "qseh compute policy",
+    "qseh compute policy show",
+    "qseh compute probe",
     "qseh dashboard",
     "qseh dashboard build",
     "qseh dashboard diagnose",
@@ -6725,7 +7459,13 @@
     "qseh event snapshot",
     "qseh event submission-mode",
     "qseh event watch",
+    "qseh evidence",
+    "qseh evidence verify",
     "qseh frontier",
+    "qseh jobs",
+    "qseh jobs cancel",
+    "qseh jobs list",
+    "qseh jobs retry",
     "qseh leaderboard",
     "qseh race",
     "qseh rehearsal",
@@ -6733,6 +7473,10 @@
     "qseh sdk",
     "qseh sdk check",
     "qseh sdk info",
+    "qseh search",
+    "qseh search advanced",
+    "qseh search family",
+    "qseh search tune",
     "qseh stake",
     "qseh stake recommend",
     "qseh stake status",
@@ -6741,7 +7485,10 @@
     "qseh submit",
     "qseh submit check",
     "qseh submit live",
-    "qseh submit practice"
+    "qseh submit practice",
+    "qseh worker",
+    "qseh worker start",
+    "qseh worker status"
   ],
   "missing_docstrings": [
     "qs_everesteer.event.adapter.EveresteerAdapter.safe_key_fingerprint",

@@ -2,13 +2,13 @@
 title: Configuration
 description: Generated from experiment YAML keys, fold profiles, and project configs.
 source: generated
-generatedFromSha: 0b0fe69f467df29751a6e316ad852083503d48b6
-generatedAt: 2026-08-13T11:38:41+00:00
+generatedFromSha: 65828f1669f73fa7428a854ca927ef05e038cb3e
+generatedAt: 2026-08-13T14:19:01+00:00
 ---
 
 # Configuration
 
-Generated from commit `0b0fe69f467df29751a6e316ad852083503d48b6`.
+Generated from commit `65828f1669f73fa7428a854ca927ef05e038cb3e`.
 
 Fields below are taken from code that actually reads them, dataclasses, enums, and checked-in YAML. Undocumented keys are not inferred.
 
@@ -45,12 +45,17 @@ Names accepted by `qs_everesteer.models.create_model`.
 
 | Name | Factory |
 | --- | --- |
+| catboost | qs_everesteer.models.catboost_model.catboost_model |
 | extra_trees | qs_everesteer.models.forest.extra_trees |
+| feature_bin | qs_everesteer.models.advanced.feature_bin_model |
 | lgbm | qs_everesteer.models.lgbm.lgbm_model |
+| organiser_lgbm | qs_everesteer.models.baseline.organiser_lgbm |
 | random_forest | qs_everesteer.models.forest.random_forest |
+| realmlp_style | qs_everesteer.models.advanced.realmlp_style |
 | reference_lgbm | qs_everesteer.models.baseline.reference_lgbm |
 | ridge | qs_everesteer.models.ridge.ridge_model |
 | shallow_mlp | qs_everesteer.models.p1.shallow_mlp |
+| tabular_hist | qs_everesteer.models.advanced.tabular_hist_challenger |
 | xgboost | qs_everesteer.models.xgboost_model.xgboost_model |
 
 ## Model YAML examples

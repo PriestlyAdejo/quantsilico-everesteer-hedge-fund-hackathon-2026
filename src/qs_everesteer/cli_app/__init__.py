@@ -4,8 +4,11 @@ from __future__ import annotations
 
 import typer
 
+from qs_everesteer.cli_app.automl_cmds import search_app
 from qs_everesteer.cli_app.autopilot_cmds import autopilot_app
 from qs_everesteer.cli_app.baseline import baseline_app
+from qs_everesteer.cli_app.candidate_cmds import candidate_app, champion_select_command
+from qs_everesteer.cli_app.compute_cmds import compute_app
 from qs_everesteer.cli_app.dashboard_cmds import dashboard_app
 from qs_everesteer.cli_app.data_cmds import data_app
 from qs_everesteer.cli_app.docs_cmds import docs_app
@@ -13,11 +16,13 @@ from qs_everesteer.cli_app.doctor import run_doctor
 from qs_everesteer.cli_app.emergency import run_emergency
 from qs_everesteer.cli_app.ensemble_cmds import ensemble_app
 from qs_everesteer.cli_app.event import event_app
+from qs_everesteer.cli_app.evidence_cmds import evidence_app
 from qs_everesteer.cli_app.rehearsal import run_rehearsal
 from qs_everesteer.cli_app.research import register_research_commands
 from qs_everesteer.cli_app.sdk import sdk_app
 from qs_everesteer.cli_app.stake_cmds import stake_app
 from qs_everesteer.cli_app.submit_cmds import register_listing_commands, submit_app
+from qs_everesteer.cli_app.worker_cmds import jobs_app, worker_app
 
 app = typer.Typer(
     no_args_is_help=True,
@@ -52,7 +57,15 @@ app.add_typer(sdk_app, name="sdk")
 app.add_typer(event_app, name="event")
 app.add_typer(data_app, name="data")
 app.add_typer(baseline_app, name="baseline")
+app.add_typer(compute_app, name="compute")
+app.add_typer(worker_app, name="worker")
+app.add_typer(jobs_app, name="jobs")
 register_research_commands(app)
+app.add_typer(search_app, name="search")
+app.add_typer(candidate_app, name="candidate")
+
+# Additive alias: the established top-level ``champion`` command remains valid.
+app.command("champion-select")(champion_select_command)
 app.add_typer(ensemble_app, name="ensemble")
 app.add_typer(submit_app, name="submit")
 register_listing_commands(app)
@@ -60,5 +73,6 @@ app.add_typer(stake_app, name="stake")
 app.add_typer(autopilot_app, name="autopilot")
 app.add_typer(dashboard_app, name="dashboard")
 app.add_typer(docs_app, name="docs")
+app.add_typer(evidence_app, name="evidence")
 
 __all__ = ["app"]

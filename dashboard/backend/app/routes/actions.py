@@ -5,13 +5,14 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Any
 
+import psutil
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 
 from dashboard.backend.app.routes.events import hub
 from qs_everesteer.api_schemas import ActionResult
 from qs_everesteer.jobs.model import JobStatus
-from qs_everesteer.jobs.queue import enqueue, load_job, save_job
+from qs_everesteer.jobs.queue import cancel_job, enqueue, load_job, save_job
 from qs_everesteer.state.research import update_research_state
 
 router = APIRouter(prefix="/api/actions")
@@ -181,10 +182,20 @@ async def stop_job(request: Request, job_id: str) -> JSONResponse:
         job = load_job(job_id, _root(request))
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail="Job not found") from exc
-    if job.status not in {JobStatus.DONE, JobStatus.FAILED}:
-        job.status = JobStatus.FAILED
-        job.error = "Stopped by console operator"
-        job.queue_position = None
+    remote_lanes = {"EVERESTEER_BUILTIN", "EVERESTEER_CUSTOM_GPU", "RUNPOD_GPU"}
+    if job.device in remote_lanes and not bool(job.payload.get("provider_cancel_verified")):
+        job.status = JobStatus.BLOCKED
+        job.error = "Provider cancellation is not verified; remote job state requires reconciliation"
         save_job(job, _root(request))
+        await hub.publish("job_stop_blocked", jobId=job_id)
+        return _result(f"Cancellation blocked for {job_id}; reconcile provider state", "JOB_STOP_BLOCKED")
+    if job.process_id:
+        try:
+            process = psutil.Process(job.process_id)
+            process.terminate()
+            process.wait(timeout=5)
+        except (psutil.NoSuchProcess, psutil.TimeoutExpired):
+            pass
+    cancel_job(job_id, _root(request))
     await hub.publish("job_stopped", jobId=job_id)
     return _result(f"Stopped {job_id}", "JOB_STOPPED")
