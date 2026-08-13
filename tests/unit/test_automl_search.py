@@ -27,3 +27,12 @@ def test_ridge_sweep_is_real_evidence_namespaced_and_regularised(tmp_path):
     assert len(trials) == 4
     assert all(trial.run_id.startswith("ridge-real-ridge-") for trial in trials)
     assert [trial.params["alpha"] for trial in trials] == [1.0, 30.0, 300.0, 3_000.0]
+
+
+def test_final_round_trials_are_shardable_and_seed_diverse(tmp_path):
+    search = AutoMLSearch(tmp_path)
+    first = search.final_trials(offset=0, max_trials=2)
+    second = search.final_trials(offset=2, max_trials=2)
+    assert len(first + second) == 4
+    assert {trial.family for trial in first + second} == {"xgboost", "lgbm"}
+    assert len({trial.run_id for trial in first + second}) == 4
