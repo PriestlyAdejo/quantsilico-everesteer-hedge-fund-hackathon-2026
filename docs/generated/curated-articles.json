@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-12T13:06:23+00:00",
-  "generated_from_sha": "d60430f3c539f20f7ab755c5dcc75f18992c812e",
-  "generator_version": "2",
+  "generated_at": "2026-08-13T11:38:41+00:00",
+  "generated_from_sha": "0b0fe69f467df29751a6e316ad852083503d48b6",
+  "generator_version": "3",
   "sections": [
     {
       "id": "flows",
@@ -16,33 +16,37 @@
     {
       "id": "start-here",
       "title": "Start here",
-      "description": "Orient the Research Console before connecting, researching, or submitting.",
+      "description": "Understand what the console controls and the order in which to use it.",
       "section": "flows",
       "order": 10,
       "source": "curated",
       "blocks": [
         {
           "kind": "intro",
-          "text": "Start on Overview, confirm submission mode is DRY_RUN unless you intentionally arm uploads, then connect the event and audit data before spending compute."
+          "text": "The Research Console is the operating view over the QuantSilico Everesteer engine. The command-line engine remains the critical path; the dashboard reads the same filesystem evidence and backend state so that you can see what is happening without reconstructing it from logs."
         },
         {
           "kind": "flow",
           "nodes": [
             {
-              "id": "overview",
-              "label": "Overview"
-            },
-            {
-              "id": "event",
+              "id": "connect",
               "label": "Connect event"
             },
             {
               "id": "data",
-              "label": "Audit data"
+              "label": "Verify data"
+            },
+            {
+              "id": "baseline",
+              "label": "Prove baseline"
             },
             {
               "id": "research",
-              "label": "Race experiments"
+              "label": "Run research"
+            },
+            {
+              "id": "validate",
+              "label": "Validate candidates"
             },
             {
               "id": "ensemble",
@@ -50,51 +54,464 @@
             },
             {
               "id": "submit",
-              "label": "Validate submission"
+              "label": "Submit"
+            },
+            {
+              "id": "observe",
+              "label": "Observe"
+            },
+            {
+              "id": "adapt",
+              "label": "Adapt"
             }
           ]
         },
         {
           "kind": "heading",
-          "text": "Operating rules"
+          "text": "Before the event exists"
         },
         {
-          "kind": "callout",
-          "tone": "info",
-          "text": "Only integrity failures are universal hard stops. Soft research metrics guide budget; they do not invent official scores."
+          "kind": "paragraph",
+          "text": "It is normal for Event Control to show **NOT CONNECTED**, for leaderboard values\nto be blank and for event capabilities to be unknown."
         },
         {
-          "kind": "metric",
-          "name": "Submission mode",
-          "text": "DISABLED blocks uploads, DRY_RUN records evidence without Everesteer upload, ARMED allows real practice/live submits after human intent."
+          "kind": "paragraph",
+          "text": "Do not populate those fields manually."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use synthetic rehearsal to prove that the local machinery works without\npretending that a live event exists."
         },
         {
           "kind": "command",
-          "command": "qseh doctor"
+          "command": ".\\.venv\\Scripts\\qseh.exe doctor"
         },
         {
-          "kind": "related",
-          "href": "/",
-          "label": "Open Overview"
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe rehearsal"
+        },
+        {
+          "kind": "heading",
+          "text": "Once Everesteer access is available"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Start by inspecting the platform rather than training immediately."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event inspect"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Then capture the event state that subsequent actions will be tied to."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event snapshot"
+        },
+        {
+          "kind": "heading",
+          "text": "Submission mode"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The event/API and organiser instructions are authoritative for event mechanics.\nDo not make an old README override the live event."
+        },
+        {
+          "kind": "paragraph",
+          "text": "The project has three submission states."
+        },
+        {
+          "kind": "metric",
+          "name": "DISABLED",
+          "text": "External uploads cannot be performed."
+        },
+        {
+          "kind": "metric",
+          "name": "DRY_RUN",
+          "text": "The submission pipeline can validate, package and record evidence without uploading predictions to Everesteer. This is the safe default."
+        },
+        {
+          "kind": "metric",
+          "name": "ARMED",
+          "text": "Real Everesteer uploads are permitted after explicit human action and still remain subject to event, lane, quota, ID and artefact checks."
+        },
+        {
+          "kind": "callout",
+          "tone": "warning",
+          "text": "Autopilot must never arm submissions by itself."
+        },
+        {
+          "kind": "heading",
+          "text": "Where to look"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use **Overview** to understand the current operating stage."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use **Event Control** to verify platform state."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use **Data Lab** before trusting a newly downloaded split."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use **Experiments**, **Validation** and **Ensembles** while researching."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use **Round Room**, **Submission** and **Leaderboard** during live rounds."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use **Compute & Jobs** when you need to know whether an experiment will finish\nin useful time."
         },
         {
           "kind": "related",
           "href": "/event",
           "label": "Open Event Control"
+        },
+        {
+          "kind": "related",
+          "href": "/data",
+          "label": "Open Data Lab"
+        }
+      ]
+    },
+    {
+      "id": "research-loop",
+      "title": "Research loop",
+      "description": "How an idea becomes evidence, a frontier candidate, a champion or a retired branch.",
+      "section": "flows",
+      "order": 20,
+      "source": "curated",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "Research is not a sequence of models to try once. It is a measured loop that spends small amounts of compute first, retains useful evidence and increases budget only when a candidate still has something to teach us."
+        },
+        {
+          "kind": "flow",
+          "nodes": [
+            {
+              "id": "hypothesis",
+              "label": "Hypothesis"
+            },
+            {
+              "id": "r0",
+              "label": "R0 smoke"
+            },
+            {
+              "id": "r1",
+              "label": "R1 fast race"
+            },
+            {
+              "id": "r2",
+              "label": "R2 standard evidence"
+            },
+            {
+              "id": "r3",
+              "label": "R3 promotion"
+            },
+            {
+              "id": "frontier",
+              "label": "Frontier"
+            },
+            {
+              "id": "ensemble",
+              "label": "Ensemble candidate"
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "What the race is trying to answer"
+        },
+        {
+          "kind": "heading",
+          "text": "Hard failures"
+        },
+        {
+          "kind": "heading",
+          "text": "Soft evidence"
+        },
+        {
+          "kind": "heading",
+          "text": "Champion, frontier and ensemble are different"
+        },
+        {
+          "kind": "paragraph",
+          "text": "R0 asks whether the candidate works at all."
+        },
+        {
+          "kind": "paragraph",
+          "text": "R1 asks whether there is enough signal to spend more compute."
+        },
+        {
+          "kind": "paragraph",
+          "text": "R2 asks whether the evidence remains useful under more complete validation."
+        },
+        {
+          "kind": "paragraph",
+          "text": "R3 is for candidates that may become an operational champion or a serious\nensemble member."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A weak score is not automatically an integrity failure."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A candidate must stop when the evidence is invalid rather than merely weak."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Examples include:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- target leakage;\n- wrong split or submission lane;\n- ID misalignment;\n- scorer parity failure;\n- malformed model artefact."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Valid candidates can be compared using whatever evidence is actually available,\nincluding:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- event score components;\n- recent performance;\n- worst fold;\n- IC or correlation stability;\n- ICIR;\n- positive-exped rate;\n- feature exposure;\n- runtime;\n- prediction diversity;\n- external practice/live evidence."
+        },
+        {
+          "kind": "paragraph",
+          "text": "No single soft metric is a universal veto."
+        },
+        {
+          "kind": "metric",
+          "name": "Champion",
+          "text": "The operational default candidate if a prediction had to be produced now."
+        },
+        {
+          "kind": "metric",
+          "name": "Frontier",
+          "text": "The set of candidates that remain interesting because no other candidate is clearly better on every relevant trade-off."
+        },
+        {
+          "kind": "metric",
+          "name": "Ensemble",
+          "text": "A constructed candidate combining multiple prediction streams."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A model can therefore remain valuable even when it does not beat the champion\nalone."
+        },
+        {
+          "kind": "related",
+          "href": "/experiments",
+          "label": "Open Experiments"
+        },
+        {
+          "kind": "related",
+          "href": "/validation",
+          "label": "Open Validation"
+        },
+        {
+          "kind": "related",
+          "href": "/ensembles",
+          "label": "Open Ensembles"
+        }
+      ]
+    },
+    {
+      "id": "data-validation",
+      "title": "Data validation",
+      "description": "Audit, fingerprint and split identity before any modelling or submit.",
+      "section": "flows",
+      "order": 30,
+      "source": "curated",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "A dataset is not trusted because it arrived. It is trusted after structural audit and a content fingerprint that later inference and submission can match."
+        },
+        {
+          "kind": "flow",
+          "nodes": [
+            {
+              "id": "pull",
+              "label": "Pull split"
+            },
+            {
+              "id": "audit",
+              "label": "Audit"
+            },
+            {
+              "id": "fingerprint",
+              "label": "Fingerprint"
+            },
+            {
+              "id": "compare",
+              "label": "Compare schema"
+            },
+            {
+              "id": "model",
+              "label": "Only then model"
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "What audit checks"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`qseh data audit` runs `audit_dataset` on a Parquet or CSV file. It records row\nand column counts, ID and exped columns, target availability, duplicate IDs,\nmissingness and a schema SHA-256."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Integrity is `pass`, `warn` or `fail`. A hard failure is an integrity stop, not\na weak research score."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe data audit"
+        },
+        {
+          "kind": "heading",
+          "text": "Fingerprint"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`qseh data fingerprint` records the file content hash and schema fingerprint.\nLive-round inference should reuse a prediction artefact only when the live split\nfingerprint is unchanged."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe data fingerprint"
+        },
+        {
+          "kind": "heading",
+          "text": "Split identity"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Train, validation/practice and live splits are different files. Submission\nguard checks the split fingerprint against the event snapshot so a train file\ncannot be uploaded as live."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Synthetic fixtures generated with `QSEH_SYNTHETIC=1` remain labelled\n`SYNTHETIC_FIXTURE` and must not be treated as official event data."
+        },
+        {
+          "kind": "callout",
+          "tone": "warning",
+          "text": "Do not spend compute on a split whose audit integrity is fail."
+        },
+        {
+          "kind": "related",
+          "href": "/data",
+          "label": "Open Data Lab"
+        }
+      ]
+    },
+    {
+      "id": "model-lifecycle",
+      "title": "Model lifecycle",
+      "description": "How a candidate is fit, stored, loaded for inference and retired.",
+      "section": "flows",
+      "order": 35,
+      "source": "curated",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "Models enter the system through the shared research interface. Submission consumes a normal candidate; there is no model-specific upload path."
+        },
+        {
+          "kind": "flow",
+          "nodes": [
+            {
+              "id": "config",
+              "label": "Resolved config"
+            },
+            {
+              "id": "fit",
+              "label": "Fit"
+            },
+            {
+              "id": "oof",
+              "label": "OOF + metrics"
+            },
+            {
+              "id": "artefact",
+              "label": "Persist artefact"
+            },
+            {
+              "id": "infer",
+              "label": "Load and infer"
+            },
+            {
+              "id": "submit",
+              "label": "Submit as candidate"
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Fit"
+        },
+        {
+          "kind": "heading",
+          "text": "Artefact"
+        },
+        {
+          "kind": "heading",
+          "text": "Lineage"
+        },
+        {
+          "kind": "heading",
+          "text": "Inference and submit"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`ExperimentRunner` reads YAML, fits through `create_model`, writes OOF\npredictions, fold metrics, resource measurements and an immutable run manifest\nunder `runs/experiments/<run_id>/`. Failed runs keep their evidence."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Factories currently registered include ridge, random_forest, extra_trees,\nxgboost, lgbm, reference_lgbm and shallow_mlp."
+        },
+        {
+          "kind": "paragraph",
+          "text": "`ModelRegistry` stores the fitted object and training data hash when provided.\nA later live infer must load that artefact rather than refitting from memory."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Record parent candidate and config delta when an operator changes\nregularisation, features, recency, seed or ensemble membership. Experiments\nthat cannot explain what changed are not useful under a live clock."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Round-room inference uses the champion or an approved ensemble. Submission\nguard then checks event, lane, IDs, artefacts and quota. Do not add\nmodel-specific submission code."
+        },
+        {
+          "kind": "related",
+          "href": "/models",
+          "label": "Open Models"
+        },
+        {
+          "kind": "related",
+          "href": "/experiments",
+          "label": "Open Experiments"
         }
       ]
     },
     {
       "id": "live-round",
       "title": "Live round workflow",
-      "description": "What happens from round open to recorded result.",
+      "description": "What happens from a newly opened round to a recorded result.",
       "section": "flows",
       "order": 40,
       "source": "curated",
       "blocks": [
         {
           "kind": "intro",
-          "text": "Use this flow when Everesteer opens a live round. The objective is to move from a verified live split to a recorded submission without rebuilding the research system."
+          "text": "Use this flow once Everesteer exposes a live round. The objective is to move from a verified live split to a recorded submission without rebuilding the research system while the clock is running."
         },
         {
           "kind": "flow",
@@ -109,11 +526,11 @@
             },
             {
               "id": "pull",
-              "label": "Pull live data"
+              "label": "Pull live split"
             },
             {
               "id": "verify",
-              "label": "Verify split and IDs"
+              "label": "Verify IDs and schema"
             },
             {
               "id": "infer",
@@ -129,7 +546,11 @@
             },
             {
               "id": "observe",
-              "label": "Record score and standing"
+              "label": "Observe result"
+            },
+            {
+              "id": "update",
+              "label": "Update evidence"
             }
           ]
         },
@@ -140,7 +561,17 @@
         {
           "kind": "metric",
           "name": "Time remaining",
-          "text": "How long the current round remains open."
+          "text": "The authoritative estimate of how long the current round remains open."
+        },
+        {
+          "kind": "metric",
+          "name": "Split fingerprint",
+          "text": "The content identity of the live dataset currently being used for inference."
+        },
+        {
+          "kind": "metric",
+          "name": "Inference ETA",
+          "text": "Whether the selected candidate will finish early enough to be useful."
         },
         {
           "kind": "metric",
@@ -149,187 +580,648 @@
         },
         {
           "kind": "heading",
-          "text": "If something fails"
+          "text": "Normal path"
+        },
+        {
+          "kind": "heading",
+          "text": "When a live result is poor"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The live-round controller should detect the event state and avoid repeated work\nwhen the dataset fingerprint is unchanged."
+        },
+        {
+          "kind": "paragraph",
+          "text": "The same round must not accidentally produce duplicate external uploads after a\nrestart."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not immediately rewrite the model stack."
+        },
+        {
+          "kind": "paragraph",
+          "text": "First determine whether:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- the correct split was submitted;\n- IDs aligned;\n- the correct lane was used;\n- event scoring changed;\n- data drifted;\n- all models failed together;\n- one model failed while others remained stable."
+        },
+        {
+          "kind": "paragraph",
+          "text": "One noisy external round is evidence, not a command to discard all prior local\nvalidation."
         },
         {
           "kind": "callout",
           "tone": "warning",
-          "text": "Do not retrain automatically because a submission failed. First check lane, IDs, event state and the model artefact."
+          "text": "Do not start an architectural refactor while a live round is closing."
         },
         {
           "kind": "related",
           "href": "/round",
           "label": "Open Round Room"
+        },
+        {
+          "kind": "related",
+          "href": "/submission",
+          "label": "Open Submission"
+        },
+        {
+          "kind": "related",
+          "href": "/leaderboard",
+          "label": "Open Leaderboard"
         }
       ]
     },
     {
-      "id": "submission",
+      "id": "submission-path",
       "title": "Submission path",
-      "description": "Controlled practice and live upload path with lineage and quota.",
+      "description": "How a research candidate becomes a validated practice or live upload.",
       "section": "flows",
       "order": 50,
       "source": "curated",
       "blocks": [
         {
           "kind": "intro",
-          "text": "Every candidate must pass integrity, quota, and lane checks before leaving the machine. SubmissionModeBanner on Event, Round, and Submission surfaces shows DISABLED / DRY_RUN / ARMED."
+          "text": "Submission is an external side effect. Every upload must remain attributable to a candidate, event snapshot, dataset fingerprint, prediction artefact and model artefact."
         },
         {
           "kind": "flow",
           "nodes": [
             {
               "id": "select",
-              "label": "Select candidate"
+              "label": "Select"
+            },
+            {
+              "id": "infer",
+              "label": "Infer"
             },
             {
               "id": "validate",
               "label": "Validate"
             },
             {
-              "id": "practice",
-              "label": "Practice dry-run"
+              "id": "package",
+              "label": "Package"
             },
             {
-              "id": "arm",
-              "label": "Arm (human)"
-            },
-            {
-              "id": "live",
-              "label": "Live submit"
-            },
-            {
-              "id": "ledger",
-              "label": "Idempotency ledger"
-            }
-          ]
-        },
-        {
-          "kind": "callout",
-          "tone": "danger",
-          "text": "Never arm submissions from automation alone. Real-money staking and live uploads require explicit human action."
-        },
-        {
-          "kind": "command",
-          "command": "qseh event submission-mode"
-        },
-        {
-          "kind": "metric",
-          "name": "Idempotency key",
-          "text": "Event + round + split fingerprint + candidate + action. Restarts must not duplicate uploads for the same key."
-        },
-        {
-          "kind": "related",
-          "href": "/submission",
-          "label": "Open Submission"
-        }
-      ]
-    },
-    {
-      "id": "emergency",
-      "title": "Emergency round runbook",
-      "description": "Fast path when a round is open and time is tight.",
-      "section": "runbooks",
-      "order": 10,
-      "source": "curated",
-      "blocks": [
-        {
-          "kind": "intro",
-          "text": "Use Round Room emergency fields (champion, ensemble, model hash, split verified, submission ready) when the clock is short. Prefer the known champion over a half-finished race."
-        },
-        {
-          "kind": "flow",
-          "nodes": [
-            {
-              "id": "confirm",
-              "label": "Confirm LIVE feed"
-            },
-            {
-              "id": "champion",
-              "label": "Load champion"
-            },
-            {
-              "id": "infer",
-              "label": "Infer live split"
-            },
-            {
-              "id": "guard",
-              "label": "Integrity + quota"
+              "id": "dryrun",
+              "label": "Dry run"
             },
             {
               "id": "submit",
-              "label": "Dry-run then live"
-            }
-          ]
-        },
-        {
-          "kind": "callout",
-          "tone": "warning",
-          "text": "If the feed is DISCONNECTED or RECONNECTING, do not invent standings. Wait for LIVE or fall back to the last verified snapshot."
-        },
-        {
-          "kind": "command",
-          "command": "qseh rehearsal"
-        },
-        {
-          "kind": "related",
-          "href": "/round",
-          "label": "Open Round Room"
-        }
-      ]
-    },
-    {
-      "id": "dashboard",
-      "title": "Dashboard operations",
-      "description": "Start, verify, rebuild, and recover the local Research Console on Windows.",
-      "section": "runbooks",
-      "order": 20,
-      "source": "curated",
-      "blocks": [
-        {
-          "kind": "intro",
-          "text": "Venue commands for the Research Console. Do not run Activate.ps1 \u2014 use .venv\\Scripts\\qseh.exe and .venv\\Scripts\\python.exe directly."
-        },
-        {
-          "kind": "flow",
-          "nodes": [
-            {
-              "id": "diagnose",
-              "label": "dashboard diagnose"
+              "label": "Submit"
             },
             {
-              "id": "start",
-              "label": "dashboard start"
-            },
-            {
-              "id": "status",
-              "label": "dashboard status"
-            },
-            {
-              "id": "open",
-              "label": "dashboard open"
-            },
-            {
-              "id": "docs",
-              "label": "docs build"
+              "id": "record",
+              "label": "Record"
             }
           ]
         },
         {
           "kind": "heading",
-          "text": "Start"
+          "text": "Before anything leaves the machine"
+        },
+        {
+          "kind": "heading",
+          "text": "DRY_RUN"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The submission guard checks, where applicable:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- event identity;\n- round;\n- lane;\n- split fingerprint;\n- prediction ID coverage;\n- duplicate IDs;\n- prediction format;\n- prediction artefact;\n- model artefact;\n- model loadability;\n- event capability;\n- remaining quota."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A red integrity failure blocks the external action."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use DRY_RUN while validating the system."
         },
         {
           "kind": "command",
-          "command": ".\\.venv\\Scripts\\qseh.exe dashboard diagnose"
+          "command": ".\\.venv\\Scripts\\qseh.exe event submission-mode"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe submit check"
+        },
+        {
+          "kind": "heading",
+          "text": "ARMED"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Real uploads require explicit human intent."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event arm-submissions"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not arm until account, event and snapshot identity have been verified."
+        },
+        {
+          "kind": "callout",
+          "tone": "danger",
+          "text": "Neither rehearsal nor autopilot may automatically transition the system to ARMED."
+        },
+        {
+          "kind": "heading",
+          "text": "Idempotency"
+        },
+        {
+          "kind": "paragraph",
+          "text": "A restart must not submit the same action twice."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Submission history therefore records enough context to identify an equivalent\nevent/round/split/candidate/action combination."
+        },
+        {
+          "kind": "related",
+          "href": "/submission",
+          "label": "Open Submission"
+        },
+        {
+          "kind": "related",
+          "href": "/event",
+          "label": "Open Event Control"
+        }
+      ]
+    },
+    {
+      "id": "event-day",
+      "title": "Event-day operator guide",
+      "description": "Beginning-to-end operating guide for the Everesteer competition.",
+      "section": "runbooks",
+      "order": 5,
+      "source": "curated",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "This is the document to use when operating the system under time pressure. Commands are shown with the repository virtual-environment executable directly; PowerShell activation is not required."
+        },
+        {
+          "kind": "heading",
+          "text": "How to run commands"
+        },
+        {
+          "kind": "paragraph",
+          "text": "From the repository root:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe doctor"
+        },
+        {
+          "kind": "heading",
+          "text": "Before leaving"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not run `Activate.ps1`."
+        },
+        {
+          "kind": "paragraph",
+          "text": "The repository is designed to use:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`.\\.venv\\Scripts\\qseh.exe`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "and:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`.\\.venv\\Scripts\\python.exe`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "directly."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Run the safe preflight:"
+        },
+        {
+          "kind": "command",
+          "command": "scripts\\preflight.cmd"
+        },
+        {
+          "kind": "heading",
+          "text": "At the venue"
+        },
+        {
+          "kind": "paragraph",
+          "text": "A successful preflight proves the local machinery works. It does not prove that\nlive Everesteer credentials or event datasets already exist."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Start the console:"
         },
         {
           "kind": "command",
           "command": ".\\.venv\\Scripts\\qseh.exe dashboard start"
         },
         {
+          "kind": "paragraph",
+          "text": "Check local health:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe doctor"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Then inspect the real event:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event inspect"
+        },
+        {
+          "kind": "heading",
+          "text": "When event access appears"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not begin by editing configuration based on assumptions. Read the event first."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Capture an event snapshot:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event snapshot"
+        },
+        {
+          "kind": "heading",
+          "text": "When training data appears"
+        },
+        {
+          "kind": "paragraph",
+          "text": "This becomes the evidence anchor for later data and submission operations."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Pull it:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe data pull --split train"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Pull validation/practice data if the event exposes it:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe data pull --split validation"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Then verify data before modelling."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe data audit"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe data fingerprint"
+        },
+        {
+          "kind": "heading",
+          "text": "Prove scoring before optimisation"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use Data Lab to inspect row counts, schema, missingness, IDs and target\navailability."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe baseline scorer-parity"
+        },
+        {
+          "kind": "heading",
+          "text": "Establish a reference candidate"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not spend the competition optimising against a scorer you do not trust."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe baseline reproduce"
+        },
+        {
+          "kind": "heading",
+          "text": "Begin research"
+        },
+        {
+          "kind": "paragraph",
+          "text": "This tests the normal path from real data through training, validation, model\nartefact and prediction generation."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Once the basic path is healthy:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe autopilot run --profile competition-aggressive"
+        },
+        {
+          "kind": "heading",
+          "text": "Practice submissions"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use Experiments and Validation to watch evidence."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Early research should spend small budgets broadly before spending large budgets\non one family."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A practice submission is not just an attempt to score points. It purchases\nexternal evidence."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Useful candidates tend to be:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- current champion;\n- strong independent challenger;\n- meaningfully different model family;\n- current ensemble."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not waste limited uploads on nearly identical random seeds."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Before a real external action:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe submit check"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Confirm submission mode:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event submission-mode"
+        },
+        {
+          "kind": "heading",
+          "text": "During a live round"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Only after verifying the actual event should you explicitly arm external\nuploads."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use Round Room."
+        },
+        {
+          "kind": "paragraph",
+          "text": "The normal sequence is:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "1. detect round;\n2. snapshot event;\n3. pull live data;\n4. fingerprint and audit;\n5. infer known-good candidates;\n6. run submission guard;\n7. submit according to the active policy;\n8. observe leaderboard/standings;\n9. update evidence."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Useful commands when investigating:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event inspect"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe autopilot status"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe submit check"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe leaderboard"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe standings"
+        },
+        {
+          "kind": "heading",
+          "text": "Final part of the event"
+        },
+        {
+          "kind": "heading",
+          "text": "End of event"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Reduce exploration as useful time disappears."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Prefer:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- known-good champion;\n- known-good ensemble;\n- external evidence;\n- upload reserve;\n- jobs that will actually finish before the event ends."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not begin:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- dependency upgrades;\n- new framework migrations;\n- broad dashboard redesign;\n- large model architecture experiments;\n- validation rewrites."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Capture evidence before shutting things down."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe standings"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe submissions"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event snapshot"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Stop autonomous scheduling:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe autopilot stop"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Disarm external uploads:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event disarm-submissions"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not immediately `git add -A`; event datasets, predictions and local research\nevidence may intentionally remain private."
+        }
+      ]
+    },
+    {
+      "id": "emergency-round",
+      "title": "Emergency round runbook",
+      "description": "Minimal path when the live-round clock is running out.",
+      "section": "runbooks",
+      "order": 10,
+      "source": "curated",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "Use this path when there is not enough time for further research. The objective is to produce a valid prediction from known-good evidence, not to discover a new model."
+        },
+        {
+          "kind": "heading",
+          "text": "First determine whether the event is real and current"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event inspect"
+        },
+        {
+          "kind": "heading",
+          "text": "Inspect autopilot"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe autopilot status"
+        },
+        {
+          "kind": "heading",
+          "text": "Validate the current submission candidate"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe submit check"
+        },
+        {
+          "kind": "heading",
+          "text": "Emergency helper"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe emergency"
+        },
+        {
+          "kind": "heading",
+          "text": "If the dashboard is the only broken component"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Emergency mode should favour a known-good champion or approved ensemble and must\nnot begin a new research race."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe dashboard diagnose"
+        },
+        {
+          "kind": "heading",
+          "text": "Never solve a short-clock problem by"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Continue through the CLI."
+        },
+        {
+          "kind": "paragraph",
+          "text": "- upgrading dependencies;\n- restarting from a random experiment;\n- changing the scorer;\n- rewriting the validation system;\n- disabling integrity checks."
+        },
+        {
+          "kind": "callout",
+          "tone": "danger",
+          "text": "A weak known-good candidate is preferable to an invalid prediction that cannot be scored."
+        }
+      ]
+    },
+    {
+      "id": "dashboard-operations",
+      "title": "Dashboard operations",
+      "description": "Start, verify, diagnose and recover the local Research Console.",
+      "section": "runbooks",
+      "order": 20,
+      "source": "curated",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "The dashboard is an operational cockpit, not the authority for research state. The filesystem-backed engine and CLI remain usable if the browser or dashboard server fails."
+        },
+        {
+          "kind": "heading",
+          "text": "Diagnose"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe dashboard diagnose"
+        },
+        {
+          "kind": "heading",
+          "text": "Start"
+        },
+        {
+          "kind": "paragraph",
+          "text": "This checks the Python environment, application import, frontend build, runtime\nstate, process state, port and health endpoint."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe dashboard start"
+        },
+        {
+          "kind": "heading",
+          "text": "Status"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Successful startup requires:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- the server process to remain alive;\n- port 8766 to listen;\n- `/api/health` to return the expected response."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A returned PID by itself is not considered success."
+        },
+        {
           "kind": "command",
           "command": ".\\.venv\\Scripts\\qseh.exe dashboard status"
+        },
+        {
+          "kind": "heading",
+          "text": "Open"
         },
         {
           "kind": "command",
@@ -337,7 +1229,11 @@
         },
         {
           "kind": "heading",
-          "text": "Health"
+          "text": "Backend health"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The browser should not be opened by this command when the backend is unhealthy."
         },
         {
           "kind": "command",
@@ -353,64 +1249,412 @@
         },
         {
           "kind": "heading",
-          "text": "Restart"
-        },
-        {
-          "kind": "command",
-          "command": ".\\.venv\\Scripts\\qseh.exe dashboard stop"
-        },
-        {
-          "kind": "command",
-          "command": ".\\.venv\\Scripts\\qseh.exe dashboard start"
-        },
-        {
-          "kind": "heading",
-          "text": "Diagnose failure"
-        },
-        {
-          "kind": "command",
-          "command": ".\\.venv\\Scripts\\qseh.exe dashboard diagnose"
-        },
-        {
-          "kind": "heading",
           "text": "Stop"
         },
         {
+          "kind": "paragraph",
+          "text": "Use this after deliberate frontend changes. Do not reinstall packages casually\nduring a live round."
+        },
+        {
           "kind": "command",
           "command": ".\\.venv\\Scripts\\qseh.exe dashboard stop"
         },
         {
           "kind": "heading",
-          "text": "Regenerate documentation"
+          "text": "If the dashboard fails during a round"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The process manager only terminates the dashboard process it owns."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Continue operating through the CLI."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe autopilot status"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event inspect"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe submit check"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Restart the UI only when doing so will not distract from the competition path."
+        }
+      ]
+    },
+    {
+      "id": "developer-guide",
+      "title": "Developer guide",
+      "description": "How the Everesteer competition system is structured and how to extend it without breaking live operation.",
+      "section": "runbooks",
+      "order": 30,
+      "source": "curated",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "This guide is for changing the system rather than operating a competition round. The central rule is to preserve evidence lineage and keep the CLI, backend and Research Console as different views over the same domain state."
+        },
+        {
+          "kind": "heading",
+          "text": "Architecture"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The primary path is:"
+        },
+        {
+          "kind": "flow",
+          "nodes": [
+            {
+              "id": "sdk",
+              "label": "Everesteer adapter"
+            },
+            {
+              "id": "domain",
+              "label": "Domain services"
+            },
+            {
+              "id": "evidence",
+              "label": "Filesystem evidence"
+            },
+            {
+              "id": "api",
+              "label": "FastAPI"
+            },
+            {
+              "id": "datasource",
+              "label": "ApiDataSource"
+            },
+            {
+              "id": "ui",
+              "label": "Research Console"
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Filesystem authority"
+        },
+        {
+          "kind": "heading",
+          "text": "Adding a model"
+        },
+        {
+          "kind": "heading",
+          "text": "Adding a research operator"
+        },
+        {
+          "kind": "heading",
+          "text": "Adding an API field"
+        },
+        {
+          "kind": "heading",
+          "text": "Adding an API endpoint"
+        },
+        {
+          "kind": "heading",
+          "text": "Adding a dashboard action"
+        },
+        {
+          "kind": "heading",
+          "text": "Live updates"
+        },
+        {
+          "kind": "heading",
+          "text": "Submission safety"
+        },
+        {
+          "kind": "heading",
+          "text": "Synthetic mode"
+        },
+        {
+          "kind": "heading",
+          "text": "Documentation"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The CLI and autopilot invoke the same domain concepts independently of the UI."
+        },
+        {
+          "kind": "paragraph",
+          "text": "The dashboard must never become the only copy of competition state."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Experiment evidence lives under the run/artifact structure."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Typical evidence includes:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- resolved configuration;\n- dataset fingerprint;\n- event snapshot;\n- fold metrics;\n- OOF predictions;\n- model metadata;\n- resource measurements;\n- race decision;\n- stdout/stderr."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A database may index this material for fast queries, but the database must be\nrebuildable from the evidence files."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A new model family should:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "1. implement the existing model interface;\n2. accept resolved configuration rather than hidden constants;\n3. fit without accessing validation/live targets improperly;\n4. generate predictions in the standard format;\n5. record parameters and parent lineage;\n6. persist an artefact when required;\n7. pass a load/inference smoke test;\n8. expose runtime/resource information."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not add model-specific submission code."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Submission consumes a normal candidate."
+        },
+        {
+          "kind": "paragraph",
+          "text": "An operator changes one well-defined part of an existing candidate, for example:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- regularisation;\n- feature subset;\n- recency weighting;\n- seed;\n- ensemble membership."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Record the parent and config delta."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not create experiments that cannot later explain what changed."
+        },
+        {
+          "kind": "paragraph",
+          "text": "The contract path is:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "TypeScript page DTO\n\u2192 Python/Pydantic mirror\n\u2192 domain service\n\u2192 API route\n\u2192 ApiDataSource\n\u2192 component"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not put a field directly into React using a second ad-hoc fetch."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Unknown values remain null/unknown rather than being turned into zero."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use an explicit FastAPI route."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not expose:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- arbitrary shell commands;\n- arbitrary filesystem paths;\n- Git mutation;\n- secrets;\n- wallet transactions."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Read-only repository/build inspection is allowed through narrow services."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Every button that mutates state must map to an allowlisted domain action."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A production button is not allowed to be decorative."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Document its path in the dashboard live-wiring matrix."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Frequently changing domains can publish logical events through the configured\nSSE/WebSocket mechanism."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Examples include:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- job progress;\n- round changes;\n- experiment completion;\n- champion changes;\n- submission completion;\n- leaderboard updates."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not poll every backend domain at the same interval."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Submission is a privileged external side effect."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not bypass:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- event identity;\n- lane checks;\n- ID alignment;\n- artefact checks;\n- quota;\n- idempotency."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Development and CI must remain incapable of accidentally arming external\nsubmission."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Synthetic fixtures exist to test infrastructure without organiser data."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Synthetic evidence must remain distinguishable internally from official event\nevidence."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Rehearsal must not overwrite live production research state."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Generated reference comes from code:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- Typer \u2192 CLI Reference;\n- FastAPI/OpenAPI \u2192 Backend API;\n- Python signatures/docstrings \u2192 Python API;\n- Pydantic/config schemas \u2192 Configuration."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Human operating knowledge stays in curated MDX."
+        },
+        {
+          "kind": "paragraph",
+          "text": "After changing public interfaces:"
         },
         {
           "kind": "command",
           "command": ".\\.venv\\Scripts\\qseh.exe docs build"
         },
         {
-          "kind": "callout",
-          "tone": "warning",
-          "text": "Do not run Activate.ps1. The project is designed to use .venv\\Scripts\\qseh.exe and .venv\\Scripts\\python.exe directly."
+          "kind": "heading",
+          "text": "Testing a change"
         },
         {
-          "kind": "callout",
-          "tone": "info",
-          "text": "SPA Documentation lives at /docs. FastAPI Swagger is at /api/dev/docs so it does not collide with the console Documentation page."
+          "kind": "paragraph",
+          "text": "Run the smallest relevant tests first."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Before event readiness, run:"
+        },
+        {
+          "kind": "command",
+          "command": "scripts\\preflight.cmd"
+        },
+        {
+          "kind": "heading",
+          "text": "Git during the event"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not treat a disconnected live Everesteer event as a local code failure when\ncredentials have not yet been provided."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Prefer narrow fixes."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Before changing code:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- inspect current SHA;\n- understand the working tree;\n- avoid unrelated refactors."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Never solve a live-round problem by performing a broad architecture cleanup."
+        }
+      ]
+    },
+    {
+      "id": "glossary",
+      "title": "Glossary",
+      "description": "Terms used by the Research Console, CLI and generated reference.",
+      "section": "runbooks",
+      "order": 40,
+      "source": "curated",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "Short definitions for words that appear in the operator guides and generated reference. These are operating terms, not invented scoring formulas."
         },
         {
           "kind": "metric",
-          "name": "schemaVersion",
-          "text": "Envelope schemaVersion is 2 for every /api read route."
+          "name": "ICIR",
+          "text": "Information coefficient information ratio: a soft research metric used when comparing valid candidates. It is not a universal veto."
+        },
+        {
+          "kind": "metric",
+          "name": "CORR20",
+          "text": "An official-style score component name probed from everestapi.scoring when the SDK exposes it. Local fallbacks are labelled non-official."
+        },
+        {
+          "kind": "metric",
+          "name": "exped",
+          "text": "The time-group column used by temporal splits. Fold profiles R0\u2013R3 allocate train/test expeds with optional embargo."
+        },
+        {
+          "kind": "metric",
+          "name": "DRY_RUN",
+          "text": "Submission pipeline may validate, package and record evidence without uploading to Everesteer. Safe default."
+        },
+        {
+          "kind": "metric",
+          "name": "ARMED",
+          "text": "Real Everesteer uploads are permitted after explicit `qseh event arm-submissions` and still pass guard checks."
+        },
+        {
+          "kind": "metric",
+          "name": "DISABLED",
+          "text": "External uploads cannot be performed."
+        },
+        {
+          "kind": "metric",
+          "name": "Champion",
+          "text": "The operational default candidate if a prediction had to be produced now."
+        },
+        {
+          "kind": "metric",
+          "name": "Frontier",
+          "text": "Candidates that remain interesting because no other candidate is clearly better on every relevant trade-off."
+        },
+        {
+          "kind": "metric",
+          "name": "Ensemble",
+          "text": "A constructed candidate combining multiple prediction streams."
+        },
+        {
+          "kind": "metric",
+          "name": "QSEH_SYNTHETIC",
+          "text": "Environment flag that forces synthetic fixtures instead of live dataset pulls."
+        },
+        {
+          "kind": "metric",
+          "name": "8766",
+          "text": "Local Research Console port: http://127.0.0.1:8766/"
         },
         {
           "kind": "related",
           "href": "/docs",
           "label": "Open Documentation"
-        },
-        {
-          "kind": "related",
-          "href": "/compute",
-          "label": "Open Compute & Jobs"
         }
       ]
     }

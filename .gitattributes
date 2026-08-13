@@ -1,0 +1,3 @@
+# Windows cmd.exe requires CRLF. LF-only .cmd files parse as
+# 'tlocal' / 't' / '/d' instead of setlocal / set / cd /d.
+*.cmd text eol=crlf

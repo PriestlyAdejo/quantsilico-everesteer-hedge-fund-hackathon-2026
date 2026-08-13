@@ -482,7 +482,8 @@ export type DocBlock =
   | { kind: "callout"; tone: "info" | "warning" | "danger"; text: string }
   | { kind: "command"; command: string }
   | { kind: "metric"; name: string; text: string }
-  | { kind: "related"; href: string; label: string };
+  | { kind: "related"; href: string; label: string }
+  | { kind: "table"; headers: string[]; rows: string[][] };
 
 export interface DocArticle {
   id: string;

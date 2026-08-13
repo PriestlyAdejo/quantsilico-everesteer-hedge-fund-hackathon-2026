@@ -5,6 +5,7 @@ import type { DocumentationData, DocArticle, DocBlock } from "../data/types";
 import PageHeader from "../components/PageHeader";
 import StatusPage from "../components/StatusPage";
 import { PAGE_META, fmtClock } from "../data/humanize";
+import { articleMatchesQuery } from "../data/docSearch";
 
 const MONO = "'JetBrains Mono', monospace";
 const CALLOUT_COLOR = { info: "var(--metadata)", warning: "#FFB000", danger: "#EF4444" } as const;
@@ -65,6 +66,29 @@ function Block({ block, onNav }: { block: DocBlock; onNav: (href: string) => voi
           {block.label} <span style={{ fontSize: 10 }}>↗</span>
         </button>
       );
+    case "table":
+      return (
+        <div style={{ overflowX: "auto", margin: "10px 0 14px", border: "1px solid var(--border)", borderRadius: 2 }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: MONO, fontSize: 11 }}>
+            <thead>
+              <tr>
+                {block.headers.map((h) => (
+                  <th key={h} style={{ textAlign: "left", padding: "6px 8px", borderBottom: "1px solid var(--border)", color: "var(--metadata)", fontWeight: 600, whiteSpace: "nowrap" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {block.rows.map((row, ri) => (
+                <tr key={ri}>
+                  {row.map((cell, ci) => (
+                    <td key={ci} style={{ padding: "5px 8px", borderBottom: "1px solid var(--border)", color: "var(--body-secondary)", verticalAlign: "top" }}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
   }
 }
 
@@ -86,12 +110,7 @@ export default function Documentation() {
     });
   }, [ds]);
 
-  const matches = (a: DocArticle, q: string) => {
-    if (!q) return true;
-    const ql = q.toLowerCase();
-    if (a.title.toLowerCase().includes(ql) || a.description.toLowerCase().includes(ql)) return true;
-    return a.blocks.some((b) => "text" in b && b.text.toLowerCase().includes(ql));
-  };
+  const matches = (a: DocArticle, q: string) => articleMatchesQuery(a, q);
 
   const ordered = useMemo(() => data ? [...data.articles].sort((a, b) => a.order - b.order) : [], [data]);
   const filtered = useMemo(() => ordered.filter((a) => matches(a, query)), [ordered, query]);
@@ -145,9 +164,6 @@ export default function Documentation() {
             <>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
                 <h2 style={{ fontFamily: "'Raleway', sans-serif", fontSize: 18, fontWeight: 700, color: "var(--foreground)", margin: 0 }}>{active.title}</h2>
-                <span style={{ fontFamily: MONO, fontSize: 9, color: active.source === "generated" ? "var(--metadata)" : "var(--accent)", border: "1px solid var(--border)", borderRadius: 2, padding: "1px 5px" }}>
-                  {active.source}
-                </span>
               </div>
               <p style={{ fontFamily: "'Raleway', sans-serif", fontSize: 12.5, color: "var(--metadata)", margin: "0 0 16px" }}>{active.description}</p>
               {active.blocks.map((b, i) => <Block key={i} block={b} onNav={nav} />)}
@@ -166,11 +182,12 @@ export default function Documentation() {
         </div>
       </div>
 
-      {(data.generatedFromSha || data.generatedAt) && (
-        <div style={{ fontFamily: MONO, fontSize: 9.5, color: "var(--faint)" }}>
-          Reference generated from commit {data.generatedFromSha ?? "—"}{data.generatedAt ? ` · ${fmtClock(data.generatedAt)}` : ""}
-        </div>
-      )}
+      <div style={{ fontFamily: MONO, fontSize: 9.5, color: "var(--faint)" }}>
+        {active?.source === "generated"
+          ? `Generated from commit ${data.generatedFromSha ?? "—"}`
+          : "Curated runbook"}
+        {data.generatedAt ? ` · ${fmtClock(data.generatedAt)}` : ""}
+      </div>
     </div>
   );
 }

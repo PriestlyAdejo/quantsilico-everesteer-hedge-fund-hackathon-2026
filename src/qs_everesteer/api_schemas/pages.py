@@ -804,6 +804,12 @@ class DocRelatedBlock(ApiModel):
     label: str
 
 
+class DocTableBlock(ApiModel):
+    kind: Literal["table"]
+    headers: list[str]
+    rows: list[list[str]]
+
+
 DocBlock = Annotated[
     DocIntroBlock
     | DocHeadingBlock
@@ -812,7 +818,8 @@ DocBlock = Annotated[
     | DocCalloutBlock
     | DocCommandBlock
     | DocMetricBlock
-    | DocRelatedBlock,
+    | DocRelatedBlock
+    | DocTableBlock,
     Field(discriminator="kind"),
 ]
 

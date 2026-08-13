@@ -48,6 +48,16 @@ qseh race --profile fast
 qseh dashboard start
 ```
 
+Do not run `Activate.ps1`. Use `.\.venv\Scripts\qseh.exe` and `.\.venv\Scripts\python.exe` from the repo root.
+
+Operator guide (also in the Research Console Documentation page): `docs/runbooks/event-day.mdx`
+
+Safe local check before the venue:
+
+```text
+scripts\preflight.cmd
+```
+
 Dashboard: http://127.0.0.1:8766/
 
 Submission default mode is `DRY_RUN`. Real uploads require an explicit:

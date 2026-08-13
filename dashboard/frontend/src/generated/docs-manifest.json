@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-12T13:06:23+00:00",
-  "generated_from_sha": "d60430f3c539f20f7ab755c5dcc75f18992c812e",
-  "generator_version": "2",
+  "generated_at": "2026-08-13T11:38:41+00:00",
+  "generated_from_sha": "0b0fe69f467df29751a6e316ad852083503d48b6",
+  "generator_version": "3",
   "schema_version": 1,
   "title": "QuantSilico Everesteer Docs Manifest",
   "sections": [
@@ -30,18 +30,1233 @@
       "source": "generated",
       "section": "generated",
       "order": 1000,
-      "description": "Generated Typer command reference from the live CLI",
+      "description": "Generated from the current qseh Typer command tree.",
       "blocks": [
         {
           "kind": "intro",
-          "text": "Generated CLI reference from the live Typer command tree."
+          "text": "Generated from commit `0b0fe69f467df29751a6e316ad852083503d48b6`."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Authoritative source: the live Typer command tree (`qseh docs build`)."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not maintain a handwritten second command inventory."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh autopilot"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Deterministic competition autopilot (no LLM)."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh autopilot [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `run`, `status`, `stop`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh autopilot run"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Advance the persisted autopilot workflow (never auto-arms submissions)."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh autopilot run [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--profile",
+              "no",
+              "competition-aggressive",
+              "Autopilot profile name."
+            ],
+            [
+              "--max-steps",
+              "no",
+              "",
+              "Optional step cap (default: run until COMPLETE)."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh autopilot status"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Show autopilot stage / history from research state."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh autopilot status [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh autopilot stop"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Deactivate autopilot without erasing history."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh autopilot stop [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh baseline"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Baseline / scorer tooling."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh baseline [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `reproduce`, `scorer-parity`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh baseline reproduce"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Fit the independent reference_lgbm baseline."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh baseline reproduce [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--data",
+              "no",
+              "",
+              "Training parquet (default: synthetic train)."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh baseline scorer-parity"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Compare expected vs observed predictions; list official scorer availability."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh baseline scorer-parity [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--expected",
+              "no",
+              "",
+              "Expected prediction column/file."
+            ],
+            [
+              "--observed",
+              "no",
+              "",
+              "Observed prediction column/file."
+            ],
+            [
+              "--column",
+              "no",
+              "prediction",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh champion"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Show or set the research champion candidate."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh champion [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--set",
+              "no",
+              "",
+              "Promote a candidate id to champion (omit to show current)."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh compare"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Compare experiment run metrics under runs/experiments/."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh compare [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh dashboard"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Local dashboard on 127.0.0.1:8766."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh dashboard [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `build`, `diagnose`, `open`, `start`, `status`, `stop`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh dashboard build"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Build the Figma frontend production bundle."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh dashboard build [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--clean",
+              "no",
+              "False",
+              "Force pnpm install --frozen-lockfile before build."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh dashboard diagnose"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Print venue-ready dashboard diagnostics (no secrets)."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh dashboard diagnose [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh dashboard open"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Open the dashboard URL only when healthy."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh dashboard open [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--start",
+              "no",
+              "False",
+              "Start the dashboard first if it is not healthy."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh dashboard start"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Start FastAPI/Uvicorn; success requires live process + /api/health."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh dashboard start [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh dashboard status"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Authoritative dashboard lifecycle status (single source of truth)."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh dashboard status [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh dashboard stop"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Stop the qseh-owned dashboard process; never kill foreign :8766 owners."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh dashboard stop [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh data"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Dataset pull, audit, and fingerprinting."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh data [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `audit`, `fingerprint`, `pull`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh data audit"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Run structural integrity audit on a Parquet/CSV dataset."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh data audit [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "path",
+              "no",
+              "",
+              "Dataset path (default: synthetic train.parquet)."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh data fingerprint"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Content + schema fingerprint for a dataset file."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh data fingerprint [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "path",
+              "no",
+              "",
+              "Dataset path (default: synthetic train.parquet)."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh data pull"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Pull a split; uses synthetic fixtures when creds missing or QSEH_SYNTHETIC=1."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh data pull [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--split",
+              "yes",
+              "",
+              "Dataset split: train \\",
+              "validation \\",
+              "live"
+            ],
+            [
+              "--dest",
+              "no",
+              "",
+              "Destination file or directory (default: data/<split>.parquet)."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh docs"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Generate documentation from live code."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh docs [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `build`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh docs build"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Write docs/generated/ and dashboard frontend docs-manifest.json."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh docs build [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh doctor"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Check Python, everestapi, disk, optional GPU, and repo paths."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh doctor [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh emergency"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Disarm submissions, stop autopilot, snapshot event."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh emergency [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--send",
+              "no",
+              "False",
+              "Queue a local alert marker (no secrets)."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh ensemble"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Ensemble blending."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh ensemble [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `build`, `compare`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh ensemble build"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Build a blend from available experiment OOF predictions."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh ensemble build [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--strategy",
+              "no",
+              "rank_average",
+              "rank_average\\",
+              "greedy_forward"
+            ],
+            [
+              "--out",
+              "no",
+              "",
+              "Blend manifest path."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh ensemble compare"
+        },
+        {
+          "kind": "paragraph",
+          "text": "List persisted blend manifests under artifacts/ensembles/."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh ensemble compare [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh event"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Event control and submission arming."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh event [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `arm-submissions`, `disarm-submissions`, `inspect`, `snapshot`, `submission-mode`, `watch`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh event arm-submissions"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Explicitly arm real uploads (requires a current event snapshot id)."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh event arm-submissions [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--snapshot-id",
+              "no",
+              "",
+              "Event snapshot id required to arm (defaults to latest / state)."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh event disarm-submissions"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Return to DRY_RUN (safe default)."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh event disarm-submissions [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh event inspect"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Capability-detecting event inspection (never invents quotas/standings)."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh event inspect [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh event snapshot"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Write an event capability snapshot under runs/event/."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh event snapshot [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh event submission-mode"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Show or set submission operating mode."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh event submission-mode [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "mode",
+              "no",
+              "",
+              "Optional mode to set: DISABLED \\",
+              "DRY_RUN \\",
+              "ARMED. Omit to print current."
+            ],
+            [
+              "--snapshot-id",
+              "no",
+              "",
+              "Required when setting ARMED."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh event watch"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Poll current round / deadline using server-observed time when available."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh event watch [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--interval / -i",
+              "no",
+              "5.0",
+              "Seconds between polls."
+            ],
+            [
+              "--once",
+              "no",
+              "False",
+              "Single poll then exit."
+            ],
+            [
+              "--tick-round",
+              "no",
+              "False",
+              "Advance one RoundController cycle (detect\u2192pull\u2192guard\u2192submit path)."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh frontier"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Compute Pareto frontier (max score, min runtime)."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh frontier [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--score-key",
+              "no",
+              "score",
+              ""
+            ],
+            [
+              "--runtime-key",
+              "no",
+              "runtime_seconds",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh leaderboard"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Fetch official leaderboard when available (never invent ranks)."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh leaderboard [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh race"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Successive-halving race over known experiment candidates."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh race [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--profile",
+              "no",
+              "fast",
+              "Race profile: fast \\",
+              "standard"
+            ],
+            [
+              "--stage",
+              "no",
+              "R0",
+              "Racing stage R0\u2013R3."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh rehearsal"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Synthetic end-to-end rehearsal (works without dashboard/LLM)."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh rehearsal [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh run"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Run a persisted temporal experiment from a YAML config."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh run [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "config",
+              "yes",
+              "",
+              "YAML experiment config path."
+            ],
+            [
+              "--sync",
+              "no",
+              "True",
+              "Run via in-process job worker (default) or enqueue only."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh sdk"
+        },
+        {
+          "kind": "paragraph",
+          "text": "everestapi SDK inspection."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh sdk [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `check`, `info`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh sdk check"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Probe SDK client connectivity / capability discovery."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh sdk check [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh sdk info"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Show installed everestapi version and adapter fingerprint (never the key)."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh sdk info [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh stake"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Stake classification (no real transfers)."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh stake [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `recommend`, `status`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh stake recommend"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Recommend allocations. Real-money modes always require human action."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh stake recommend [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--profile",
+              "no",
+              "aggressive",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh stake status"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Classify current stake mode from event capabilities (never invent balances)."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh stake status [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh standings"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Fetch diagnostics standings when available."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh standings [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh submissions"
+        },
+        {
+          "kind": "paragraph",
+          "text": "List local submission artefacts / idempotency ledger entries."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh submissions [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "qseh submit"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Submission guard and upload pipeline."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh submit [OPTIONS]"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Subcommands: `check`, `live`, `practice`."
+        },
+        {
+          "kind": "heading",
+          "text": "qseh submit check"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Run SubmissionGuard without uploading."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh submit check [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--predictions",
+              "no",
+              "",
+              ""
+            ],
+            [
+              "--lane",
+              "no",
+              "practice",
+              ""
+            ],
+            [
+              "--candidate",
+              "no",
+              "champion",
+              ""
+            ],
+            [
+              "--round",
+              "no",
+              "",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh submit live"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Live event submit respecting DISABLED/DRY_RUN/ARMED (+ guard)."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh submit live [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--predictions",
+              "no",
+              "",
+              ""
+            ],
+            [
+              "--candidate",
+              "no",
+              "champion",
+              ""
+            ],
+            [
+              "--round",
+              "no",
+              "",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qseh submit practice"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Practice/diagnostics submit respecting DISABLED/DRY_RUN/ARMED."
+        },
+        {
+          "kind": "command",
+          "command": "Usage: qseh submit practice [OPTIONS]"
+        },
+        {
+          "kind": "heading",
+          "text": "Options"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Option",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "--predictions",
+              "no",
+              "",
+              ""
+            ],
+            [
+              "--candidate",
+              "no",
+              "champion",
+              ""
+            ],
+            [
+              "--round",
+              "no",
+              "",
+              ""
+            ]
+          ]
         }
       ]
     },
     {
       "id": "backend-api",
       "title": "Backend API",
-      "path": "docs/generated/openapi.json",
+      "path": "docs/generated/backend-api.md",
       "tags": [
         "api",
         "generated",
@@ -54,7 +1269,1102 @@
       "blocks": [
         {
           "kind": "intro",
-          "text": "Generated from the live FastAPI Research Console application (33 paths). Swagger UI is at /api/dev/docs."
+          "text": "Generated from commit `0b0fe69f467df29751a6e316ad852083503d48b6`."
+        },
+        {
+          "kind": "paragraph",
+          "text": "OpenAPI `3.1.0` \u2014 33 paths from the live FastAPI application."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Swagger UI is isolated at `/api/dev/docs` so it does not collide with the SPA `/docs` page."
+        },
+        {
+          "kind": "heading",
+          "text": "POST /api/actions/autopilot/start"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Start Autopilot"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "POST /api/actions/autopilot/stop"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Stop Autopilot"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "POST /api/actions/build-ensemble"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Build Ensemble"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "In",
+            "Required",
+            "Type",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "strategy",
+              "query",
+              "no",
+              "string",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ],
+            [
+              "422",
+              "Validation Error",
+              "HTTPValidationError ({detail: array[ValidationError]})"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "POST /api/actions/jobs/{job_id}/stop"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Stop Job"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "In",
+            "Required",
+            "Type",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "job_id",
+              "path",
+              "yes",
+              "string",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ],
+            [
+              "422",
+              "Validation Error",
+              "HTTPValidationError ({detail: array[ValidationError]})"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "POST /api/actions/official-baseline"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Official Baseline"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "POST /api/actions/promote-ensemble"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Promote Ensemble"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "POST /api/actions/pull-datasets"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Pull Datasets"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "POST /api/actions/race/start"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Start Race"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "In",
+            "Required",
+            "Type",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "profile",
+              "query",
+              "no",
+              "string",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ],
+            [
+              "422",
+              "Validation Error",
+              "HTTPValidationError ({detail: array[ValidationError]})"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "POST /api/actions/refresh-event"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Refresh Event"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "POST /api/actions/save-ensemble"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Save Ensemble"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "In",
+            "Required",
+            "Type",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "strategy",
+              "query",
+              "no",
+              "string",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ],
+            [
+              "422",
+              "Validation Error",
+              "HTTPValidationError ({detail: array[ValidationError]})"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "POST /api/actions/scorer-parity"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Scorer Parity"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "POST /api/actions/snapshot-event"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Snapshot Event"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "POST /api/actions/submit-live/{candidate_id}"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Submit Live"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "In",
+            "Required",
+            "Type",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "candidate_id",
+              "path",
+              "yes",
+              "string",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ],
+            [
+              "422",
+              "Validation Error",
+              "HTTPValidationError ({detail: array[ValidationError]})"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "POST /api/actions/submit-practice/{candidate_id}"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Submit Practice"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "In",
+            "Required",
+            "Type",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "candidate_id",
+              "path",
+              "yes",
+              "string",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ],
+            [
+              "422",
+              "Validation Error",
+              "HTTPValidationError ({detail: array[ValidationError]})"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "POST /api/actions/validate/{candidate_id}"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Validate Submission"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "In",
+            "Required",
+            "Type",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "candidate_id",
+              "path",
+              "yes",
+              "string",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ],
+            [
+              "422",
+              "Validation Error",
+              "HTTPValidationError ({detail: array[ValidationError]})"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/compute"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Get Compute"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/data-lab"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Get Data Lab"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/docs"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Get Documentation"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/ensembles"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Get Ensembles"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/event-control"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Get Event Control"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/event-status"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Get Event Status"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/events"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Events"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/experiments"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Get Experiments"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/feature-lab"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Get Feature Lab"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/health"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Health"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/leaderboard"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Get Leaderboard"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/models"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Get Models"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/overview"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Get Overview"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/repository"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Get Repository"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/round-room"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Get Round Room"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/staking"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Get Staking"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/submission"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Get Submission"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "GET /api/validation"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Get Validation"
+        },
+        {
+          "kind": "heading",
+          "text": "Responses"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Status",
+            "Description",
+            "Schema"
+          ],
+          "rows": [
+            [
+              "200",
+              "Successful Response",
+              ""
+            ]
+          ]
         }
       ]
     },
@@ -69,11 +2379,1844 @@
       "source": "generated",
       "section": "generated",
       "order": 1020,
-      "description": "Public project Python entry points",
+      "description": "Public project Python signatures and docstrings",
       "blocks": [
         {
           "kind": "intro",
-          "text": "Generated public Python API reference (selected entry points)."
+          "text": "Generated from commit `0b0fe69f467df29751a6e316ad852083503d48b6`."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Intended public interfaces only. Private helpers (`_name`) are omitted."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Missing docstrings are reported as `MISSING DOCSTRING` rather than invented."
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.event.adapter.EveresteerAdapter"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`EveresteerAdapter(self, *, api_key: 'str | None' = None, base_url: 'str | None' = None, tournament: 'str' = 'futures', synthetic: 'bool | None' = None, client: 'Any | None' = None, feed: 'SimulatedEventFeed | None' = None) -> 'None'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Capability-discovering Everesteer / everestapi adapter."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "api_key",
+              "no",
+              "None",
+              "str \\",
+              "None"
+            ],
+            [
+              "base_url",
+              "no",
+              "None",
+              "str \\",
+              "None"
+            ],
+            [
+              "tournament",
+              "no",
+              "'futures'",
+              "str"
+            ],
+            [
+              "synthetic",
+              "no",
+              "None",
+              "bool \\",
+              "None"
+            ],
+            [
+              "client",
+              "no",
+              "None",
+              "Any \\",
+              "None"
+            ],
+            [
+              "feed",
+              "no",
+              "None",
+              "SimulatedEventFeed \\",
+              "None"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `None`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.event.adapter.EveresteerAdapter.inspect"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`inspect(self) -> 'dict[str, Any]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Return EventCapabilities-like dict plus connection status."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Missing methods / failed probes become structured UNAVAILABLE / null \u2014 never fabricated zeros for quotas or standings."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Any]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.event.adapter.EveresteerAdapter.pull_split"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`pull_split(self, split: 'str', dest: 'str | Path', *, repo_root: 'str | Path | None' = None) -> 'Path'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Download a dataset split to *dest*."
+        },
+        {
+          "kind": "paragraph",
+          "text": "When credentials / SDK are unavailable and ``QSEH_SYNTHETIC=1`` (or ``synthetic=True``), copies/generates a synthetic fixture instead."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "split",
+              "yes",
+              "",
+              "str"
+            ],
+            [
+              "dest",
+              "yes",
+              "",
+              "str \\",
+              "Path"
+            ],
+            [
+              "repo_root",
+              "no",
+              "None",
+              "str \\",
+              "Path \\",
+              "None"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `Path`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.event.adapter.EveresteerAdapter.safe_key_fingerprint"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`safe_key_fingerprint(self) -> 'str | None'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `str | None`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.event.adapter.EveresteerAdapter.sdk_version"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`sdk_version(self) -> 'str'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `str`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.event.adapter.EveresteerAdapter.snapshot"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`snapshot(self, repo_root: 'str | Path | None' = None) -> 'dict[str, Any]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Inspect capabilities and write ``runs/event/event_snapshot_<ts>.json``."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "repo_root",
+              "no",
+              "None",
+              "str \\",
+              "Path \\",
+              "None"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Any]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.event.adapter.EveresteerAdapter.submit_predictions"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`submit_predictions(self, *, model_id: 'str', predictions_path: 'str | Path', lane: 'str' = 'practice', model_pkl: 'str | Path | None' = None, target: 'str' = 'target_everest_20', **kwargs: 'Any') -> 'dict[str, Any]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Real upload path (practice diagnostics or live event)."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Callers must gate this behind ARMED mode + SubmissionGuard. This method never auto-arms and never runs in synthetic mode."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "model_id",
+              "yes",
+              "",
+              "str"
+            ],
+            [
+              "predictions_path",
+              "yes",
+              "",
+              "str \\",
+              "Path"
+            ],
+            [
+              "lane",
+              "no",
+              "'practice'",
+              "str"
+            ],
+            [
+              "model_pkl",
+              "no",
+              "None",
+              "str \\",
+              "Path \\",
+              "None"
+            ],
+            [
+              "target",
+              "no",
+              "'target_everest_20'",
+              "str"
+            ],
+            [
+              "kwargs",
+              "yes",
+              "",
+              "Any"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Any]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.event.adapter.sdk_version"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`sdk_version() -> 'str'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Return installed everestapi version string, or UNKNOWN."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `str`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.data.audit.audit_dataset"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`audit_dataset(path: 'str | Path') -> 'DatasetAudit'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Run structural integrity checks on a Parquet/CSV dataset."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "path",
+              "yes",
+              "",
+              "str \\",
+              "Path"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `DatasetAudit`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.data.fingerprint.fingerprint_dataset"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`fingerprint_dataset(path: 'str | Path') -> 'dict[str, Any]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Return content hash + schema fingerprint (+ column inventory)."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "path",
+              "yes",
+              "",
+              "str \\",
+              "Path"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Any]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.validation.scoring.official_scorers"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`official_scorers() -> 'dict[str, Callable[..., Any]]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Callable[..., Any]]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.validation.temporal.temporal_cv"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`temporal_cv(frame: 'pd.DataFrame', model_factory: 'Callable[[], Any]', *, features: 'list[str]', target: 'str', exped_col: 'str' = 'exped', profile: 'str | FoldProfile' = 'R1', sample_weight_fn: 'Callable[[Any], Any] | None' = None) -> 'tuple[pd.DataFrame, dict[str, Any]]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "frame",
+              "yes",
+              "",
+              "pd.DataFrame"
+            ],
+            [
+              "model_factory",
+              "yes",
+              "",
+              "Callable[[], Any]"
+            ],
+            [
+              "features",
+              "yes",
+              "",
+              "list[str]"
+            ],
+            [
+              "target",
+              "yes",
+              "",
+              "str"
+            ],
+            [
+              "exped_col",
+              "no",
+              "'exped'",
+              "str"
+            ],
+            [
+              "profile",
+              "no",
+              "'R1'",
+              "str \\",
+              "FoldProfile"
+            ],
+            [
+              "sample_weight_fn",
+              "no",
+              "None",
+              "Callable[[Any], Any] \\",
+              "None"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `tuple[pd.DataFrame, dict[str, Any]]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.validation.temporal.TemporalSplitter"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`TemporalSplitter(self, profile: 'str | FoldProfile' = 'R1') -> 'None'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "profile",
+              "no",
+              "'R1'",
+              "str \\",
+              "FoldProfile"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `None`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.validation.temporal.TemporalSplitter.get_n_splits"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`get_n_splits(self, data=None, groups=None) -> 'int'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "data",
+              "no",
+              "None",
+              ""
+            ],
+            [
+              "groups",
+              "no",
+              "None",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `int`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.validation.temporal.TemporalSplitter.split"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`split(self, data, groups=None) -> 'Iterator[tuple[np.ndarray, np.ndarray]]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "data",
+              "yes",
+              "",
+              ""
+            ],
+            [
+              "groups",
+              "no",
+              "None",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `Iterator[tuple[np.ndarray, np.ndarray]]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.experiments.runner.ExperimentRunner"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`ExperimentRunner(self, repo_root: 'str | Path | None' = None) -> 'None'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Config -> model -> OOF -> metrics -> artefacts -> immutable manifest."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "repo_root",
+              "no",
+              "None",
+              "str \\",
+              "Path \\",
+              "None"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `None`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.experiments.runner.ExperimentRunner.run"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`run(self, config_path: 'str | Path | dict[str, Any]') -> 'dict[str, Any]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "config_path",
+              "yes",
+              "",
+              "str \\",
+              "Path \\",
+              "dict[str, Any]"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Any]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.experiments.racing.RacingScheduler"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`RacingScheduler(self, *, keep_fraction: 'float' = 0.5, min_survivors: 'int' = 1) -> 'None'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "keep_fraction",
+              "no",
+              "0.5",
+              "float"
+            ],
+            [
+              "min_survivors",
+              "no",
+              "1",
+              "int"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `None`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.experiments.racing.RacingScheduler.evaluate"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`evaluate(self, records: 'list[dict[str, Any]]', stage: 'str') -> 'list[RaceOutcome]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "records",
+              "yes",
+              "",
+              "list[dict[str, Any]]"
+            ],
+            [
+              "stage",
+              "yes",
+              "",
+              "str"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `list[RaceOutcome]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.experiments.racing.RacingScheduler.next_actions"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`next_actions(self, research_state: 'dict') -> 'list[dict]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "research_state",
+              "yes",
+              "",
+              "dict"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `list[dict]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.selection.frontier.pareto_frontier"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`pareto_frontier(records: 'list[dict]', objectives: 'list[tuple[str, str]]') -> 'list[dict]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "records",
+              "yes",
+              "",
+              "list[dict]"
+            ],
+            [
+              "objectives",
+              "yes",
+              "",
+              "list[tuple[str, str]]"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `list[dict]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.ensemble.blend.rank_average"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`rank_average(predictions)`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "predictions",
+              "yes",
+              "",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.ensemble.blend.weighted"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`weighted(predictions, weights=None)`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "predictions",
+              "yes",
+              "",
+              ""
+            ],
+            [
+              "weights",
+              "no",
+              "None",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.ensemble.blend.greedy_forward"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`greedy_forward(predictions, y_true, scorer: 'Callable[[Any, Any], Any]', *, max_members: 'int | None' = None) -> 'dict[str, Any]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "predictions",
+              "yes",
+              "",
+              ""
+            ],
+            [
+              "y_true",
+              "yes",
+              "",
+              ""
+            ],
+            [
+              "scorer",
+              "yes",
+              "",
+              "Callable[[Any, Any], Any]"
+            ],
+            [
+              "max_members",
+              "no",
+              "None",
+              "int \\",
+              "None"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Any]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.ensemble.blend.diversity_aware"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`diversity_aware(predictions, y_true, scorer: 'Callable[[Any, Any], Any]', *, diversity_weight: 'float' = 0.05, max_members: 'int | None' = None) -> 'dict[str, Any]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "predictions",
+              "yes",
+              "",
+              ""
+            ],
+            [
+              "y_true",
+              "yes",
+              "",
+              ""
+            ],
+            [
+              "scorer",
+              "yes",
+              "",
+              "Callable[[Any, Any], Any]"
+            ],
+            [
+              "diversity_weight",
+              "no",
+              "0.05",
+              "float"
+            ],
+            [
+              "max_members",
+              "no",
+              "None",
+              "int \\",
+              "None"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Any]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.submission.guard.SubmissionGuard"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`SubmissionGuard(self, /, *args, **kwargs)`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Hard integrity checks: event, round, lane, fingerprint, IDs, quota, mode."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "args",
+              "yes",
+              "",
+              ""
+            ],
+            [
+              "kwargs",
+              "yes",
+              "",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.submission.guard.SubmissionGuard.validate"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`validate(self, ctx: 'SubmissionContext | None' = None, **kwargs: 'Any') -> 'GuardResult'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "ctx",
+              "no",
+              "None",
+              "SubmissionContext \\",
+              "None"
+            ],
+            [
+              "kwargs",
+              "yes",
+              "",
+              "Any"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `GuardResult`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.submission.guard.SubmissionGuard.validate_from_research_state"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`validate_from_research_state(self, ctx: 'SubmissionContext', repo_root: 'str | Path | None' = None) -> 'GuardResult'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Fill mode / snapshot defaults from research state then validate."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "ctx",
+              "yes",
+              "",
+              "SubmissionContext"
+            ],
+            [
+              "repo_root",
+              "no",
+              "None",
+              "str \\",
+              "Path \\",
+              "None"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `GuardResult`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.submission.mode.get_mode"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`get_mode(repo_root: 'str | Path | None' = None) -> 'SubmissionMode'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Return the current submission mode (default DRY_RUN)."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "repo_root",
+              "no",
+              "None",
+              "str \\",
+              "Path \\",
+              "None"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `SubmissionMode`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.submission.mode.arm_submissions"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`arm_submissions(event_snapshot_id: 'str', repo_root: 'str | Path | None' = None) -> 'SubmissionMode'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Explicitly enable real uploads. Requires a current event snapshot id."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "event_snapshot_id",
+              "yes",
+              "",
+              "str"
+            ],
+            [
+              "repo_root",
+              "no",
+              "None",
+              "str \\",
+              "Path \\",
+              "None"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `SubmissionMode`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.live.rounds.RoundController"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`RoundController(self, *, repo_root: 'str | Path | None' = None, adapter: 'EveresteerAdapter | None' = None, feed: 'SimulatedEventFeed | None' = None, pipeline: 'SubmissionPipeline | None' = None, infer_fn: 'InferChampionFn | None' = None, ensemble_fn: 'EnsembleFn | None' = None, audit_fn: 'Callable[[Path], dict[str, Any]] | None' = None) -> 'None'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Restartable / idempotent live-round loop."
+        },
+        {
+          "kind": "paragraph",
+          "text": "detect round \u2192 snapshot \u2192 pull live \u2192 fingerprint \u2192 audit \u2192 infer champion/challengers \u2192 ensemble \u2192 guard \u2192 submit (mode+idempotency) \u2192 observe \u2192 update state."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "repo_root",
+              "no",
+              "None",
+              "str \\",
+              "Path \\",
+              "None"
+            ],
+            [
+              "adapter",
+              "no",
+              "None",
+              "EveresteerAdapter \\",
+              "None"
+            ],
+            [
+              "feed",
+              "no",
+              "None",
+              "SimulatedEventFeed \\",
+              "None"
+            ],
+            [
+              "pipeline",
+              "no",
+              "None",
+              "SubmissionPipeline \\",
+              "None"
+            ],
+            [
+              "infer_fn",
+              "no",
+              "None",
+              "InferChampionFn \\",
+              "None"
+            ],
+            [
+              "ensemble_fn",
+              "no",
+              "None",
+              "EnsembleFn \\",
+              "None"
+            ],
+            [
+              "audit_fn",
+              "no",
+              "None",
+              "Callable[[Path], dict[str, Any]] \\",
+              "None"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `None`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.live.rounds.RoundController.tick"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`tick(self, **kwargs: 'Any') -> 'RoundTickResult'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Run one restartable cycle. Extra kwargs override detect/submit fields."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "kwargs",
+              "yes",
+              "",
+              "Any"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `RoundTickResult`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.jobs.queue.enqueue"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`enqueue(kind: 'str | JobKind', payload: 'dict[str, Any] | None' = None, *, repo_root: 'str | Path | None' = None, name: 'str | None' = None, candidate: 'str | None' = None, device: 'str' = 'CPU', job_id: 'str | None' = None) -> 'str'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Write a QUEUED job JSON under ``runs/jobs/`` and return its id."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "kind",
+              "yes",
+              "",
+              "str \\",
+              "JobKind"
+            ],
+            [
+              "payload",
+              "no",
+              "None",
+              "dict[str, Any] \\",
+              "None"
+            ],
+            [
+              "repo_root",
+              "no",
+              "None",
+              "str \\",
+              "Path \\",
+              "None"
+            ],
+            [
+              "name",
+              "no",
+              "None",
+              "str \\",
+              "None"
+            ],
+            [
+              "candidate",
+              "no",
+              "None",
+              "str \\",
+              "None"
+            ],
+            [
+              "device",
+              "no",
+              "'CPU'",
+              "str"
+            ],
+            [
+              "job_id",
+              "no",
+              "None",
+              "str \\",
+              "None"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `str`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.jobs.worker.run_job_sync"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`run_job_sync(job_id: 'str', repo_root: 'str | Path | None' = None, *, handlers: 'dict[str, Handler] | None' = None) -> 'Job'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Execute a single job in-process (unit-test path)."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Updates status/progress/timing with ``time.perf_counter`` for monotonic elapsed."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "job_id",
+              "yes",
+              "",
+              "str"
+            ],
+            [
+              "repo_root",
+              "no",
+              "None",
+              "str \\",
+              "Path \\",
+              "None"
+            ],
+            [
+              "handlers",
+              "no",
+              "None",
+              "dict[str, Handler] \\",
+              "None"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `Job`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.autopilot.orchestrator.CompetitionAutopilot"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`CompetitionAutopilot(self, repo_root: 'str | Path | None' = None, handlers: 'dict[str | AutopilotStage, Callable[[dict[str, Any]], Any]] | None' = None) -> 'None'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Advance one persisted state at a time; handlers are plain callables."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "repo_root",
+              "no",
+              "None",
+              "str \\",
+              "Path \\",
+              "None"
+            ],
+            [
+              "handlers",
+              "no",
+              "None",
+              "dict[str \\",
+              "AutopilotStage, Callable[[dict[str, Any]], Any]] \\",
+              "None"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `None`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.autopilot.orchestrator.CompetitionAutopilot.run"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`run(self, profile: 'str' = 'competition_aggressive', *, max_steps: 'int | None' = None) -> 'dict[str, Any]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "profile",
+              "no",
+              "'competition_aggressive'",
+              "str"
+            ],
+            [
+              "max_steps",
+              "no",
+              "None",
+              "int \\",
+              "None"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Any]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.autopilot.orchestrator.CompetitionAutopilot.step"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`step(self, profile: 'str' = 'competition_aggressive') -> 'dict[str, Any]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "profile",
+              "no",
+              "'competition_aggressive'",
+              "str"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Any]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.dashboard.process.DashboardProcessManager"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`DashboardProcessManager(self, repo_root: 'str | Path | None' = None) -> 'None'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Single authority for Research Console start/status/stop/open/diagnose."
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "repo_root",
+              "no",
+              "None",
+              "str \\",
+              "Path \\",
+              "None"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `None`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.dashboard.process.DashboardProcessManager.build_command"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`build_command(self) -> 'list[str]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `list[str]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.dashboard.process.DashboardProcessManager.build_frontend"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`build_frontend(self, *, clean: 'bool' = False) -> 'dict[str, Any]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "clean",
+              "no",
+              "False",
+              "bool"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Any]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.dashboard.process.DashboardProcessManager.classify"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`classify(self) -> 'dict[str, Any]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Any]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.dashboard.process.DashboardProcessManager.diagnose"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`diagnose(self) -> 'dict[str, Any]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Any]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.dashboard.process.DashboardProcessManager.open_browser"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`open_browser(self, *, start_if_needed: 'bool' = False) -> 'dict[str, Any]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "heading",
+          "text": "Parameters"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Required",
+            "Default",
+            "Type"
+          ],
+          "rows": [
+            [
+              "start_if_needed",
+              "no",
+              "False",
+              "bool"
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Any]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.dashboard.process.DashboardProcessManager.start"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`start(self) -> 'dict[str, Any]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Any]`"
+        },
+        {
+          "kind": "heading",
+          "text": "qs_everesteer.dashboard.process.DashboardProcessManager.stop"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`stop(self) -> 'dict[str, Any]'`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "MISSING DOCSTRING"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Returns: `dict[str, Any]`"
         }
       ]
     },
@@ -88,11 +4231,761 @@
       "source": "generated",
       "section": "generated",
       "order": 1030,
-      "description": "Experiment YAML and supported configuration fields",
+      "description": "Experiment YAML, fold profiles, submission modes, autopilot stages",
       "blocks": [
         {
           "kind": "intro",
-          "text": "Generated configuration reference derived from runner/config schemas."
+          "text": "Generated from commit `0b0fe69f467df29751a6e316ad852083503d48b6`."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Fields below are taken from code that actually reads them, dataclasses, enums, and checked-in YAML. Undocumented keys are not inferred."
+        },
+        {
+          "kind": "heading",
+          "text": "Race / experiment configuration"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Consumed by `ExperimentRunner.run` from a YAML mapping or dict."
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Field",
+            "Type",
+            "Required",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "data_path",
+              "path",
+              "yes",
+              "",
+              "Training parquet path read by ExperimentRunner"
+            ],
+            [
+              "model",
+              "str \\",
+              "{name, params}",
+              "no",
+              "ridge",
+              "Model factory name or mapping with name/params"
+            ],
+            [
+              "params",
+              "dict",
+              "no",
+              "{}",
+              "Hyperparameters when model is a string"
+            ],
+            [
+              "profile",
+              "R0/R1/R2/R3",
+              "no",
+              "R1",
+              "Temporal fold profile passed to temporal_cv"
+            ],
+            [
+              "target",
+              "str",
+              "no",
+              "target_everest_20",
+              "Target column"
+            ],
+            [
+              "exped_col",
+              "str",
+              "no",
+              "exped",
+              "Time-group / exped column"
+            ],
+            [
+              "features",
+              "list[str]",
+              "no",
+              "feature_* columns",
+              "Feature list; otherwise columns starting with feature_"
+            ],
+            [
+              "run_id",
+              "str",
+              "no",
+              "run-<uuid12>",
+              "Persisted experiment id"
+            ],
+            [
+              "data_hash",
+              "str",
+              "no",
+              "",
+              "Optional training data fingerprint stored on the model artefact"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Fold profiles"
+        },
+        {
+          "kind": "paragraph",
+          "text": "From `FoldProfile` / `FOLD_PROFILES` in `qs_everesteer.validation.temporal`."
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Key",
+            "name",
+            "n_splits",
+            "min_train_expeds",
+            "test_expeds",
+            "embargo",
+            "rolling_window"
+          ],
+          "rows": [
+            [
+              "R0",
+              "R0",
+              "1",
+              "2",
+              "1",
+              "0",
+              ""
+            ],
+            [
+              "R1",
+              "R1",
+              "2",
+              "3",
+              "1",
+              "0",
+              ""
+            ],
+            [
+              "R2",
+              "R2",
+              "3",
+              "4",
+              "2",
+              "1",
+              ""
+            ],
+            [
+              "R3",
+              "R3",
+              "4",
+              "5",
+              "2",
+              "1",
+              ""
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Model factories"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Names accepted by `qs_everesteer.models.create_model`."
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Name",
+            "Factory"
+          ],
+          "rows": [
+            [
+              "extra_trees",
+              "qs_everesteer.models.forest.extra_trees"
+            ],
+            [
+              "lgbm",
+              "qs_everesteer.models.lgbm.lgbm_model"
+            ],
+            [
+              "random_forest",
+              "qs_everesteer.models.forest.random_forest"
+            ],
+            [
+              "reference_lgbm",
+              "qs_everesteer.models.baseline.reference_lgbm"
+            ],
+            [
+              "ridge",
+              "qs_everesteer.models.ridge.ridge_model"
+            ],
+            [
+              "shallow_mlp",
+              "qs_everesteer.models.p1.shallow_mlp"
+            ],
+            [
+              "xgboost",
+              "qs_everesteer.models.xgboost_model.xgboost_model"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Model YAML examples"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Checked-in files under `configs/models/`."
+        },
+        {
+          "kind": "heading",
+          "text": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/configs/models/extra_trees.yaml"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Field",
+            "Type",
+            "Example"
+          ],
+          "rows": [
+            [
+              "experiment.name",
+              "str",
+              "extra_trees"
+            ],
+            [
+              "experiment.family",
+              "str",
+              "extra_trees"
+            ],
+            [
+              "experiment.stage",
+              "str",
+              "auto"
+            ],
+            [
+              "features.selector",
+              "str",
+              "all"
+            ],
+            [
+              "validation.profile",
+              "str",
+              "fast_then_race"
+            ],
+            [
+              "prediction.postprocess",
+              "str",
+              "auto"
+            ],
+            [
+              "model.parameters",
+              "dict",
+              "{}"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/configs/models/lgbm_regularised.yaml"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Field",
+            "Type",
+            "Example"
+          ],
+          "rows": [
+            [
+              "experiment.name",
+              "str",
+              "lgbm_regularised"
+            ],
+            [
+              "experiment.family",
+              "str",
+              "lightgbm"
+            ],
+            [
+              "experiment.stage",
+              "str",
+              "auto"
+            ],
+            [
+              "features.selector",
+              "str",
+              "all"
+            ],
+            [
+              "validation.profile",
+              "str",
+              "fast_then_race"
+            ],
+            [
+              "prediction.postprocess",
+              "str",
+              "auto"
+            ],
+            [
+              "model.parameters",
+              "dict",
+              "{}"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/configs/models/organiser_lgbm.yaml"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Field",
+            "Type",
+            "Example"
+          ],
+          "rows": [
+            [
+              "experiment.name",
+              "str",
+              "organiser_lgbm"
+            ],
+            [
+              "experiment.family",
+              "str",
+              "lightgbm"
+            ],
+            [
+              "experiment.stage",
+              "str",
+              "auto"
+            ],
+            [
+              "features.selector",
+              "str",
+              "all"
+            ],
+            [
+              "validation.profile",
+              "str",
+              "fast_then_race"
+            ],
+            [
+              "prediction.postprocess",
+              "str",
+              "auto"
+            ],
+            [
+              "model.parameters",
+              "dict",
+              "{}"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/configs/models/random_forest.yaml"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Field",
+            "Type",
+            "Example"
+          ],
+          "rows": [
+            [
+              "experiment.name",
+              "str",
+              "random_forest"
+            ],
+            [
+              "experiment.family",
+              "str",
+              "random_forest"
+            ],
+            [
+              "experiment.stage",
+              "str",
+              "auto"
+            ],
+            [
+              "features.selector",
+              "str",
+              "all"
+            ],
+            [
+              "validation.profile",
+              "str",
+              "fast_then_race"
+            ],
+            [
+              "prediction.postprocess",
+              "str",
+              "auto"
+            ],
+            [
+              "model.parameters",
+              "dict",
+              "{}"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/configs/models/ridge.yaml"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Field",
+            "Type",
+            "Example"
+          ],
+          "rows": [
+            [
+              "experiment.name",
+              "str",
+              "ridge"
+            ],
+            [
+              "experiment.family",
+              "str",
+              "ridge"
+            ],
+            [
+              "experiment.stage",
+              "str",
+              "auto"
+            ],
+            [
+              "features.selector",
+              "str",
+              "all"
+            ],
+            [
+              "validation.profile",
+              "str",
+              "fast_then_race"
+            ],
+            [
+              "prediction.postprocess",
+              "str",
+              "auto"
+            ],
+            [
+              "model.parameters",
+              "dict",
+              "{}"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/configs/models/xgboost.yaml"
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Field",
+            "Type",
+            "Example"
+          ],
+          "rows": [
+            [
+              "experiment.name",
+              "str",
+              "xgboost"
+            ],
+            [
+              "experiment.family",
+              "str",
+              "xgboost"
+            ],
+            [
+              "experiment.stage",
+              "str",
+              "auto"
+            ],
+            [
+              "features.selector",
+              "str",
+              "all"
+            ],
+            [
+              "validation.profile",
+              "str",
+              "fast_then_race"
+            ],
+            [
+              "prediction.postprocess",
+              "str",
+              "auto"
+            ],
+            [
+              "model.parameters",
+              "dict",
+              "{}"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Event configuration"
+        },
+        {
+          "kind": "paragraph",
+          "text": "From `C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/configs/event/everesteer_london_2026.yaml`."
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Field",
+            "Type",
+            "Example"
+          ],
+          "rows": [
+            [
+              "event.name",
+              "str",
+              "Everesteer Hedge Fund Hackathon London 2026"
+            ],
+            [
+              "event.date",
+              "date",
+              "2026-08-13"
+            ],
+            [
+              "event.timezone",
+              "str",
+              "Europe/London"
+            ],
+            [
+              "event.tournament",
+              "str",
+              "futures"
+            ],
+            [
+              "event.universe",
+              "str",
+              "futures"
+            ],
+            [
+              "event.target",
+              "str",
+              "auto"
+            ],
+            [
+              "sdk.pinned_version",
+              "str",
+              "0.3.22"
+            ],
+            [
+              "sdk.snapshot_runtime_version",
+              "bool",
+              "True"
+            ],
+            [
+              "sdk.update_only_after_contract_tests",
+              "bool",
+              "True"
+            ],
+            [
+              "capability_discovery.whoami",
+              "bool",
+              "True"
+            ],
+            [
+              "capability_discovery.get_started",
+              "bool",
+              "True"
+            ],
+            [
+              "capability_discovery.explain_scoring",
+              "bool",
+              "True"
+            ],
+            [
+              "capability_discovery.event_staking",
+              "bool",
+              "True"
+            ],
+            [
+              "capability_discovery.dataset_info",
+              "bool",
+              "True"
+            ],
+            [
+              "capability_discovery.standings",
+              "bool",
+              "True"
+            ],
+            [
+              "capability_discovery.server_compute",
+              "str",
+              "probe"
+            ],
+            [
+              "submission.dry_run_default",
+              "bool",
+              "True"
+            ],
+            [
+              "submission.public_model_names",
+              "str",
+              "opaque"
+            ],
+            [
+              "submission.reserve_for_live_fraction",
+              "float",
+              "0.6"
+            ],
+            [
+              "submission.emergency_reserve_slots",
+              "int",
+              "1"
+            ],
+            [
+              "submission.account_cap",
+              "str",
+              "auto"
+            ],
+            [
+              "staking.mode",
+              "str",
+              "auto"
+            ],
+            [
+              "staking.virtual_event_autopilot",
+              "bool",
+              "True"
+            ],
+            [
+              "staking.real_money_requires_human",
+              "bool",
+              "True"
+            ],
+            [
+              "staking.risk_profile",
+              "str",
+              "aggressive"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Submission configuration"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Persisted as `submission_mode` in research state. `ARMED` requires an explicit snapshot id."
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Value",
+            "Type",
+            "Default",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "DISABLED",
+              "enum",
+              "no",
+              "External uploads cannot be performed"
+            ],
+            [
+              "DRY_RUN",
+              "enum",
+              "yes",
+              "Validate/package/record without uploading"
+            ],
+            [
+              "ARMED",
+              "enum",
+              "no",
+              "Real uploads permitted after explicit arm"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Autopilot configuration"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`CompetitionAutopilot.step` / `run` take `profile` (default `competition_aggressive`)."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Autopilot never transitions submission mode to ARMED."
+        },
+        {
+          "kind": "table",
+          "headers": [
+            "Stage",
+            "Order"
+          ],
+          "rows": [
+            [
+              "DISCOVER",
+              "0"
+            ],
+            [
+              "PULL",
+              "1"
+            ],
+            [
+              "SCORER_PARITY",
+              "2"
+            ],
+            [
+              "BASELINE",
+              "3"
+            ],
+            [
+              "FAST_RACE",
+              "4"
+            ],
+            [
+              "STANDARD_RACE",
+              "5"
+            ],
+            [
+              "PROMOTION_RACE",
+              "6"
+            ],
+            [
+              "FRONTIER",
+              "7"
+            ],
+            [
+              "ENSEMBLE",
+              "8"
+            ],
+            [
+              "PRACTICE_SUBMIT",
+              "9"
+            ],
+            [
+              "LIVE_SUBMIT",
+              "10"
+            ],
+            [
+              "OBSERVE",
+              "11"
+            ],
+            [
+              "ADAPT",
+              "12"
+            ],
+            [
+              "COMPLETE",
+              "13"
+            ]
+          ]
         }
       ]
     },
@@ -107,30 +5000,34 @@
       "source": "curated",
       "section": "flows",
       "order": 10,
-      "description": "Orient the Research Console before connecting, researching, or submitting.",
+      "description": "Understand what the console controls and the order in which to use it.",
       "blocks": [
         {
           "kind": "intro",
-          "text": "Start on Overview, confirm submission mode is DRY_RUN unless you intentionally arm uploads, then connect the event and audit data before spending compute."
+          "text": "The Research Console is the operating view over the QuantSilico Everesteer engine. The command-line engine remains the critical path; the dashboard reads the same filesystem evidence and backend state so that you can see what is happening without reconstructing it from logs."
         },
         {
           "kind": "flow",
           "nodes": [
             {
-              "id": "overview",
-              "label": "Overview"
-            },
-            {
-              "id": "event",
+              "id": "connect",
               "label": "Connect event"
             },
             {
               "id": "data",
-              "label": "Audit data"
+              "label": "Verify data"
+            },
+            {
+              "id": "baseline",
+              "label": "Prove baseline"
             },
             {
               "id": "research",
-              "label": "Race experiments"
+              "label": "Run research"
+            },
+            {
+              "id": "validate",
+              "label": "Validate candidates"
             },
             {
               "id": "ensemble",
@@ -138,37 +5035,465 @@
             },
             {
               "id": "submit",
-              "label": "Validate submission"
+              "label": "Submit"
+            },
+            {
+              "id": "observe",
+              "label": "Observe"
+            },
+            {
+              "id": "adapt",
+              "label": "Adapt"
             }
           ]
         },
         {
           "kind": "heading",
-          "text": "Operating rules"
+          "text": "Before the event exists"
         },
         {
-          "kind": "callout",
-          "tone": "info",
-          "text": "Only integrity failures are universal hard stops. Soft research metrics guide budget; they do not invent official scores."
+          "kind": "paragraph",
+          "text": "It is normal for Event Control to show **NOT CONNECTED**, for leaderboard values\nto be blank and for event capabilities to be unknown."
         },
         {
-          "kind": "metric",
-          "name": "Submission mode",
-          "text": "DISABLED blocks uploads, DRY_RUN records evidence without Everesteer upload, ARMED allows real practice/live submits after human intent."
+          "kind": "paragraph",
+          "text": "Do not populate those fields manually."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use synthetic rehearsal to prove that the local machinery works without\npretending that a live event exists."
         },
         {
           "kind": "command",
-          "command": "qseh doctor"
+          "command": ".\\.venv\\Scripts\\qseh.exe doctor"
         },
         {
-          "kind": "related",
-          "href": "/",
-          "label": "Open Overview"
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe rehearsal"
+        },
+        {
+          "kind": "heading",
+          "text": "Once Everesteer access is available"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Start by inspecting the platform rather than training immediately."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event inspect"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Then capture the event state that subsequent actions will be tied to."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event snapshot"
+        },
+        {
+          "kind": "heading",
+          "text": "Submission mode"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The event/API and organiser instructions are authoritative for event mechanics.\nDo not make an old README override the live event."
+        },
+        {
+          "kind": "paragraph",
+          "text": "The project has three submission states."
+        },
+        {
+          "kind": "metric",
+          "name": "DISABLED",
+          "text": "External uploads cannot be performed."
+        },
+        {
+          "kind": "metric",
+          "name": "DRY_RUN",
+          "text": "The submission pipeline can validate, package and record evidence without uploading predictions to Everesteer. This is the safe default."
+        },
+        {
+          "kind": "metric",
+          "name": "ARMED",
+          "text": "Real Everesteer uploads are permitted after explicit human action and still remain subject to event, lane, quota, ID and artefact checks."
+        },
+        {
+          "kind": "callout",
+          "tone": "warning",
+          "text": "Autopilot must never arm submissions by itself."
+        },
+        {
+          "kind": "heading",
+          "text": "Where to look"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use **Overview** to understand the current operating stage."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use **Event Control** to verify platform state."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use **Data Lab** before trusting a newly downloaded split."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use **Experiments**, **Validation** and **Ensembles** while researching."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use **Round Room**, **Submission** and **Leaderboard** during live rounds."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use **Compute & Jobs** when you need to know whether an experiment will finish\nin useful time."
         },
         {
           "kind": "related",
           "href": "/event",
           "label": "Open Event Control"
+        },
+        {
+          "kind": "related",
+          "href": "/data",
+          "label": "Open Data Lab"
+        }
+      ]
+    },
+    {
+      "id": "research-loop",
+      "title": "Research loop",
+      "path": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/docs/flows/research-loop.mdx",
+      "tags": [
+        "curated",
+        "flows"
+      ],
+      "source": "curated",
+      "section": "flows",
+      "order": 20,
+      "description": "How an idea becomes evidence, a frontier candidate, a champion or a retired branch.",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "Research is not a sequence of models to try once. It is a measured loop that spends small amounts of compute first, retains useful evidence and increases budget only when a candidate still has something to teach us."
+        },
+        {
+          "kind": "flow",
+          "nodes": [
+            {
+              "id": "hypothesis",
+              "label": "Hypothesis"
+            },
+            {
+              "id": "r0",
+              "label": "R0 smoke"
+            },
+            {
+              "id": "r1",
+              "label": "R1 fast race"
+            },
+            {
+              "id": "r2",
+              "label": "R2 standard evidence"
+            },
+            {
+              "id": "r3",
+              "label": "R3 promotion"
+            },
+            {
+              "id": "frontier",
+              "label": "Frontier"
+            },
+            {
+              "id": "ensemble",
+              "label": "Ensemble candidate"
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "What the race is trying to answer"
+        },
+        {
+          "kind": "heading",
+          "text": "Hard failures"
+        },
+        {
+          "kind": "heading",
+          "text": "Soft evidence"
+        },
+        {
+          "kind": "heading",
+          "text": "Champion, frontier and ensemble are different"
+        },
+        {
+          "kind": "paragraph",
+          "text": "R0 asks whether the candidate works at all."
+        },
+        {
+          "kind": "paragraph",
+          "text": "R1 asks whether there is enough signal to spend more compute."
+        },
+        {
+          "kind": "paragraph",
+          "text": "R2 asks whether the evidence remains useful under more complete validation."
+        },
+        {
+          "kind": "paragraph",
+          "text": "R3 is for candidates that may become an operational champion or a serious\nensemble member."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A weak score is not automatically an integrity failure."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A candidate must stop when the evidence is invalid rather than merely weak."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Examples include:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- target leakage;\n- wrong split or submission lane;\n- ID misalignment;\n- scorer parity failure;\n- malformed model artefact."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Valid candidates can be compared using whatever evidence is actually available,\nincluding:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- event score components;\n- recent performance;\n- worst fold;\n- IC or correlation stability;\n- ICIR;\n- positive-exped rate;\n- feature exposure;\n- runtime;\n- prediction diversity;\n- external practice/live evidence."
+        },
+        {
+          "kind": "paragraph",
+          "text": "No single soft metric is a universal veto."
+        },
+        {
+          "kind": "metric",
+          "name": "Champion",
+          "text": "The operational default candidate if a prediction had to be produced now."
+        },
+        {
+          "kind": "metric",
+          "name": "Frontier",
+          "text": "The set of candidates that remain interesting because no other candidate is clearly better on every relevant trade-off."
+        },
+        {
+          "kind": "metric",
+          "name": "Ensemble",
+          "text": "A constructed candidate combining multiple prediction streams."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A model can therefore remain valuable even when it does not beat the champion\nalone."
+        },
+        {
+          "kind": "related",
+          "href": "/experiments",
+          "label": "Open Experiments"
+        },
+        {
+          "kind": "related",
+          "href": "/validation",
+          "label": "Open Validation"
+        },
+        {
+          "kind": "related",
+          "href": "/ensembles",
+          "label": "Open Ensembles"
+        }
+      ]
+    },
+    {
+      "id": "data-validation",
+      "title": "Data validation",
+      "path": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/docs/flows/data-validation.mdx",
+      "tags": [
+        "curated",
+        "flows"
+      ],
+      "source": "curated",
+      "section": "flows",
+      "order": 30,
+      "description": "Audit, fingerprint and split identity before any modelling or submit.",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "A dataset is not trusted because it arrived. It is trusted after structural audit and a content fingerprint that later inference and submission can match."
+        },
+        {
+          "kind": "flow",
+          "nodes": [
+            {
+              "id": "pull",
+              "label": "Pull split"
+            },
+            {
+              "id": "audit",
+              "label": "Audit"
+            },
+            {
+              "id": "fingerprint",
+              "label": "Fingerprint"
+            },
+            {
+              "id": "compare",
+              "label": "Compare schema"
+            },
+            {
+              "id": "model",
+              "label": "Only then model"
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "What audit checks"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`qseh data audit` runs `audit_dataset` on a Parquet or CSV file. It records row\nand column counts, ID and exped columns, target availability, duplicate IDs,\nmissingness and a schema SHA-256."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Integrity is `pass`, `warn` or `fail`. A hard failure is an integrity stop, not\na weak research score."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe data audit"
+        },
+        {
+          "kind": "heading",
+          "text": "Fingerprint"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`qseh data fingerprint` records the file content hash and schema fingerprint.\nLive-round inference should reuse a prediction artefact only when the live split\nfingerprint is unchanged."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe data fingerprint"
+        },
+        {
+          "kind": "heading",
+          "text": "Split identity"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Train, validation/practice and live splits are different files. Submission\nguard checks the split fingerprint against the event snapshot so a train file\ncannot be uploaded as live."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Synthetic fixtures generated with `QSEH_SYNTHETIC=1` remain labelled\n`SYNTHETIC_FIXTURE` and must not be treated as official event data."
+        },
+        {
+          "kind": "callout",
+          "tone": "warning",
+          "text": "Do not spend compute on a split whose audit integrity is fail."
+        },
+        {
+          "kind": "related",
+          "href": "/data",
+          "label": "Open Data Lab"
+        }
+      ]
+    },
+    {
+      "id": "model-lifecycle",
+      "title": "Model lifecycle",
+      "path": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/docs/flows/model-lifecycle.mdx",
+      "tags": [
+        "curated",
+        "flows"
+      ],
+      "source": "curated",
+      "section": "flows",
+      "order": 35,
+      "description": "How a candidate is fit, stored, loaded for inference and retired.",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "Models enter the system through the shared research interface. Submission consumes a normal candidate; there is no model-specific upload path."
+        },
+        {
+          "kind": "flow",
+          "nodes": [
+            {
+              "id": "config",
+              "label": "Resolved config"
+            },
+            {
+              "id": "fit",
+              "label": "Fit"
+            },
+            {
+              "id": "oof",
+              "label": "OOF + metrics"
+            },
+            {
+              "id": "artefact",
+              "label": "Persist artefact"
+            },
+            {
+              "id": "infer",
+              "label": "Load and infer"
+            },
+            {
+              "id": "submit",
+              "label": "Submit as candidate"
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Fit"
+        },
+        {
+          "kind": "heading",
+          "text": "Artefact"
+        },
+        {
+          "kind": "heading",
+          "text": "Lineage"
+        },
+        {
+          "kind": "heading",
+          "text": "Inference and submit"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`ExperimentRunner` reads YAML, fits through `create_model`, writes OOF\npredictions, fold metrics, resource measurements and an immutable run manifest\nunder `runs/experiments/<run_id>/`. Failed runs keep their evidence."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Factories currently registered include ridge, random_forest, extra_trees,\nxgboost, lgbm, reference_lgbm and shallow_mlp."
+        },
+        {
+          "kind": "paragraph",
+          "text": "`ModelRegistry` stores the fitted object and training data hash when provided.\nA later live infer must load that artefact rather than refitting from memory."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Record parent candidate and config delta when an operator changes\nregularisation, features, recency, seed or ensemble membership. Experiments\nthat cannot explain what changed are not useful under a live clock."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Round-room inference uses the champion or an approved ensemble. Submission\nguard then checks event, lane, IDs, artefacts and quota. Do not add\nmodel-specific submission code."
+        },
+        {
+          "kind": "related",
+          "href": "/models",
+          "label": "Open Models"
+        },
+        {
+          "kind": "related",
+          "href": "/experiments",
+          "label": "Open Experiments"
         }
       ]
     },
@@ -183,11 +5508,11 @@
       "source": "curated",
       "section": "flows",
       "order": 40,
-      "description": "What happens from round open to recorded result.",
+      "description": "What happens from a newly opened round to a recorded result.",
       "blocks": [
         {
           "kind": "intro",
-          "text": "Use this flow when Everesteer opens a live round. The objective is to move from a verified live split to a recorded submission without rebuilding the research system."
+          "text": "Use this flow once Everesteer exposes a live round. The objective is to move from a verified live split to a recorded submission without rebuilding the research system while the clock is running."
         },
         {
           "kind": "flow",
@@ -202,11 +5527,11 @@
             },
             {
               "id": "pull",
-              "label": "Pull live data"
+              "label": "Pull live split"
             },
             {
               "id": "verify",
-              "label": "Verify split and IDs"
+              "label": "Verify IDs and schema"
             },
             {
               "id": "infer",
@@ -222,7 +5547,11 @@
             },
             {
               "id": "observe",
-              "label": "Record score and standing"
+              "label": "Observe result"
+            },
+            {
+              "id": "update",
+              "label": "Update evidence"
             }
           ]
         },
@@ -233,7 +5562,17 @@
         {
           "kind": "metric",
           "name": "Time remaining",
-          "text": "How long the current round remains open."
+          "text": "The authoritative estimate of how long the current round remains open."
+        },
+        {
+          "kind": "metric",
+          "name": "Split fingerprint",
+          "text": "The content identity of the live dataset currently being used for inference."
+        },
+        {
+          "kind": "metric",
+          "name": "Inference ETA",
+          "text": "Whether the selected candidate will finish early enough to be useful."
         },
         {
           "kind": "metric",
@@ -242,24 +5581,62 @@
         },
         {
           "kind": "heading",
-          "text": "If something fails"
+          "text": "Normal path"
+        },
+        {
+          "kind": "heading",
+          "text": "When a live result is poor"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The live-round controller should detect the event state and avoid repeated work\nwhen the dataset fingerprint is unchanged."
+        },
+        {
+          "kind": "paragraph",
+          "text": "The same round must not accidentally produce duplicate external uploads after a\nrestart."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not immediately rewrite the model stack."
+        },
+        {
+          "kind": "paragraph",
+          "text": "First determine whether:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- the correct split was submitted;\n- IDs aligned;\n- the correct lane was used;\n- event scoring changed;\n- data drifted;\n- all models failed together;\n- one model failed while others remained stable."
+        },
+        {
+          "kind": "paragraph",
+          "text": "One noisy external round is evidence, not a command to discard all prior local\nvalidation."
         },
         {
           "kind": "callout",
           "tone": "warning",
-          "text": "Do not retrain automatically because a submission failed. First check lane, IDs, event state and the model artefact."
+          "text": "Do not start an architectural refactor while a live round is closing."
         },
         {
           "kind": "related",
           "href": "/round",
           "label": "Open Round Room"
+        },
+        {
+          "kind": "related",
+          "href": "/submission",
+          "label": "Open Submission"
+        },
+        {
+          "kind": "related",
+          "href": "/leaderboard",
+          "label": "Open Leaderboard"
         }
       ]
     },
     {
-      "id": "submission",
+      "id": "submission-path",
       "title": "Submission path",
-      "path": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/docs/flows/submission.mdx",
+      "path": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/docs/flows/submission-path.mdx",
       "tags": [
         "curated",
         "flows"
@@ -267,66 +5644,469 @@
       "source": "curated",
       "section": "flows",
       "order": 50,
-      "description": "Controlled practice and live upload path with lineage and quota.",
+      "description": "How a research candidate becomes a validated practice or live upload.",
       "blocks": [
         {
           "kind": "intro",
-          "text": "Every candidate must pass integrity, quota, and lane checks before leaving the machine. SubmissionModeBanner on Event, Round, and Submission surfaces shows DISABLED / DRY_RUN / ARMED."
+          "text": "Submission is an external side effect. Every upload must remain attributable to a candidate, event snapshot, dataset fingerprint, prediction artefact and model artefact."
         },
         {
           "kind": "flow",
           "nodes": [
             {
               "id": "select",
-              "label": "Select candidate"
+              "label": "Select"
+            },
+            {
+              "id": "infer",
+              "label": "Infer"
             },
             {
               "id": "validate",
               "label": "Validate"
             },
             {
-              "id": "practice",
-              "label": "Practice dry-run"
+              "id": "package",
+              "label": "Package"
             },
             {
-              "id": "arm",
-              "label": "Arm (human)"
+              "id": "dryrun",
+              "label": "Dry run"
             },
             {
-              "id": "live",
-              "label": "Live submit"
+              "id": "submit",
+              "label": "Submit"
             },
             {
-              "id": "ledger",
-              "label": "Idempotency ledger"
+              "id": "record",
+              "label": "Record"
             }
           ]
         },
         {
-          "kind": "callout",
-          "tone": "danger",
-          "text": "Never arm submissions from automation alone. Real-money staking and live uploads require explicit human action."
+          "kind": "heading",
+          "text": "Before anything leaves the machine"
+        },
+        {
+          "kind": "heading",
+          "text": "DRY_RUN"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The submission guard checks, where applicable:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- event identity;\n- round;\n- lane;\n- split fingerprint;\n- prediction ID coverage;\n- duplicate IDs;\n- prediction format;\n- prediction artefact;\n- model artefact;\n- model loadability;\n- event capability;\n- remaining quota."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A red integrity failure blocks the external action."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use DRY_RUN while validating the system."
         },
         {
           "kind": "command",
-          "command": "qseh event submission-mode"
+          "command": ".\\.venv\\Scripts\\qseh.exe event submission-mode"
         },
         {
-          "kind": "metric",
-          "name": "Idempotency key",
-          "text": "Event + round + split fingerprint + candidate + action. Restarts must not duplicate uploads for the same key."
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe submit check"
+        },
+        {
+          "kind": "heading",
+          "text": "ARMED"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Real uploads require explicit human intent."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event arm-submissions"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not arm until account, event and snapshot identity have been verified."
+        },
+        {
+          "kind": "callout",
+          "tone": "danger",
+          "text": "Neither rehearsal nor autopilot may automatically transition the system to ARMED."
+        },
+        {
+          "kind": "heading",
+          "text": "Idempotency"
+        },
+        {
+          "kind": "paragraph",
+          "text": "A restart must not submit the same action twice."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Submission history therefore records enough context to identify an equivalent\nevent/round/split/candidate/action combination."
         },
         {
           "kind": "related",
           "href": "/submission",
           "label": "Open Submission"
+        },
+        {
+          "kind": "related",
+          "href": "/event",
+          "label": "Open Event Control"
         }
       ]
     },
     {
-      "id": "emergency",
+      "id": "event-day",
+      "title": "Event-day operator guide",
+      "path": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/docs/runbooks/event-day.mdx",
+      "tags": [
+        "curated",
+        "runbooks"
+      ],
+      "source": "curated",
+      "section": "runbooks",
+      "order": 5,
+      "description": "Beginning-to-end operating guide for the Everesteer competition.",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "This is the document to use when operating the system under time pressure. Commands are shown with the repository virtual-environment executable directly; PowerShell activation is not required."
+        },
+        {
+          "kind": "heading",
+          "text": "How to run commands"
+        },
+        {
+          "kind": "paragraph",
+          "text": "From the repository root:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe doctor"
+        },
+        {
+          "kind": "heading",
+          "text": "Before leaving"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not run `Activate.ps1`."
+        },
+        {
+          "kind": "paragraph",
+          "text": "The repository is designed to use:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`.\\.venv\\Scripts\\qseh.exe`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "and:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "`.\\.venv\\Scripts\\python.exe`"
+        },
+        {
+          "kind": "paragraph",
+          "text": "directly."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Run the safe preflight:"
+        },
+        {
+          "kind": "command",
+          "command": "scripts\\preflight.cmd"
+        },
+        {
+          "kind": "heading",
+          "text": "At the venue"
+        },
+        {
+          "kind": "paragraph",
+          "text": "A successful preflight proves the local machinery works. It does not prove that\nlive Everesteer credentials or event datasets already exist."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Start the console:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe dashboard start"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Check local health:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe doctor"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Then inspect the real event:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event inspect"
+        },
+        {
+          "kind": "heading",
+          "text": "When event access appears"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not begin by editing configuration based on assumptions. Read the event first."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Capture an event snapshot:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event snapshot"
+        },
+        {
+          "kind": "heading",
+          "text": "When training data appears"
+        },
+        {
+          "kind": "paragraph",
+          "text": "This becomes the evidence anchor for later data and submission operations."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Pull it:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe data pull --split train"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Pull validation/practice data if the event exposes it:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe data pull --split validation"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Then verify data before modelling."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe data audit"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe data fingerprint"
+        },
+        {
+          "kind": "heading",
+          "text": "Prove scoring before optimisation"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use Data Lab to inspect row counts, schema, missingness, IDs and target\navailability."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe baseline scorer-parity"
+        },
+        {
+          "kind": "heading",
+          "text": "Establish a reference candidate"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not spend the competition optimising against a scorer you do not trust."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe baseline reproduce"
+        },
+        {
+          "kind": "heading",
+          "text": "Begin research"
+        },
+        {
+          "kind": "paragraph",
+          "text": "This tests the normal path from real data through training, validation, model\nartefact and prediction generation."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Once the basic path is healthy:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe autopilot run --profile competition-aggressive"
+        },
+        {
+          "kind": "heading",
+          "text": "Practice submissions"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use Experiments and Validation to watch evidence."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Early research should spend small budgets broadly before spending large budgets\non one family."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A practice submission is not just an attempt to score points. It purchases\nexternal evidence."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Useful candidates tend to be:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- current champion;\n- strong independent challenger;\n- meaningfully different model family;\n- current ensemble."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not waste limited uploads on nearly identical random seeds."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Before a real external action:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe submit check"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Confirm submission mode:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event submission-mode"
+        },
+        {
+          "kind": "heading",
+          "text": "During a live round"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Only after verifying the actual event should you explicitly arm external\nuploads."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use Round Room."
+        },
+        {
+          "kind": "paragraph",
+          "text": "The normal sequence is:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "1. detect round;\n2. snapshot event;\n3. pull live data;\n4. fingerprint and audit;\n5. infer known-good candidates;\n6. run submission guard;\n7. submit according to the active policy;\n8. observe leaderboard/standings;\n9. update evidence."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Useful commands when investigating:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event inspect"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe autopilot status"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe submit check"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe leaderboard"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe standings"
+        },
+        {
+          "kind": "heading",
+          "text": "Final part of the event"
+        },
+        {
+          "kind": "heading",
+          "text": "End of event"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Reduce exploration as useful time disappears."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Prefer:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- known-good champion;\n- known-good ensemble;\n- external evidence;\n- upload reserve;\n- jobs that will actually finish before the event ends."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not begin:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- dependency upgrades;\n- new framework migrations;\n- broad dashboard redesign;\n- large model architecture experiments;\n- validation rewrites."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Capture evidence before shutting things down."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe standings"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe submissions"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event snapshot"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Stop autonomous scheduling:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe autopilot stop"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Disarm external uploads:"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event disarm-submissions"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not immediately `git add -A`; event datasets, predictions and local research\nevidence may intentionally remain private."
+        }
+      ]
+    },
+    {
+      "id": "emergency-round",
       "title": "Emergency round runbook",
-      "path": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/docs/runbooks/emergency.mdx",
+      "path": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/docs/runbooks/emergency-round.mdx",
       "tags": [
         "curated",
         "runbooks"
@@ -334,57 +6114,79 @@
       "source": "curated",
       "section": "runbooks",
       "order": 10,
-      "description": "Fast path when a round is open and time is tight.",
+      "description": "Minimal path when the live-round clock is running out.",
       "blocks": [
         {
           "kind": "intro",
-          "text": "Use Round Room emergency fields (champion, ensemble, model hash, split verified, submission ready) when the clock is short. Prefer the known champion over a half-finished race."
+          "text": "Use this path when there is not enough time for further research. The objective is to produce a valid prediction from known-good evidence, not to discover a new model."
         },
         {
-          "kind": "flow",
-          "nodes": [
-            {
-              "id": "confirm",
-              "label": "Confirm LIVE feed"
-            },
-            {
-              "id": "champion",
-              "label": "Load champion"
-            },
-            {
-              "id": "infer",
-              "label": "Infer live split"
-            },
-            {
-              "id": "guard",
-              "label": "Integrity + quota"
-            },
-            {
-              "id": "submit",
-              "label": "Dry-run then live"
-            }
-          ]
-        },
-        {
-          "kind": "callout",
-          "tone": "warning",
-          "text": "If the feed is DISCONNECTED or RECONNECTING, do not invent standings. Wait for LIVE or fall back to the last verified snapshot."
+          "kind": "heading",
+          "text": "First determine whether the event is real and current"
         },
         {
           "kind": "command",
-          "command": "qseh rehearsal"
+          "command": ".\\.venv\\Scripts\\qseh.exe event inspect"
         },
         {
-          "kind": "related",
-          "href": "/round",
-          "label": "Open Round Room"
+          "kind": "heading",
+          "text": "Inspect autopilot"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe autopilot status"
+        },
+        {
+          "kind": "heading",
+          "text": "Validate the current submission candidate"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe submit check"
+        },
+        {
+          "kind": "heading",
+          "text": "Emergency helper"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe emergency"
+        },
+        {
+          "kind": "heading",
+          "text": "If the dashboard is the only broken component"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Emergency mode should favour a known-good champion or approved ensemble and must\nnot begin a new research race."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe dashboard diagnose"
+        },
+        {
+          "kind": "heading",
+          "text": "Never solve a short-clock problem by"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Continue through the CLI."
+        },
+        {
+          "kind": "paragraph",
+          "text": "- upgrading dependencies;\n- restarting from a random experiment;\n- changing the scorer;\n- rewriting the validation system;\n- disabling integrity checks."
+        },
+        {
+          "kind": "callout",
+          "tone": "danger",
+          "text": "A weak known-good candidate is preferable to an invalid prediction that cannot be scored."
         }
       ]
     },
     {
-      "id": "dashboard",
+      "id": "dashboard-operations",
       "title": "Dashboard operations",
-      "path": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/docs/runbooks/dashboard.mdx",
+      "path": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/docs/runbooks/dashboard-operations.mdx",
       "tags": [
         "curated",
         "runbooks"
@@ -392,52 +6194,55 @@
       "source": "curated",
       "section": "runbooks",
       "order": 20,
-      "description": "Start, verify, rebuild, and recover the local Research Console on Windows.",
+      "description": "Start, verify, diagnose and recover the local Research Console.",
       "blocks": [
         {
           "kind": "intro",
-          "text": "Venue commands for the Research Console. Do not run Activate.ps1 \u2014 use .venv\\Scripts\\qseh.exe and .venv\\Scripts\\python.exe directly."
-        },
-        {
-          "kind": "flow",
-          "nodes": [
-            {
-              "id": "diagnose",
-              "label": "dashboard diagnose"
-            },
-            {
-              "id": "start",
-              "label": "dashboard start"
-            },
-            {
-              "id": "status",
-              "label": "dashboard status"
-            },
-            {
-              "id": "open",
-              "label": "dashboard open"
-            },
-            {
-              "id": "docs",
-              "label": "docs build"
-            }
-          ]
+          "text": "The dashboard is an operational cockpit, not the authority for research state. The filesystem-backed engine and CLI remain usable if the browser or dashboard server fails."
         },
         {
           "kind": "heading",
-          "text": "Start"
+          "text": "Diagnose"
         },
         {
           "kind": "command",
           "command": ".\\.venv\\Scripts\\qseh.exe dashboard diagnose"
         },
         {
+          "kind": "heading",
+          "text": "Start"
+        },
+        {
+          "kind": "paragraph",
+          "text": "This checks the Python environment, application import, frontend build, runtime\nstate, process state, port and health endpoint."
+        },
+        {
           "kind": "command",
           "command": ".\\.venv\\Scripts\\qseh.exe dashboard start"
         },
         {
+          "kind": "heading",
+          "text": "Status"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Successful startup requires:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- the server process to remain alive;\n- port 8766 to listen;\n- `/api/health` to return the expected response."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A returned PID by itself is not considered success."
+        },
+        {
           "kind": "command",
           "command": ".\\.venv\\Scripts\\qseh.exe dashboard status"
+        },
+        {
+          "kind": "heading",
+          "text": "Open"
         },
         {
           "kind": "command",
@@ -445,7 +6250,11 @@
         },
         {
           "kind": "heading",
-          "text": "Health"
+          "text": "Backend health"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The browser should not be opened by this command when the backend is unhealthy."
         },
         {
           "kind": "command",
@@ -461,119 +6270,505 @@
         },
         {
           "kind": "heading",
-          "text": "Restart"
-        },
-        {
-          "kind": "command",
-          "command": ".\\.venv\\Scripts\\qseh.exe dashboard stop"
-        },
-        {
-          "kind": "command",
-          "command": ".\\.venv\\Scripts\\qseh.exe dashboard start"
-        },
-        {
-          "kind": "heading",
-          "text": "Diagnose failure"
-        },
-        {
-          "kind": "command",
-          "command": ".\\.venv\\Scripts\\qseh.exe dashboard diagnose"
-        },
-        {
-          "kind": "heading",
           "text": "Stop"
         },
         {
+          "kind": "paragraph",
+          "text": "Use this after deliberate frontend changes. Do not reinstall packages casually\nduring a live round."
+        },
+        {
           "kind": "command",
           "command": ".\\.venv\\Scripts\\qseh.exe dashboard stop"
         },
         {
           "kind": "heading",
-          "text": "Regenerate documentation"
+          "text": "If the dashboard fails during a round"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The process manager only terminates the dashboard process it owns."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Continue operating through the CLI."
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe autopilot status"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe event inspect"
+        },
+        {
+          "kind": "command",
+          "command": ".\\.venv\\Scripts\\qseh.exe submit check"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Restart the UI only when doing so will not distract from the competition path."
+        }
+      ]
+    },
+    {
+      "id": "developer-guide",
+      "title": "Developer guide",
+      "path": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/docs/runbooks/developer-guide.mdx",
+      "tags": [
+        "curated",
+        "runbooks"
+      ],
+      "source": "curated",
+      "section": "runbooks",
+      "order": 30,
+      "description": "How the Everesteer competition system is structured and how to extend it without breaking live operation.",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "This guide is for changing the system rather than operating a competition round. The central rule is to preserve evidence lineage and keep the CLI, backend and Research Console as different views over the same domain state."
+        },
+        {
+          "kind": "heading",
+          "text": "Architecture"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The primary path is:"
+        },
+        {
+          "kind": "flow",
+          "nodes": [
+            {
+              "id": "sdk",
+              "label": "Everesteer adapter"
+            },
+            {
+              "id": "domain",
+              "label": "Domain services"
+            },
+            {
+              "id": "evidence",
+              "label": "Filesystem evidence"
+            },
+            {
+              "id": "api",
+              "label": "FastAPI"
+            },
+            {
+              "id": "datasource",
+              "label": "ApiDataSource"
+            },
+            {
+              "id": "ui",
+              "label": "Research Console"
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Filesystem authority"
+        },
+        {
+          "kind": "heading",
+          "text": "Adding a model"
+        },
+        {
+          "kind": "heading",
+          "text": "Adding a research operator"
+        },
+        {
+          "kind": "heading",
+          "text": "Adding an API field"
+        },
+        {
+          "kind": "heading",
+          "text": "Adding an API endpoint"
+        },
+        {
+          "kind": "heading",
+          "text": "Adding a dashboard action"
+        },
+        {
+          "kind": "heading",
+          "text": "Live updates"
+        },
+        {
+          "kind": "heading",
+          "text": "Submission safety"
+        },
+        {
+          "kind": "heading",
+          "text": "Synthetic mode"
+        },
+        {
+          "kind": "heading",
+          "text": "Documentation"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The CLI and autopilot invoke the same domain concepts independently of the UI."
+        },
+        {
+          "kind": "paragraph",
+          "text": "The dashboard must never become the only copy of competition state."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Experiment evidence lives under the run/artifact structure."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Typical evidence includes:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- resolved configuration;\n- dataset fingerprint;\n- event snapshot;\n- fold metrics;\n- OOF predictions;\n- model metadata;\n- resource measurements;\n- race decision;\n- stdout/stderr."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A database may index this material for fast queries, but the database must be\nrebuildable from the evidence files."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A new model family should:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "1. implement the existing model interface;\n2. accept resolved configuration rather than hidden constants;\n3. fit without accessing validation/live targets improperly;\n4. generate predictions in the standard format;\n5. record parameters and parent lineage;\n6. persist an artefact when required;\n7. pass a load/inference smoke test;\n8. expose runtime/resource information."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not add model-specific submission code."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Submission consumes a normal candidate."
+        },
+        {
+          "kind": "paragraph",
+          "text": "An operator changes one well-defined part of an existing candidate, for example:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- regularisation;\n- feature subset;\n- recency weighting;\n- seed;\n- ensemble membership."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Record the parent and config delta."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not create experiments that cannot later explain what changed."
+        },
+        {
+          "kind": "paragraph",
+          "text": "The contract path is:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "TypeScript page DTO\n\u2192 Python/Pydantic mirror\n\u2192 domain service\n\u2192 API route\n\u2192 ApiDataSource\n\u2192 component"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not put a field directly into React using a second ad-hoc fetch."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Unknown values remain null/unknown rather than being turned into zero."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use an explicit FastAPI route."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not expose:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- arbitrary shell commands;\n- arbitrary filesystem paths;\n- Git mutation;\n- secrets;\n- wallet transactions."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Read-only repository/build inspection is allowed through narrow services."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Every button that mutates state must map to an allowlisted domain action."
+        },
+        {
+          "kind": "paragraph",
+          "text": "A production button is not allowed to be decorative."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Document its path in the dashboard live-wiring matrix."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Frequently changing domains can publish logical events through the configured\nSSE/WebSocket mechanism."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Examples include:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- job progress;\n- round changes;\n- experiment completion;\n- champion changes;\n- submission completion;\n- leaderboard updates."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not poll every backend domain at the same interval."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Submission is a privileged external side effect."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not bypass:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- event identity;\n- lane checks;\n- ID alignment;\n- artefact checks;\n- quota;\n- idempotency."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Development and CI must remain incapable of accidentally arming external\nsubmission."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Synthetic fixtures exist to test infrastructure without organiser data."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Synthetic evidence must remain distinguishable internally from official event\nevidence."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Rehearsal must not overwrite live production research state."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Generated reference comes from code:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- Typer \u2192 CLI Reference;\n- FastAPI/OpenAPI \u2192 Backend API;\n- Python signatures/docstrings \u2192 Python API;\n- Pydantic/config schemas \u2192 Configuration."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Human operating knowledge stays in curated MDX."
+        },
+        {
+          "kind": "paragraph",
+          "text": "After changing public interfaces:"
         },
         {
           "kind": "command",
           "command": ".\\.venv\\Scripts\\qseh.exe docs build"
         },
         {
-          "kind": "callout",
-          "tone": "warning",
-          "text": "Do not run Activate.ps1. The project is designed to use .venv\\Scripts\\qseh.exe and .venv\\Scripts\\python.exe directly."
+          "kind": "heading",
+          "text": "Testing a change"
         },
         {
-          "kind": "callout",
-          "tone": "info",
-          "text": "SPA Documentation lives at /docs. FastAPI Swagger is at /api/dev/docs so it does not collide with the console Documentation page."
+          "kind": "paragraph",
+          "text": "Run the smallest relevant tests first."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Before event readiness, run:"
+        },
+        {
+          "kind": "command",
+          "command": "scripts\\preflight.cmd"
+        },
+        {
+          "kind": "heading",
+          "text": "Git during the event"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not treat a disconnected live Everesteer event as a local code failure when\ncredentials have not yet been provided."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Prefer narrow fixes."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Before changing code:"
+        },
+        {
+          "kind": "paragraph",
+          "text": "- inspect current SHA;\n- understand the working tree;\n- avoid unrelated refactors."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Never solve a live-round problem by performing a broad architecture cleanup."
+        }
+      ]
+    },
+    {
+      "id": "glossary",
+      "title": "Glossary",
+      "path": "C:/Users/pries/Documents/Projects/quantsilico-everesteer-hedge-fund-hackathon-2026/docs/runbooks/glossary.mdx",
+      "tags": [
+        "curated",
+        "runbooks"
+      ],
+      "source": "curated",
+      "section": "runbooks",
+      "order": 40,
+      "description": "Terms used by the Research Console, CLI and generated reference.",
+      "blocks": [
+        {
+          "kind": "intro",
+          "text": "Short definitions for words that appear in the operator guides and generated reference. These are operating terms, not invented scoring formulas."
         },
         {
           "kind": "metric",
-          "name": "schemaVersion",
-          "text": "Envelope schemaVersion is 2 for every /api read route."
+          "name": "ICIR",
+          "text": "Information coefficient information ratio: a soft research metric used when comparing valid candidates. It is not a universal veto."
+        },
+        {
+          "kind": "metric",
+          "name": "CORR20",
+          "text": "An official-style score component name probed from everestapi.scoring when the SDK exposes it. Local fallbacks are labelled non-official."
+        },
+        {
+          "kind": "metric",
+          "name": "exped",
+          "text": "The time-group column used by temporal splits. Fold profiles R0\u2013R3 allocate train/test expeds with optional embargo."
+        },
+        {
+          "kind": "metric",
+          "name": "DRY_RUN",
+          "text": "Submission pipeline may validate, package and record evidence without uploading to Everesteer. Safe default."
+        },
+        {
+          "kind": "metric",
+          "name": "ARMED",
+          "text": "Real Everesteer uploads are permitted after explicit `qseh event arm-submissions` and still pass guard checks."
+        },
+        {
+          "kind": "metric",
+          "name": "DISABLED",
+          "text": "External uploads cannot be performed."
+        },
+        {
+          "kind": "metric",
+          "name": "Champion",
+          "text": "The operational default candidate if a prediction had to be produced now."
+        },
+        {
+          "kind": "metric",
+          "name": "Frontier",
+          "text": "Candidates that remain interesting because no other candidate is clearly better on every relevant trade-off."
+        },
+        {
+          "kind": "metric",
+          "name": "Ensemble",
+          "text": "A constructed candidate combining multiple prediction streams."
+        },
+        {
+          "kind": "metric",
+          "name": "QSEH_SYNTHETIC",
+          "text": "Environment flag that forces synthetic fixtures instead of live dataset pulls."
+        },
+        {
+          "kind": "metric",
+          "name": "8766",
+          "text": "Local Research Console port: http://127.0.0.1:8766/"
         },
         {
           "kind": "related",
           "href": "/docs",
           "label": "Open Documentation"
-        },
-        {
-          "kind": "related",
-          "href": "/compute",
-          "label": "Open Compute & Jobs"
         }
       ]
     }
   ],
   "commands": [
-    "qseh doctor",
-    "qseh rehearsal",
-    "qseh emergency",
-    "qseh run",
-    "qseh race",
-    "qseh compare",
-    "qseh frontier",
-    "qseh champion",
-    "qseh submissions",
-    "qseh leaderboard",
-    "qseh standings",
-    "qseh sdk",
-    "qseh sdk info",
-    "qseh sdk check",
-    "qseh event",
-    "qseh event inspect",
-    "qseh event watch",
-    "qseh event snapshot",
-    "qseh event arm-submissions",
-    "qseh event disarm-submissions",
-    "qseh event submission-mode",
-    "qseh data",
-    "qseh data pull",
-    "qseh data audit",
-    "qseh data fingerprint",
-    "qseh baseline",
-    "qseh baseline scorer-parity",
-    "qseh baseline reproduce",
-    "qseh ensemble",
-    "qseh ensemble build",
-    "qseh ensemble compare",
-    "qseh submit",
-    "qseh submit check",
-    "qseh submit practice",
-    "qseh submit live",
-    "qseh stake",
-    "qseh stake status",
-    "qseh stake recommend",
     "qseh autopilot",
-    "qseh autopilot status",
     "qseh autopilot run",
+    "qseh autopilot status",
     "qseh autopilot stop",
+    "qseh baseline",
+    "qseh baseline reproduce",
+    "qseh baseline scorer-parity",
+    "qseh champion",
+    "qseh compare",
     "qseh dashboard",
+    "qseh dashboard build",
+    "qseh dashboard diagnose",
+    "qseh dashboard open",
     "qseh dashboard start",
     "qseh dashboard status",
     "qseh dashboard stop",
-    "qseh dashboard open",
-    "qseh dashboard diagnose",
-    "qseh dashboard build",
+    "qseh data",
+    "qseh data audit",
+    "qseh data fingerprint",
+    "qseh data pull",
     "qseh docs",
-    "qseh docs build"
+    "qseh docs build",
+    "qseh doctor",
+    "qseh emergency",
+    "qseh ensemble",
+    "qseh ensemble build",
+    "qseh ensemble compare",
+    "qseh event",
+    "qseh event arm-submissions",
+    "qseh event disarm-submissions",
+    "qseh event inspect",
+    "qseh event snapshot",
+    "qseh event submission-mode",
+    "qseh event watch",
+    "qseh frontier",
+    "qseh leaderboard",
+    "qseh race",
+    "qseh rehearsal",
+    "qseh run",
+    "qseh sdk",
+    "qseh sdk check",
+    "qseh sdk info",
+    "qseh stake",
+    "qseh stake recommend",
+    "qseh stake status",
+    "qseh standings",
+    "qseh submissions",
+    "qseh submit",
+    "qseh submit check",
+    "qseh submit live",
+    "qseh submit practice"
+  ],
+  "missing_docstrings": [
+    "qs_everesteer.event.adapter.EveresteerAdapter.safe_key_fingerprint",
+    "qs_everesteer.event.adapter.EveresteerAdapter.sdk_version",
+    "qs_everesteer.validation.scoring.official_scorers",
+    "qs_everesteer.validation.temporal.temporal_cv",
+    "qs_everesteer.validation.temporal.TemporalSplitter",
+    "qs_everesteer.validation.temporal.TemporalSplitter.get_n_splits",
+    "qs_everesteer.validation.temporal.TemporalSplitter.split",
+    "qs_everesteer.experiments.runner.ExperimentRunner.run",
+    "qs_everesteer.experiments.racing.RacingScheduler",
+    "qs_everesteer.experiments.racing.RacingScheduler.evaluate",
+    "qs_everesteer.experiments.racing.RacingScheduler.next_actions",
+    "qs_everesteer.selection.frontier.pareto_frontier",
+    "qs_everesteer.ensemble.blend.rank_average",
+    "qs_everesteer.ensemble.blend.weighted",
+    "qs_everesteer.ensemble.blend.greedy_forward",
+    "qs_everesteer.ensemble.blend.diversity_aware",
+    "qs_everesteer.submission.guard.SubmissionGuard.validate",
+    "qs_everesteer.autopilot.orchestrator.CompetitionAutopilot.run",
+    "qs_everesteer.autopilot.orchestrator.CompetitionAutopilot.step",
+    "qs_everesteer.dashboard.process.DashboardProcessManager.build_command",
+    "qs_everesteer.dashboard.process.DashboardProcessManager.build_frontend",
+    "qs_everesteer.dashboard.process.DashboardProcessManager.classify",
+    "qs_everesteer.dashboard.process.DashboardProcessManager.diagnose",
+    "qs_everesteer.dashboard.process.DashboardProcessManager.open_browser",
+    "qs_everesteer.dashboard.process.DashboardProcessManager.start",
+    "qs_everesteer.dashboard.process.DashboardProcessManager.stop"
   ]
 }

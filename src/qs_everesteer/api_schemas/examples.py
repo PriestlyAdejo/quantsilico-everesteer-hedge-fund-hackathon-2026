@@ -42,6 +42,7 @@ from qs_everesteer.api_schemas.pages import (
     DocArticle,
     DocIntroBlock,
     DocSection,
+    DocTableBlock,
     DocumentationData,
     EnsembleCandidate,
     EnsembleData,
@@ -769,7 +770,12 @@ def example_documentation() -> DataEnvelope[DocumentationData]:
                         DocIntroBlock(
                             kind="intro",
                             text="SYNTHETIC: This console is your operating surface.",
-                        )
+                        ),
+                        DocTableBlock(
+                            kind="table",
+                            headers=["Field", "Type", "Meaning"],
+                            rows=[["stage", "R0/R1/R2/R3", "Evidence budget"]],
+                        ),
                     ],
                 )
             ],

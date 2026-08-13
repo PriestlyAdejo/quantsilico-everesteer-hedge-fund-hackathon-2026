@@ -1,0 +1,201 @@
+---
+title: Developer guide
+description: How the Everesteer competition system is structured and how to extend it without breaking live operation.
+section: runbooks
+order: 30
+---
+
+<PageIntro>
+This guide is for changing the system rather than operating a competition
+round. The central rule is to preserve evidence lineage and keep the CLI,
+backend and Research Console as different views over the same domain state.
+</PageIntro>
+
+## Architecture
+
+The primary path is:
+
+<FlowDiagram
+  nodes={[
+    { id: "sdk", label: "Everesteer adapter" },
+    { id: "domain", label: "Domain services" },
+    { id: "evidence", label: "Filesystem evidence" },
+    { id: "api", label: "FastAPI" },
+    { id: "datasource", label: "ApiDataSource" },
+    { id: "ui", label: "Research Console" }
+  ]}
+/>
+
+The CLI and autopilot invoke the same domain concepts independently of the UI.
+
+The dashboard must never become the only copy of competition state.
+
+## Filesystem authority
+
+Experiment evidence lives under the run/artifact structure.
+
+Typical evidence includes:
+
+- resolved configuration;
+- dataset fingerprint;
+- event snapshot;
+- fold metrics;
+- OOF predictions;
+- model metadata;
+- resource measurements;
+- race decision;
+- stdout/stderr.
+
+A database may index this material for fast queries, but the database must be
+rebuildable from the evidence files.
+
+## Adding a model
+
+A new model family should:
+
+1. implement the existing model interface;
+2. accept resolved configuration rather than hidden constants;
+3. fit without accessing validation/live targets improperly;
+4. generate predictions in the standard format;
+5. record parameters and parent lineage;
+6. persist an artefact when required;
+7. pass a load/inference smoke test;
+8. expose runtime/resource information.
+
+Do not add model-specific submission code.
+
+Submission consumes a normal candidate.
+
+## Adding a research operator
+
+An operator changes one well-defined part of an existing candidate, for example:
+
+- regularisation;
+- feature subset;
+- recency weighting;
+- seed;
+- ensemble membership.
+
+Record the parent and config delta.
+
+Do not create experiments that cannot later explain what changed.
+
+## Adding an API field
+
+The contract path is:
+
+TypeScript page DTO
+→ Python/Pydantic mirror
+→ domain service
+→ API route
+→ ApiDataSource
+→ component
+
+Do not put a field directly into React using a second ad-hoc fetch.
+
+Unknown values remain null/unknown rather than being turned into zero.
+
+## Adding an API endpoint
+
+Use an explicit FastAPI route.
+
+Do not expose:
+
+- arbitrary shell commands;
+- arbitrary filesystem paths;
+- Git mutation;
+- secrets;
+- wallet transactions.
+
+Read-only repository/build inspection is allowed through narrow services.
+
+## Adding a dashboard action
+
+Every button that mutates state must map to an allowlisted domain action.
+
+A production button is not allowed to be decorative.
+
+Document its path in the dashboard live-wiring matrix.
+
+## Live updates
+
+Frequently changing domains can publish logical events through the configured
+SSE/WebSocket mechanism.
+
+Examples include:
+
+- job progress;
+- round changes;
+- experiment completion;
+- champion changes;
+- submission completion;
+- leaderboard updates.
+
+Do not poll every backend domain at the same interval.
+
+## Submission safety
+
+Submission is a privileged external side effect.
+
+Do not bypass:
+
+- event identity;
+- lane checks;
+- ID alignment;
+- artefact checks;
+- quota;
+- idempotency.
+
+Development and CI must remain incapable of accidentally arming external
+submission.
+
+## Synthetic mode
+
+Synthetic fixtures exist to test infrastructure without organiser data.
+
+Synthetic evidence must remain distinguishable internally from official event
+evidence.
+
+Rehearsal must not overwrite live production research state.
+
+## Documentation
+
+Generated reference comes from code:
+
+- Typer → CLI Reference;
+- FastAPI/OpenAPI → Backend API;
+- Python signatures/docstrings → Python API;
+- Pydantic/config schemas → Configuration.
+
+Human operating knowledge stays in curated MDX.
+
+After changing public interfaces:
+
+<Command>
+.\.venv\Scripts\qseh.exe docs build
+</Command>
+
+## Testing a change
+
+Run the smallest relevant tests first.
+
+Before event readiness, run:
+
+<Command>
+scripts\preflight.cmd
+</Command>
+
+Do not treat a disconnected live Everesteer event as a local code failure when
+credentials have not yet been provided.
+
+## Git during the event
+
+Prefer narrow fixes.
+
+Before changing code:
+
+- inspect current SHA;
+- understand the working tree;
+- avoid unrelated refactors.
+
+Never solve a live-round problem by performing a broad architecture cleanup.
