@@ -59,6 +59,25 @@ TUNING_GRIDS: dict[str, tuple[dict[str, Any], ...]] = {
 
 RIDGE_ALPHA_GRID = (1.0, 30.0, 300.0, 3_000.0, 30_000.0)
 
+FINAL_ROUND_SPECS: tuple[tuple[str, dict[str, Any]], ...] = (
+    ("xgboost", {"n_estimators": 180, "max_depth": 4, "learning_rate": 0.03,
+                 "seed": 17}),
+    ("xgboost", {"n_estimators": 220, "max_depth": 6, "learning_rate": 0.02,
+                 "seed": 29}),
+    ("lgbm", {"n_estimators": 180, "num_leaves": 15, "learning_rate": 0.03,
+              "feature_fraction": 0.7, "seed": 17}),
+    ("lgbm", {"n_estimators": 220, "num_leaves": 31, "learning_rate": 0.02,
+              "feature_fraction": 0.9, "seed": 29}),
+    ("xgboost", {"n_estimators": 160, "max_depth": 3, "learning_rate": 0.04,
+                 "seed": 43, "use_gpu": True}),
+    ("xgboost", {"n_estimators": 200, "max_depth": 5, "learning_rate": 0.025,
+                 "seed": 71, "use_gpu": True}),
+    ("lgbm", {"n_estimators": 160, "num_leaves": 8, "learning_rate": 0.04,
+              "feature_fraction": 0.6, "seed": 43}),
+    ("lgbm", {"n_estimators": 200, "num_leaves": 63, "learning_rate": 0.025,
+              "feature_fraction": 1.0, "seed": 71}),
+)
+
 
 @dataclass(frozen=True)
 class SearchTrial:
@@ -116,6 +135,16 @@ class AutoMLSearch:
             params = {"alpha": alpha}
             run_id = self._id("ridge-real", "ridge", profile, params, None)
             trials.append(SearchTrial(run_id, "ridge-real", "ridge", profile, params))
+        return trials
+
+    def final_trials(
+        self, *, profile: str = "R1", offset: int = 0, max_trials: int = 4,
+    ) -> list[SearchTrial]:
+        """Build seeded final-round challengers from paid-evidence families."""
+        trials = []
+        for family, params in FINAL_ROUND_SPECS[offset : offset + max(0, max_trials)]:
+            run_id = self._id("final", family, profile, params, None)
+            trials.append(SearchTrial(run_id, "final", family, profile, dict(params)))
         return trials
 
     def tune_trials(

@@ -109,7 +109,7 @@ def adaptive_reconcile() -> None:
 @autopilot_app.command("tick")
 def adaptive_tick(
     allow_live_submit: bool = typer.Option(False, "--allow-live-submit"),
-    max_live: int = typer.Option(6, "--max-live", min=1, max=12),
+    max_live: int = typer.Option(6, "--max-live", min=1, max=150),
     max_validation: int = typer.Option(4, "--max-validation", min=0, max=12),
     reserve: int = typer.Option(20, "--upload-reserve", min=1),
     allow_auto_stake: bool = typer.Option(False, "--allow-auto-stake"),
@@ -131,7 +131,7 @@ def adaptive_tick(
 @autopilot_app.command("live")
 def adaptive_live(
     allow_live_submit: bool = typer.Option(False, "--allow-live-submit"),
-    max_live: int = typer.Option(6, "--max-live", min=1, max=12),
+    max_live: int = typer.Option(6, "--max-live", min=1, max=150),
     max_validation: int = typer.Option(4, "--max-validation", min=0, max=12),
     reserve: int = typer.Option(20, "--upload-reserve", min=1),
     poll_seconds: float = typer.Option(15.0, "--poll-seconds", min=5.0, max=300.0),

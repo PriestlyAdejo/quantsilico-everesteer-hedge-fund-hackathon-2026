@@ -36,8 +36,8 @@ class AdaptivePolicy:
     stake_slots: int = 3
 
     def validate(self) -> None:
-        if not 1 <= self.max_live_models_per_round <= 12:
-            raise ValueError("max_live_models_per_round must be in [1, 12]")
+        if not 1 <= self.max_live_models_per_round <= 150:
+            raise ValueError("max_live_models_per_round must be in [1, 150]")
         if not 0 <= self.max_validation_models_per_cycle <= 12:
             raise ValueError("max_validation_models_per_cycle must be in [0, 12]")
         if self.upload_reserve < 1:

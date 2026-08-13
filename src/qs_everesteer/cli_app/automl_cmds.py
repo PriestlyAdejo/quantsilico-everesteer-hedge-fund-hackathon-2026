@@ -11,7 +11,7 @@ from qs_everesteer.cli_app.common import print_json, print_mutation_context, rep
 search_app = typer.Typer(help="Bounded AutoML search.", no_args_is_help=True)
 
 
-def _run(kind: str, data: Path, profile: str, max_trials: int) -> None:
+def _run(kind: str, data: Path, profile: str, max_trials: int, *, offset: int = 0) -> None:
     root = repo_root()
     print_mutation_context(lane="practice", extra={"search_kind": kind, "profile": profile})
     search = AutoMLSearch(root)
@@ -19,6 +19,10 @@ def _run(kind: str, data: Path, profile: str, max_trials: int) -> None:
         trials = search.family_trials(profile=profile, max_trials=max_trials)
     elif kind == "ridge":
         trials = search.ridge_trials(profile=profile, max_trials=max_trials)
+    elif kind == "final":
+        trials = search.final_trials(
+            profile=profile, offset=offset, max_trials=max_trials,
+        )
     elif kind == "advanced":
         trials = search.advanced_trials(profile=profile, max_trials=max_trials)
     else:
@@ -54,3 +58,14 @@ def advanced(data: Path = typer.Option(..., "--data"), profile: str = typer.Opti
     if not bounded:
         raise typer.BadParameter("unbounded advanced search is intentionally unsupported")
     _run("advanced", data, profile.upper(), max_trials)
+
+
+@search_app.command("final")
+def final(
+    data: Path = typer.Option(..., "--data"),  # noqa: B008
+    profile: str = typer.Option("R1", "--profile"),
+    offset: int = typer.Option(0, "--offset", min=0, max=7),
+    max_trials: int = typer.Option(2, "--max-trials", min=1, max=4),
+) -> None:
+    """Run a sharded final-round seed burst from paid-evidence families."""
+    _run("final", data, profile.upper(), max_trials, offset=offset)
