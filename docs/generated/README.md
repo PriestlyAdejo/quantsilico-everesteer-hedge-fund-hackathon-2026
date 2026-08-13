@@ -2,10 +2,10 @@
 
 Produced by `qseh docs build` / `qs_everesteer.docs_build.build_docs`.
 
-- generatedFromSha: `0b0fe69f467df29751a6e316ad852083503d48b6`
-- generatedAt: `2026-08-13T11:38:41+00:00`
+- generatedFromSha: `65828f1669f73fa7428a854ca927ef05e038cb3e`
+- generatedAt: `2026-08-13T14:19:01+00:00`
 - generatorVersion: `3`
-- CLI reference: `cli-reference.md` (51 commands)
+- CLI reference: `cli-reference.md` (75 commands)
 - Commands JSON: `cli-commands.json`
 - Backend API: `backend-api.md` (33 paths)
 - Backend OpenAPI: `openapi.json`

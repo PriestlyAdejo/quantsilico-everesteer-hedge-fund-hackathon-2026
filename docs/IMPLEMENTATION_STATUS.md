@@ -1,54 +1,55 @@
 # Implementation status
 
-## P0
+## Implemented
 
-| Item | Status |
-|---|---|
-| Everesteer adapter + capability discovery | Complete |
-| Event snapshots | Complete |
-| Synthetic data + audit + fingerprint | Complete |
-| Official scoring wrapper (`everestapi.scoring`) | Complete (fallback local IC labelled non-official) |
-| Temporal validation R0–R3 | Complete |
-| Models: Ridge, RF, ExtraTrees, XGBoost, reference_lgbm | Complete |
-| Organiser exact baseline | **UNAVAILABLE** — see `docs/BASELINE_PROVENANCE.md`; `reference_lgbm` used |
-| Experiment registry (filesystem) | Complete |
-| Racing R0→R3 | Complete |
-| Frontier / champion separation | Complete |
-| Ensembles (rank/weighted/greedy/diversity) | Complete |
-| Submission guard + pipeline + modes DISABLED/DRY_RUN/ARMED | Complete |
-| Live round controller + idempotency | Complete |
-| Stake classification | Complete |
-| Deterministic autopilot | Complete |
-| FastAPI `/api/*` + SSE | Complete |
-| Exact Figma port | Complete |
-| Live DataSource wiring | Complete |
-| CLI `qseh` full surface | Complete |
-| Emergency path | Complete |
-| Docs build + curated MDX | Complete |
+- Everesteer adapter, event snapshots and capability discovery.
+- Explicit synthetic data, fail-closed real pulls, audits and fingerprints.
+- Official named scoring adapter with honestly labelled local fallback.
+- Target-aware temporal validation; real `target_everest_20` evidence uses a
+  minimum 20-exped embargo while explicit synthetic fixtures use compact test
+  profiles.
+- Attributable official starter recipe and hash; numeric parity remains
+  data-dependent.
+- Ridge, forests, LightGBM, XGBoost, optional CatBoost, shallow MLP and bounded
+  advanced challengers.
+- Real R0-R3 retraining child trials with parent lineage and preserved failures.
+- Bounded family search, survivor tuning and advanced/diversity stages.
+- Rank, weighted, greedy, diversity, OOF ridge and non-negative ensembles.
+- Promotion-grade champion/reserve selection and local inference/package
+  manifests.
+- Submission guard and DISABLED/DRY_RUN/ARMED modes; only integrity failures are
+  universal hard stops.
+- Live-round controller, idempotency and runtime classification of optional
+  final-selection/staking mechanics.
+- Mandatory-handler autopilot blocking.
+- Durable priority/deadline jobs with FIFO among peers, dependencies, leases,
+  heartbeats, bounded attempts, stale recovery and cancellation.
+- Versioned experiment/task/backend/budget/egress/artifact contracts.
+- Policy-first compute broker across CPU, native GPU, Linux JAX, Everesteer and
+  optional Runpod lanes.
+- Matched public-synthetic CPU/GPU benchmark and evidence-based autotuning.
+- Dashboard local/server queue and runtime history using the same job records.
+- CLI critical path, emergency path, generated docs and operator guide.
 
-## P1
+## Runtime-gated or optional
 
-| Item | Status |
-|---|---|
-| Regularised / subspace / recency / bagging LGBM | Complete |
-| Shallow MLP | Complete |
-| Server compute adapter | Capability probe only; optional jobs if available |
-| Neutralised ensemble | Exposed only when scoring/backend supports |
+- JAX/Torch acceleration requires a verified Linux/WSL or remote runtime.
+- Runpod real-data execution requires authoritative organiser egress permission.
+- Authenticated Everesteer compute requires usable account capabilities and an
+  allowed funding source.
+- The Runpod policy and CUDA worker are implemented but no remote resource is
+  provisioned automatically.
+- Exact paper reproductions of TabM/RealMLP are not claimed; current versions are
+  explicitly style/challenger implementations.
 
-## P2 deferred
+## Current runtime observations
 
-- Transformers / AutoML frameworks
-- LLM research operator (optional; not required)
-- Automatic public push of milestone commits
-
-## Event / SDK / auth unknowns
-
-| Unknown | Representation |
-|---|---|
-| Live Everesteer credentials | NOT YET AVAILABLE |
-| Exact organiser starter hash | UNAVAILABLE |
-| Live submission cap | runtime discovery / null until connected |
-| Staking mode for live event | UNKNOWN until classified from event |
-| Server compute | UNKNOWN/unavailable until probe succeeds |
-
-Pinned SDK: `everestapi[scoring]==0.3.22` (installed verified).
+- SDK: `everestapi[scoring]==0.3.24`, installed and test-verified.
+- Official starter provenance: `docs/BASELINE_PROVENANCE.md`.
+- RTX 3070 Laptop GPU: detected; native XGBoost synthetic canary passed.
+- WSL JAX GPU: not verified.
+- Everesteer credentials/compute: unavailable in this shell; represented as
+  `UNKNOWN`/unavailable.
+- Runpod tooling/auth/funding provenance: unavailable in this shell; represented
+  as `UNKNOWN` and blocked.
+- Live submission cap and active event mechanics remain runtime observations.
