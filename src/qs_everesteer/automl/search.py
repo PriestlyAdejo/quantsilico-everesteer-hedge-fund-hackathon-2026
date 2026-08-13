@@ -57,6 +57,8 @@ TUNING_GRIDS: dict[str, tuple[dict[str, Any], ...]] = {
     ),
 }
 
+RIDGE_ALPHA_GRID = (1.0, 30.0, 300.0, 3_000.0, 30_000.0)
+
 
 @dataclass(frozen=True)
 class SearchTrial:
@@ -101,6 +103,19 @@ class AutoMLSearch:
         trials = []
         for family, params in list(ADVANCED_SPECS.items())[:max(0, max_trials)]:
             trials.append(SearchTrial(self._id("advanced", family, profile, params, None), "advanced", family, profile, dict(params)))
+        return trials
+
+    def ridge_trials(self, *, profile: str = "R1", max_trials: int = 5) -> list[SearchTrial]:
+        """Build a bounded real-data Ridge regularisation sweep.
+
+        The run prefix is deliberately distinct from the earlier synthetic family
+        evidence so the adaptive controller cannot promote synthetic scores.
+        """
+        trials = []
+        for alpha in RIDGE_ALPHA_GRID[:max(0, max_trials)]:
+            params = {"alpha": alpha}
+            run_id = self._id("ridge-real", "ridge", profile, params, None)
+            trials.append(SearchTrial(run_id, "ridge-real", "ridge", profile, params))
         return trials
 
     def tune_trials(

@@ -20,3 +20,10 @@ def test_tuning_preserves_parent_lineage_and_trial_cap(tmp_path):
     assert len(trials) == 2
     assert all(trial.parent_run_id == "synthetic-parent-a" for trial in trials)
     assert all(trial.profile == "R2" for trial in trials)
+
+
+def test_ridge_sweep_is_real_evidence_namespaced_and_regularised(tmp_path):
+    trials = AutoMLSearch(tmp_path).ridge_trials(profile="R1", max_trials=4)
+    assert len(trials) == 4
+    assert all(trial.run_id.startswith("ridge-real-ridge-") for trial in trials)
+    assert [trial.params["alpha"] for trial in trials] == [1.0, 30.0, 300.0, 3_000.0]

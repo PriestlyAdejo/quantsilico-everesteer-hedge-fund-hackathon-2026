@@ -17,6 +17,8 @@ def _run(kind: str, data: Path, profile: str, max_trials: int) -> None:
     search = AutoMLSearch(root)
     if kind == "family":
         trials = search.family_trials(profile=profile, max_trials=max_trials)
+    elif kind == "ridge":
+        trials = search.ridge_trials(profile=profile, max_trials=max_trials)
     elif kind == "advanced":
         trials = search.advanced_trials(profile=profile, max_trials=max_trials)
     else:
@@ -38,6 +40,12 @@ def tune(data: Path = typer.Option(..., "--data"), profile: str = typer.Option("
     """Tune only candidates promoted by the latest race."""
     del survivors  # retained as an explicit, backward-stable semantic flag
     _run("tune", data, profile.upper(), max_trials)
+
+
+@search_app.command("ridge")
+def ridge(data: Path = typer.Option(..., "--data"), profile: str = typer.Option("R1", "--profile"), max_trials: int = typer.Option(5, "--max-trials", min=1, max=12)) -> None:  # noqa: B008
+    """Run a real-data Ridge alpha sweep with synthetic evidence excluded."""
+    _run("ridge", data, profile.upper(), max_trials)
 
 
 @search_app.command("advanced")
